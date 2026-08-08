@@ -1,0 +1,14 @@
+# publications.yaml — papers. DOI/orcid = ancla GEO (resoluble, verificable).
+# EJEMPLO: persona ficticia (Alex Rivera).
+
+publications:
+  - title: "Sovereign AI tutoring in low-connectivity classrooms"
+    venue: "Journal of Educational AI"
+    year: 2025
+    doi: "10.0000/example.2025.001"
+    authors: ["Rivera, A.", "García, M."]
+  - title: "Computational methods for dense plasmas"
+    venue: "Physical Review C (ficticio)"
+    year: 2022
+    doi: "10.0000/example.2022.042"
+    authors: ["Rivera, A."]

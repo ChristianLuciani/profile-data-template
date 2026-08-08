@@ -1,0 +1,20 @@
+# .pacrc — configuración del CLI profile-as-code (workspace por ruta, sin symlinks)
+# El engine lee ESTE workspace por esta ruta; nunca copia tus datos.
+
+workspace: .                # raíz de este repo (o ruta absoluta si el CLI corre desde otro lado)
+
+cli:
+  default_lang: en           # idioma por defecto de los textos generados
+  default_variants: 3        # variantes IA que propone `pac refine`
+
+refine:
+  agent_driven: true         # D11: las variantes las propone el agente (AionUi/OpenHands/Claude Code/Cursor…)
+  model: auto                # D13: usa el modelo del agente que ejecuta (sah/hub: futuro default)
+
+checks:
+  fail_on: ["schema"]        # D12: schema falla…
+  warn_on: ["drift", "geo"]  # D12: …hechos avisan (intenciones distintas por plataforma son válidas)
+
+deploy:
+  manual_platforms: [linkedin, upwork, x, researchgate, substack]
+  git_platforms: [github-readme]

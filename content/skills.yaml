@@ -1,0 +1,48 @@
+# skills.yaml — taxonomía única con keywords SEO + GEO y pesos por plataforma
+# EJEMPLO: persona ficticia (Alex Rivera).
+
+skills:
+  - name: "AI / Machine Learning"
+    level: advanced
+    keywords:
+      - llm
+      - fine-tuning
+      - retrieval-augmented generation
+    geoKeywords: ["local-first AI", "sovereign AI"]
+    platformWeights:        # dónde pesa más mostrarla
+      upwork: 5
+      linkedin: 4
+      github: 3
+  - name: "Infrastructure / DevOps"
+    level: advanced
+    keywords:
+      - docker
+      - kubernetes
+      - ci/cd
+    platformWeights:
+      upwork: 4
+      github: 4
+  - name: "Physics / Computational Science"
+    level: expert
+    keywords:
+      - computational physics
+      - scientific computing
+    platformWeights:
+      researchgate: 5
+      linkedin: 3
+  - name: "Science Communication"
+    level: advanced
+    keywords:
+      - technical writing
+      - public speaking
+    platformWeights:
+      substack: 5
+      x: 4
+
+languages:
+  - code: es
+    level: native
+  - code: en
+    level: professional
+  - code: fr
+    level: basic
