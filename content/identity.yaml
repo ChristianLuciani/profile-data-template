@@ -1,0 +1,25 @@
+# identity.yaml — datos canónicos (independientes de idioma = ancla GEO)
+# EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tus datos.
+
+name: Alex Rivera
+handle: alexrivera
+location: Cuenca, Ecuador
+timezone: America/Guayaquil
+
+photo: assets/photo.jpg            # ruta local o URL (perfil circular, fondo neutro)
+
+# links CANÓNICOS: acá vive la verdad de tus URLs. Todas las plataformas derivan de acá.
+links:
+  website: https://example.com
+  github: https://github.com/alexrivera
+  linkedin: https://www.linkedin.com/in/alex-rivera
+  upwork: https://www.upwork.com/freelancers/alexrivera
+  x: https://x.com/alexrivera_dev
+  researchgate: https://www.researchgate.net/profile/Alex-Rivera
+  substack: https://alexrivera.substack.com
+  orcid: https://orcid.org/0000-0000-0000-0000
+  scholar: https://scholar.google.com/citations?user=XXXXXXXX
+  email: alex@example.com
+
+# orcid_id como dato estructurado (lo usan los LLM para resolver publicaciones)
+orcid_id: "0000-0000-0000-0000"

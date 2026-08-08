@@ -1,0 +1,42 @@
+# bios.yaml — textos por plataforma/idioma/longitud
+# EJEMPLO: persona ficticia (Alex Rivera). El engine renderiza + `pac refine` propone variantes.
+
+# estructura: { platform, lang, length, text }
+bios:
+  - platform: linkedin
+    lang: en
+    length: short          # ~160 chars (headline-like)
+    text: "AI engineer & physicist. Local-first infrastructure for education. OSS contributor."
+  - platform: linkedin
+    lang: en
+    length: medium         # ~260 chars
+    text: "Physicist turned AI engineer building sovereign, local-first AI for education. Author of 3 OSS projects and 2 peer-reviewed papers. Previously deployed LLM tutoring systems in the Amazon."
+  - platform: linkedin
+    lang: es
+    length: medium
+    text: "Físico e ingeniero de IA: infraestructura local-first y soberana para educación. Autor de 3 proyectos OSS y 2 papers arbitrados. Tutorías LLM desplegadas en la Amazonía."
+  - platform: upwork
+    lang: en
+    length: long
+    text: "I build custom AI infrastructure and data pipelines for education and research teams. You keep the code; the models run on your hardware. Physics background, 15 years of engineering."
+  - platform: x
+    lang: en
+    length: short
+    text: "Local-first AI for education. Physicist. OSS @ alexrivera. Papers in arXiv."
+  - platform: substack
+    lang: en
+    length: short
+    text: "Sovereign AI for education: local models, open source, field-tested."
+  - platform: github
+    lang: en
+    length: short
+    text: "AI infrastructure · local-first · education. Physicist. Building sovereign tooling."
+
+# headlines: por plataforma (el que el renderer usa como H1 / profile title)
+headlines:
+  - platform: linkedin
+    lang: en
+    text: "AI Engineer · Local-first Infrastructure for Education · OSS"
+  - platform: upwork
+    lang: en
+    text: "AI Infrastructure Engineer — Custom LLM Pipelines, Local-First"

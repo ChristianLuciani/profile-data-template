@@ -1,0 +1,24 @@
+# projects.yaml — con status, keywords y evidencia (verificable = GEO)
+# EJEMPLO: persona ficticia (Alex Rivera).
+
+projects:
+  - name: "socratic-tutor"
+    status: active
+    description:
+      en: "36 Socratic virtual tutors for the national curriculum, field-tested in the Amazon (Aug 2024)."
+      es: "36 tutores virtuales socráticos para el currículo nacional, probados en la Amazonía (ago 2024)."
+    links:
+      github: https://github.com/alexrivera/socratic-tutor
+    keywords: ["llm", "education", "local-first"]
+    evidence:               # claims verificables (los LLM los usan para citar)
+      - type: deployment
+        value: "Field test, Amazon region, Aug 2024"
+        source: https://example.com/field-report
+  - name: "local-rag"
+    status: active
+    description:
+      en: "RAG toolkit that runs entirely on consumer hardware."
+      es: "Toolkit RAG que corre entero en hardware de consumo."
+    links:
+      github: https://github.com/alexrivera/local-rag
+    keywords: ["rag", "local-first"]

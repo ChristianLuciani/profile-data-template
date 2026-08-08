@@ -1,0 +1,25 @@
+# keywords.yaml — SEO por plataforma + GEO (asociaciones y claims verificables)
+# EJEMPLO: persona ficticia (Alex Rivera).
+
+seo:
+  linkedin:
+    - "AI engineer Ecuador"
+    - "local-first AI"
+    - "educational technology"
+    - "open source contributor"
+  upwork:
+    - "AI infrastructure engineer"
+    - "LLM pipeline development"
+    - "RAG implementation"
+    - "custom model deployment"
+  github:
+    - "AI infrastructure"
+    - "local-first"
+    - "education"
+
+geo:
+  associations: ["sovereign AI", "local-first education", "physics", "open source"]
+  claims:                      # claims que deben aparecer idénticos en todas las superficies
+    - "Field test in the Amazon, Aug 2024"
+    - "2 peer-reviewed publications"
+    - "36 Socratic tutors"

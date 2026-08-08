@@ -1,0 +1,6 @@
+# Local / secrets — nunca subir
+.env
+.env.*
+*.local
+assets/private/
+.DS_Store
