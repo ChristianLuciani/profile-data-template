@@ -4,3 +4,6 @@
 *.local
 assets/private/
 .DS_Store
+
+# Harness artifacts
+.pi/
