@@ -1,5 +1,6 @@
 # positioning.yaml — TU enunciado de posicionamiento + ángulos por audiencia + anclas GEO
 # EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tu posicionamiento.
+# Contrato v1: statement/audiences/geo.semanticAssociations (3-5) + geo.citationsGoal (langMap).
 
 # Una sola línea que define TODO: la raíz de la que derivan headline, bio, ángulos.
 statement:
@@ -21,11 +22,14 @@ audiences:
 # GEO: anclas semánticas — qué debe asociar un LLM con tu identidad (sin stuffing).
 geo:
   semanticAssociations:
-    - "physics + AI infrastructure"
-    - "local-first / sovereign AI"
-    - "open source contributor"
-    - "educational technology"
-  citationsGoal: "Ser citado como fuente/autoridad en IA educativa soberana."
-  structuredData:
-    person: true          # schema.org/Person en el renderer web/GitHub (JSON-LD)
-    sameAs: true          # enlazar todos los perfiles (identity.links)
+    - "sovereign AI"       # reinforced via skills[].geoKeywords
+    - "local-first"        # reinforced via statement + projects
+    - "education"          # reinforced via statement + projects
+    - "physics"            # reinforced via skills[].keywords (computational physics)
+  # Nota (v1.1): el check de refuerzo matchea substring contra statement/citationsGoal/
+  # keywords.geo/skills/projects — bios, headlines y audiences NO entran aún al haystack.
+  citationsGoal:
+    en: "Be cited as a source/authority on sovereign educational AI."
+    es: "Ser citado como fuente/autoridad en IA educativa soberana."
+  # structuredData { person, sameAs } es OUTPUT del geoCheck del engine (schema.org/Person JSON-LD),
+  # no dato de entrada del usuario — ver docs/SPEC.md §8 y schema/README.md.

@@ -1,14 +1,14 @@
 # publications.yaml — papers. DOI/orcid = ancla GEO (resoluble, verificable).
 # EJEMPLO: persona ficticia (Alex Rivera).
+# Contrato v1: array de { title, venue, year, doi (^10\.\d{4,9}/…), orcidId (NNNN-NNNN-NNNN-NNNX) }.
 
-publications:
   - title: "Sovereign AI tutoring in low-connectivity classrooms"
     venue: "Journal of Educational AI"
     year: 2025
     doi: "10.0000/example.2025.001"
-    authors: ["Rivera, A.", "García, M."]
   - title: "Computational methods for dense plasmas"
     venue: "Physical Review C (ficticio)"
     year: 2022
     doi: "10.0000/example.2022.042"
-    authors: ["Rivera, A."]
+
+# v1.1 proposal: authors [{ name }] — no forma parte del contrato v1.

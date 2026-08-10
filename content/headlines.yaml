@@ -1,0 +1,9 @@
+# headlines.yaml — la línea bajo el nombre, por plataforma/idioma
+# Contrato v1: array de { platform (enum), lang (en|es|fr), text }.
+
+  - platform: linkedin
+    lang: en
+    text: "AI Engineer · Local-first Infrastructure for Education · OSS"
+  - platform: upwork
+    lang: en
+    text: "AI Infrastructure Engineer — Custom LLM Pipelines, Local-First"

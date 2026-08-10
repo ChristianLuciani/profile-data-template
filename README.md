@@ -27,20 +27,25 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
    cd user-brand-data
    ```
 
-3. Instalá el CLI del engine (cuando exista: `npm i -g profile-as-code` o `npx pac`).
+3. Instalá el CLI del engine (M1): `pnpm --filter @profile-as-code/cli build` en el monorepo
+   `profile-as-code` (o `npm i -g profile-as-code` cuando se publique).
 
-4. Editá `content/` — reemplazá el ejemplo ficticio con tus datos:
+4. Editá `content/` — reemplazá el ejemplo ficticio con tus datos (contrato:
+   `schema/profile.schema.json`; cada archivo ES una root property — `bios.yaml` es el
+   array `bios[]` directamente, sin key wrapper):
    - `identity.yaml` — nombre, ubicación, links canónicos (TU source of truth de URLs)
    - `positioning.yaml` — tu enunciado de posicionamiento + ángulos por audiencia + anclas GEO
-   - `bios.yaml`, `headlines` — por plataforma/idioma/longitud
+   - `bios.yaml`, `headlines.yaml` — por plataforma/idioma/longitud
    - `skills.yaml`, `experience.yaml`, `projects.yaml`, `publications.yaml`, `keywords.yaml`
 
 5. Construí y validá:
 
    ```bash
-   pac validate          # schema (fail) + drift/geo (warn) + skills checks
-   pac build --all       # renderiza profiles/ por plataforma
-   pac refine linkedin   # variantes IA por plataforma → elegís una → se commitea como activa
+   pac validate          # schema (fail) + drift/geo (warn) — D12
+   pac build             # base texts deterministas por plataforma (sin arg = todas)
+   pac diff              # cambios desde el último release (→ CHANGELOG)
+   pac refine linkedin   # variantes IA (stub en M1, M3/M4) — agente propone, vos elegís
+   pac check             # checks declarativos (stub en M1, M4)
    ```
 
 6. **Deploy:** pegá lo generado en cada plataforma (ver `CHECKLIST.md`) o dejá que git/API

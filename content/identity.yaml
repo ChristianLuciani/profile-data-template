@@ -1,25 +1,53 @@
 # identity.yaml — datos canónicos (independientes de idioma = ancla GEO)
 # EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tus datos.
+# Contrato: schema/profile.schema.json (profile-as-code). URLs viven SOLO acá.
 
 name: Alex Rivera
-handle: alexrivera
 location: Cuenca, Ecuador
-timezone: America/Guayaquil
 
-photo: assets/photo.jpg            # ruta local o URL (perfil circular, fondo neutro)
+# photo: https://example.com/you.jpg   # contrato v1: URL (format uri). Path local pendiente de decisión (v1.1).
+
+# v1.1 proposals (no forman parte del contrato v1 — ver PR del engine):
+# handle: alexrivera            # GitHub/X handle
+# timezone: America/Guayaquil
+# orcid_id: "0000-0000-0000-0000"   # hay orcidId en publications[] (formato validado)
 
 # links CANÓNICOS: acá vive la verdad de tus URLs. Todas las plataformas derivan de acá.
+# Estructura v1: array de { platform, label, url } — el platform es texto libre.
 links:
-  website: https://example.com
-  github: https://github.com/alexrivera
-  linkedin: https://www.linkedin.com/in/alex-rivera
-  upwork: https://www.upwork.com/freelancers/alexrivera
-  x: https://x.com/alexrivera_dev
-  researchgate: https://www.researchgate.net/profile/Alex-Rivera
-  substack: https://alexrivera.substack.com
-  orcid: https://orcid.org/0000-0000-0000-0000
-  scholar: https://scholar.google.com/citations?user=XXXXXXXX
-  email: alex@example.com
-
-# orcid_id como dato estructurado (lo usan los LLM para resolver publicaciones)
-orcid_id: "0000-0000-0000-0000"
+  - platform: website
+    label: Website
+    url: https://example.com
+  - platform: github
+    label: GitHub
+    url: https://github.com/alexrivera
+  - platform: github
+    label: GitHub — socratic-tutor
+    url: https://github.com/alexrivera/socratic-tutor
+  - platform: github
+    label: GitHub — local-rag
+    url: https://github.com/alexrivera/local-rag
+  - platform: linkedin
+    label: LinkedIn
+    url: https://www.linkedin.com/in/alex-rivera
+  - platform: upwork
+    label: Upwork
+    url: https://www.upwork.com/freelancers/alexrivera
+  - platform: x
+    label: X
+    url: https://x.com/alexrivera_dev
+  - platform: researchgate
+    label: ResearchGate
+    url: https://www.researchgate.net/profile/Alex-Rivera
+  - platform: substack
+    label: Substack
+    url: https://alexrivera.substack.com
+  - platform: orcid
+    label: ORCID
+    url: https://orcid.org/0000-0000-0000-0000
+  - platform: scholar
+    label: Google Scholar
+    url: https://scholar.google.com/citations?user=XXXXXXXX
+  - platform: email
+    label: Email
+    url: mailto:alex@example.com

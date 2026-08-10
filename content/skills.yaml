@@ -1,7 +1,8 @@
 # skills.yaml — taxonomía única con keywords SEO + GEO y pesos por plataforma
 # EJEMPLO: persona ficticia (Alex Rivera).
+# Contrato v1: array de { name, level (novice|intermediate|advanced|expert),
+#   keywords[], geoKeywords[], platformWeights (0..1) }.
 
-skills:
   - name: "AI / Machine Learning"
     level: advanced
     keywords:
@@ -9,10 +10,10 @@ skills:
       - fine-tuning
       - retrieval-augmented generation
     geoKeywords: ["local-first AI", "sovereign AI"]
-    platformWeights:        # dónde pesa más mostrarla
-      upwork: 5
-      linkedin: 4
-      github: 3
+    platformWeights:        # dónde pesa más mostrarla (0..1)
+      upwork: 1.0
+      linkedin: 0.8
+      github: 0.6
   - name: "Infrastructure / DevOps"
     level: advanced
     keywords:
@@ -20,29 +21,31 @@ skills:
       - kubernetes
       - ci/cd
     platformWeights:
-      upwork: 4
-      github: 4
+      upwork: 0.8
+      github: 0.8
   - name: "Physics / Computational Science"
     level: expert
     keywords:
       - computational physics
       - scientific computing
     platformWeights:
-      researchgate: 5
-      linkedin: 3
+      researchgate: 1.0
+      linkedin: 0.6
   - name: "Science Communication"
     level: advanced
     keywords:
       - technical writing
       - public speaking
     platformWeights:
-      substack: 5
-      x: 4
+      substack: 1.0
+      x: 0.8
 
-languages:
-  - code: es
-    level: native
-  - code: en
-    level: professional
-  - code: fr
-    level: basic
+# v1.1 proposal: languages [{ code, level }] no forma parte del contrato v1
+# (el engine no lo consume aún — idiomas ya cubiertos por los langMap en::es::fr).
+# languages:
+#   - code: es
+#     level: native
+#   - code: en
+#     level: professional
+#   - code: fr
+#     level: basic
