@@ -1,4 +1,4 @@
-# user-brand-data
+# profile-data
 
 > **Workspace de datos de profile-as-code** — tu identidad profesional como código.
 > Este repo es un **template**: usalo con *Use this template* o fork/clone, y reemplazá el contenido
@@ -18,13 +18,14 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
 
 ## Uso — arranque en <10 min
 
-1. **Fork** (recomendado, te queda conectado upstream) o **Use this template** en GitHub.
+1. **Fork** (recomendado, te queda conectado upstream) o **Use this template** en GitHub,
+   y **renombrá el fork a `profile-data`** (el fork hereda el nombre del template).
    Hacelo **privado** — tus datos no son públicos (salvo que quieras).
 2. Cloná y entrá:
 
    ```bash
-   git clone git@github.com:<tu-usuario>/user-brand-data.git
-   cd user-brand-data
+   git clone git@github.com:<tu-usuario>/profile-data.git
+   cd profile-data
    ```
 
 3. Instalá el CLI del engine (M1): `pnpm --filter @profile-as-code/cli build` en el monorepo
@@ -55,7 +56,7 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
 ## Estructura
 
 ```
-user-brand-data/
+profile-data/
 ├── content/             # ← TU información (YAML)
 ├── profiles/            # outputs generados (se commitean: son los artefactos de deploy)
 ├── CHANGELOG.md         # cada cambio: fecha + qué plataformas re-pegar
