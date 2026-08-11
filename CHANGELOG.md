@@ -16,6 +16,14 @@ Formato por entrada:
 - Re-pegar en: — (aún sin deploy)
 - Verificado: —
 
+## 2026-08-11 — familia profile-*: rename a profile-data-template
+- Qué cambió: el template se renombra a **profile-data-template** (y el workspace del
+  usuario a **profile-data**) — "profile" primero: agrupación alfabética, un modelo
+  mental con el engine (profile-as-code). Instrucción de fork actualizada:
+  renombrar el fork a `profile-data` y hacerlo privado.
+- Re-pegar en: — (no aplica; naming)
+- Verificado: repos renombrados en GitHub (las URLs viejas redirigen).
+
 ## 2026-08-10 — conformidad al contrato v1 (primer test e2e del engine)
 - Qué cambió: data alineada a schema/profile.schema.json v1 (M1): file = root property
   (sin key wrapper), identity.links como array {platform,label,url}, fechas YYYY-MM-DD,
