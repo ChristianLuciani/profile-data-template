@@ -1,24 +1,19 @@
 # experience.yaml — trayectoria. HECHOS (fechas exactas = ancla GEO; no contradigas entre redes).
-# EJEMPLO: persona ficticia (Alex Rivera).
+# EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tu trayectoria.
+# Contrato v1: array de { role, org, start (YYYY-MM-DD), end (YYYY-MM-DD | present),
+#   highlights (langMap: {lang: string}) }. start <= end lo verifica core.driftCheck.
+# v1.1 proposal: highlights como lista por idioma ({lang: string[]}) — ver PR del engine.
 
-experience:
-  - role: "Senior AI Engineer"
-    org: "Example Labs"
-    start: "2023-02"
-    end: "present"
-    highlights:
-      en:
-        - "Led design of a local-first LLM tutoring platform field-tested in the Amazon (Aug 2024)."
-        - "Reduced inference cost 70% by routing to small local models."
-      es:
-        - "Lideré el diseño de una plataforma de tutoría LLM local-first probada en la Amazonía (ago 2024)."
-        - "Reduje 70% el costo de inferencia enrutando a modelos locales pequeños."
-    keywords: ["llm", "rag", "education"]
-  - role: "Research Physicist"
-    org: "National University"
-    start: "2018-09"
-    end: "2022-12"
-    highlights:
-      en:
-        - "2 peer-reviewed publications (2006–2026 window); computational physics methods."
-    keywords: ["computational physics", "publications"]
+- role: "Senior AI Engineer"
+  org: "Example Labs"
+  start: "2023-02-01"
+  end: "present"
+  highlights:
+    en: "Led design of a local-first LLM tutoring platform field-tested in the Amazon (Aug 2024). Reduced inference cost 70% by routing to small local models."
+    es: "Lideré el diseño de una plataforma de tutoría LLM local-first probada en la Amazonía (ago 2024). Reduje 70% el costo de inferencia enrutando a modelos locales pequeños."
+- role: "Research Physicist"
+  org: "National University"
+  start: "2018-09-01"
+  end: "2022-12-01"
+  highlights:
+    en: "2 peer-reviewed publications; computational physics methods."

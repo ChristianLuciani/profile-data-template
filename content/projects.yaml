@@ -1,24 +1,28 @@
 # projects.yaml — con status, keywords y evidencia (verificable = GEO)
 # EJEMPLO: persona ficticia (Alex Rivera).
+# Contrato v1: array de { name, status (active|maintained|archived|experimental|planning),
+#   description (langMap), links (array de URLs), keywords[], evidence[] }.
+# evidence: { claim (langMap), source (URL), verified (YYYY-MM-DD) } — claims resolubles.
 
-projects:
   - name: "socratic-tutor"
     status: active
     description:
       en: "36 Socratic virtual tutors for the national curriculum, field-tested in the Amazon (Aug 2024)."
       es: "36 tutores virtuales socráticos para el currículo nacional, probados en la Amazonía (ago 2024)."
     links:
-      github: https://github.com/alexrivera/socratic-tutor
+      - https://github.com/alexrivera/socratic-tutor
     keywords: ["llm", "education", "local-first"]
-    evidence:               # claims verificables (los LLM los usan para citar)
-      - type: deployment
-        value: "Field test, Amazon region, Aug 2024"
+    evidence:
+      - claim:
+          en: "Field test, Amazon region, Aug 2024"
+          es: "Prueba de campo, región amazónica, ago 2024"
         source: https://example.com/field-report
+        verified: "2024-08-31"
   - name: "local-rag"
     status: active
     description:
       en: "RAG toolkit that runs entirely on consumer hardware."
       es: "Toolkit RAG que corre entero en hardware de consumo."
     links:
-      github: https://github.com/alexrivera/local-rag
+      - https://github.com/alexrivera/local-rag
     keywords: ["rag", "local-first"]
