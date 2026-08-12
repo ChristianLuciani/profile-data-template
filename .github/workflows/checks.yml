@@ -1,0 +1,65 @@
+# checks — profile-data-template
+
+Deliberately minimal: this repo is a data scaffold, not an app. Two offline
+checks (~seconds), both run on every push/PR to `main`:
+
+- **YAML**: `content/*.yaml` parses (structure is validated by the engine's
+  schema-check, not duplicated here).
+- **links**: relative markdown links in tracked `.md` files resolve.
+
+Explicitly NOT here: schema validation against profile-as-code's contract —
+that lives in the engine repo and is run locally via CONTRIBUTING.
+
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  yaml:
+    name: yaml parse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse content YAML
+        run: |
+          set -euo pipefail
+          python3 -c "import yaml,glob; fs=glob.glob('content/*.yaml'); [yaml.safe_load(open(f)) for f in fs]; print(f'{len(fs)} yaml file(s) OK')"
+
+  links:
+    name: internal doc links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check relative markdown links resolve
+        run: |
+          set -uo pipefail
+          while IFS= read -r f; do
+            # NOTE: trailing `|| true` is load-bearing. The runner wraps the
+            # step in `bash -e`, so with pipefail a file with NO relative links
+            # makes the first grep exit 1 and silently aborts the step
+            # (lessons 19/34: a gate that fires wrongly is as bad as one that
+            # never fires). A link-less file is valid; a link to nowhere is not.
+            grep -oE '\]\([^)#][^)]*\)' "$f" 2>/dev/null \
+              | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' \
+              | grep -vE '^(https?:|mailto:)' \
+              | while IFS= read -r link; do
+                  [ -z "$link" ] && continue
+                  target="$(dirname "$f")/$link"
+                  if [ ! -e "$target" ]; then
+                    echo "BROKEN  $f  ->  $link"
+                    echo broken >> /tmp/broken
+                  fi
+                done \
+              || true
+          done < <(git ls-files '*.md')
+          if [ -s /tmp/broken ]; then
+            echo "::error::broken relative links found"
+            exit 1
+          fi
+          echo "all relative markdown links resolve"
