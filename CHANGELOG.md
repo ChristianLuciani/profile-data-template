@@ -11,6 +11,16 @@ Formato por entrada:
 
 ---
 
+## 2026-09-07 — README: workspace per-user = `profile-data-<username>` + bootstrap gh
+- Qué cambió: guía de arranque alineada a la terminología canónica del engine (SPEC
+  §9.1, per-user naming): el workspace se llama `profile-data-<username>` (owner en el
+  nombre, prefijo de familia gana). Camino recomendado CLI-first: `gh repo create
+  profile-data-<username> --template … --private` (crea privado directo). H1 del README
+  corregido a `profile-data-template` (drift del rename de PR #3).
+- Re-pegar en: — (no aplica; docs del template)
+- Verificado: links relativos OK + yaml parse OK — CI `checks.yml` verde (run 34159636684,
+  primer run exitoso del repo).
+
 ## 2026-08-08 — init del workspace
 - Qué cambió: template inicial con persona ficticia de ejemplo.
 - Re-pegar en: — (aún sin deploy)
