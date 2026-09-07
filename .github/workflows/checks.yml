@@ -1,14 +1,18 @@
 # checks — profile-data-template
-
-Deliberately minimal: this repo is a data scaffold, not an app. Two offline
-checks (~seconds), both run on every push/PR to `main`:
-
-- **YAML**: `content/*.yaml` parses (structure is validated by the engine's
-  schema-check, not duplicated here).
-- **links**: relative markdown links in tracked `.md` files resolve.
-
-Explicitly NOT here: schema validation against profile-as-code's contract —
-that lives in the engine repo and is run locally via CONTRIBUTING.
+#
+# Deliberately minimal: this repo is a data scaffold, not an app. Two offline
+# checks (~seconds), both run on every push/PR to `main`:
+#
+# - YAML: `content/*.yaml` parses (structure is validated by the engine's
+#   schema-check, not duplicated here).
+# - links: relative markdown links in tracked `.md` files resolve.
+#
+# Explicitly NOT here: schema validation against profile-as-code's contract —
+# that lives in the engine repo and is run locally via CONTRIBUTING.
+#
+# NOTE: the prose above MUST stay commented — bare `**bold**:` lines are parsed
+# by YAML as alias tokens (`*`) and make the whole workflow a startup_failure
+# (every run failed in 0s from 2026-08-12 until this fix).
 
 name: checks
 
