@@ -18,7 +18,8 @@ Formato por entrada:
   profile-data-<username> --template … --private` (crea privado directo). H1 del README
   corregido a `profile-data-template` (drift del rename de PR #3).
 - Re-pegar en: — (no aplica; docs del template)
-- Verificado: [ ] links relativos OK + yaml parse OK (CI `checks.yml`)
+- Verificado: links relativos OK + yaml parse OK — CI `checks.yml` verde (run 34159636684,
+  primer run exitoso del repo).
 
 ## 2026-08-08 — init del workspace
 - Qué cambió: template inicial con persona ficticia de ejemplo.
