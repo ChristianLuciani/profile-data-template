@@ -1,4 +1,4 @@
-# profile-data
+# profile-data-template
 
 > **Workspace de datos de profile-as-code** — tu identidad profesional como código.
 > Este repo es un **template**: usalo con *Use this template* o fork/clone, y reemplazá el contenido
@@ -18,14 +18,25 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
 
 ## Uso — arranque en <10 min
 
-1. **Fork** (recomendado, te queda conectado upstream) o **Use this template** en GitHub,
-   y **renombrá el fork a `profile-data`** (el fork hereda el nombre del template).
+1. Creá tu workspace con el CLI de GitHub (recomendado: crea el repo **privado directamente**
+   —elimina los dos pasos manuales, renombrar y flipar a privado, donde más se deja la data
+   expuesta):
+
+   ```sh
+   gh repo create profile-data-<username> \
+     --template https://github.com/ChristianLuciani/profile-data-template \
+     --private
+   ```
+
+   Alternativa manual: **Use this template** o **fork** en GitHub (el fork queda conectado
+   upstream) y **renombrá el resultado a `profile-data-<username>`** — el owner va en el
+   nombre y el prefijo de la familia gana (terminología canónica: SPEC §9.1 del engine).
    Hacelo **privado** — tus datos no son públicos (salvo que quieras).
 2. Cloná y entrá:
 
    ```bash
-   git clone git@github.com:<tu-usuario>/profile-data.git
-   cd profile-data
+   git clone git@github.com:<tu-usuario>/profile-data-<username>.git
+   cd profile-data-<username>
    ```
 
 3. Instalá el CLI del engine (M1): `pnpm --filter @profile-as-code/cli build` en el monorepo
@@ -56,7 +67,7 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
 ## Estructura
 
 ```
-profile-data/
+profile-data-<username>/
 ├── content/             # ← TU información (YAML)
 ├── profiles/            # outputs generados (se commitean: son los artefactos de deploy)
 ├── CHANGELOG.md         # cada cambio: fecha + qué plataformas re-pegar
@@ -70,7 +81,8 @@ profile-data/
 - `profiles/` se regenera con `pac build`; no lo edites a mano (se pisa).
 - El engine es de solo lectura sobre este repo, salvo `pac refine` (escribe la variante elegida).
 - Multi-identidad: si mañana manejás una **identidad comercial/marca**, creá otro workspace
-  (mismo engine) — uno por identidad.
+  (mismo engine) — uno por identidad, mismo naming: `profile-data-<identidad>`
+  (p.ej. `profile-data-topia`).
 
 ## Enlaces
 
