@@ -1,6 +1,8 @@
 # identity.yaml — datos canónicos (independientes de idioma = ancla GEO)
 # EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tus datos.
 # Contrato: schema/profile.schema.json (profile-as-code). URLs viven SOLO acá.
+# v1.3 (engine issue #53): links son http(s) ONLY — sin mailto:/javascript: (la SSOT
+#   valida el scheme en el borde). El email de contacto vive en cada plataforma, no acá.
 
 name: Alex Rivera
 location: Cuenca, Ecuador
@@ -48,6 +50,3 @@ links:
   - platform: scholar
     label: Google Scholar
     url: https://scholar.google.com/citations?user=XXXXXXXX
-  - platform: email
-    label: Email
-    url: mailto:alex@example.com

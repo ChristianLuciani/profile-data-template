@@ -2,13 +2,19 @@
 # EJEMPLO: persona ficticia (Alex Rivera).
 # Contrato v1: array de { title, venue, year, doi (^10\.\d{4,9}/…), orcidId (NNNN-NNNN-NNNN-NNNX) }.
 
-  - title: "Sovereign AI tutoring in low-connectivity classrooms"
+  - id: pub-example-tutoring
+    origin: template
+    title: "Sovereign AI tutoring in low-connectivity classrooms"
     venue: "Journal of Educational AI"
     year: 2025
     doi: "10.0000/example.2025.001"
-  - title: "Computational methods for dense plasmas"
+  - id: pub-example-plasmas
+    origin: template
+    title: "Computational methods for dense plasmas"
     venue: "Physical Review C (ficticio)"
     year: 2022
     doi: "10.0000/example.2022.042"
 
 # v1.1 proposal: authors [{ name }] — no forma parte del contrato v1.
+# v1.3 (D18, SPEC §19 del engine): filas de ejemplo con `id` (ledger `<block>:<id>`) y
+#   `origin: template` — absent = user-authored.

@@ -3,8 +3,12 @@
 # Contrato v1: array de { name, status (active|maintained|archived|experimental|planning),
 #   description (langMap), links (array de URLs), keywords[], evidence[] }.
 # evidence: { claim (langMap), source (URL), verified (YYYY-MM-DD) } — claims resolubles.
+# v1.3 (D18, SPEC §19 del engine): filas de ejemplo con `id` (ledger `<block>:<id>`) y
+#   `origin: template` — absent = user-authored.
 
-  - name: "socratic-tutor"
+  - id: proj-example-socratic-tutor
+    origin: template
+    name: "socratic-tutor"
     status: active
     description:
       en: "36 Socratic virtual tutors for the national curriculum, field-tested in the Amazon (Aug 2024)."
@@ -18,7 +22,9 @@
           es: "Prueba de campo, región amazónica, ago 2024"
         source: https://example.com/field-report
         verified: "2024-08-31"
-  - name: "local-rag"
+  - id: proj-example-local-rag
+    origin: template
+    name: "local-rag"
     status: active
     description:
       en: "RAG toolkit that runs entirely on consumer hardware."

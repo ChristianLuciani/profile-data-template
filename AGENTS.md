@@ -23,7 +23,7 @@ accurate, and the user's responsibility.
 | `content/bios.yaml` · `headlines.yaml` · `positioning.yaml` | Per-platform texts, variant-based |
 | `content/skills.yaml` · `keywords.yaml` | Skills + SEO-ish keywords |
 | `profiles/` | Rendered per-platform outputs (README, LinkedIn…) |
-| `.pacrc` | Engine CLI config (`pac`): lang, variants, diff tag |
+| `.pascorc` | Engine CLI config (`pasco`): lang, variants, diff tag |
 | `CHECKLIST.md` | Post-deploy verification per platform |
 
 ## Rules for agents

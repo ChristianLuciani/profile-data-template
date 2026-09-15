@@ -11,7 +11,17 @@ Formato por entrada:
 
 ---
 
-## 2026-09-07 — README: workspace per-user = `profile-data-<username>` + bootstrap gh
+## 2026-09-15 — D18 adoption: origin stamps + ids + ledger stub (issue #7)
+- Qué cambió: filas de ejemplo de `experience/projects/publications` llevan `id` estable
+  (`exp-example-*`, `proj-example-*`, `pub-example-*` — trackables por `pasco status`) y
+  `origin: template` (procedencia D18 §19.2 — absent = user-authored). Stub vacío
+  `content/deployments.yaml` (ledger por entrada — solo `pasco` escribe). README: paso de
+  confirmación `pasco status --mark <ledgerKey> <surface>` en el flujo de deploy + comando
+  del CLI corregido `pac` → `pasco` (drift de naming: el bin real es `pasco`).
+  CHECKLIST.md: nota de transición a vista AUTO-GENERADA (`--write-checklist` sobrescribe).
+- Re-pegar en: — (no aplica; scaffold del template)
+- Verificado: `pasco validate` exit 0 (schema v1.3) · `pasco status` — 6 unidades
+  tracked `[template]`, 0 untracked, 0 stale · yaml parse OK · links OK
 - Qué cambió: guía de arranque alineada a la terminología canónica del engine (SPEC
   §9.1, per-user naming): el workspace se llama `profile-data-<username>` (owner en el
   nombre, prefijo de familia gana). Camino recomendado CLI-first: `gh repo create
