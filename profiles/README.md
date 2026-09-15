@@ -1,6 +1,6 @@
 # profiles/ — salidas generadas por el engine
 
-Esta carpeta contiene los **artefactos de deploy** renderizados por `pac build`:
+Esta carpeta contiene los **artefactos de deploy** renderizados por `pasco build`:
 
 ```
 profiles/
@@ -12,6 +12,6 @@ profiles/
 └── substack.md
 ```
 
-- **No edites a mano** estos archivos: `pac build` los regenera desde `content/`.
+- **No edites a mano** estos archivos: `pasco build` los regenera desde `content/`.
 - Se **commitean** porque son el rastro de qué está publicado y en qué versión.
 - La variante elegida en `pac refine` se guarda en `active` (content) y queda como la vigente.

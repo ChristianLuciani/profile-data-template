@@ -2,10 +2,15 @@
 # EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tus datos.
 # Contrato: schema/profile.schema.json (profile-as-code). URLs viven SOLO acá.
 # v1.3 (engine issue #53): links son http(s) ONLY — sin mailto:/javascript: (la SSOT
-#   valida el scheme en el borde). El email de contacto vive en cada plataforma, no acá.
+#   valida el scheme en el borde). El email de contacto es un HECHO del identity
+#   (v1.5, issue #71): vive en `email:` abajo — nunca como fila mailto: en links[].
 
 name: Alex Rivera
 location: Cuenca, Ecuador
+
+# v1.5 (issue #71): los renderers lo emiten como href mailto: (solo output) y como
+# propiedad schema.org `email` en el JSON-LD; `sameAs` queda solo con URLs de página.
+email: alex@example.com
 
 # photo: https://example.com/you.jpg   # contrato v1: URL (format uri). Path local pendiente de decisión (v1.1).
 

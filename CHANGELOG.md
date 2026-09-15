@@ -1,15 +1,16 @@
-# CHANGELOG — cada cambio: fecha + qué plataformas re-pegar
-
-Formato por entrada:
-
-```
-## AAAA-MM-DD — resumen del cambio
-- Qué cambió: (hecho/texto/plataforma)
-- Re-pegar en: linkedin, upwork (manual) · github-readme (git/API)
-- Verificado: [ ] (marcar en CHECKLIST.md al terminar)
-```
-
----
+## 2026-09-15 — migración identity.email (v1.5/#71) + rename .pascorc (#38)
+- Qué cambió:
+  - **Email como hecho (v1.5, issue #71, engine PR #72):** el ejemplo Alex Rivera
+    lleva `email: alex@example.com` al nivel raíz de `identity` — la fila
+    `platform: email` con `mailto:` se elimina de `links[]` (el boundary de schemes
+    `^https?://` de PR #64 la rechaza: todo workspace clonado fallaba
+    `pasco validate` día uno).
+  - **Rename `.pacrc` → `.pascorc`** (issue #38: bin `pac` → `pasco`) — el CLI
+    vigente rechaza el `.pacrc` legacy; el scaffold lo renueva.
+  - README + `profiles/README.md`: comandos `pac` → `pasco`.
+- Re-pegar en: — (scaffold; los usuarios re-clonan o aplican el mismo cambio en
+  su workspace: fila email de links[] → `email:` raíz).
+- Verificado: `pasco validate` (engine PR #72) schema OK · drift 0 · YAML CI OK.
 
 ## 2026-09-15 — D18 adoption: origin stamps + ids + ledger stub (issue #7)
 - Qué cambió: filas de ejemplo de `experience/projects/publications` llevan `id` estable
@@ -22,6 +23,8 @@ Formato por entrada:
 - Re-pegar en: — (no aplica; scaffold del template)
 - Verificado: `pasco validate` exit 0 (schema v1.3) · `pasco status` — 6 unidades
   tracked `[template]`, 0 untracked, 0 stale · yaml parse OK · links OK
+
+## 2026-09-07 — README: workspace per-user = `profile-data-<username>` + bootstrap gh
 - Qué cambió: guía de arranque alineada a la terminología canónica del engine (SPEC
   §9.1, per-user naming): el workspace se llama `profile-data-<username>` (owner en el
   nombre, prefijo de familia gana). Camino recomendado CLI-first: `gh repo create
