@@ -53,33 +53,45 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
 5. Construí y validá:
 
    ```bash
-   pac validate          # schema (fail) + drift/geo (warn) — D12
-   pac build             # base texts deterministas por plataforma (sin arg = todas)
-   pac diff              # cambios desde el último release (→ CHANGELOG)
-   pac refine linkedin   # variantes IA (stub en M1, M3/M4) — agente propone, vos elegís
-   pac check             # checks declarativos (stub en M1, M4)
+   pasco validate         # schema (fail) + drift/geo (warn) — D12
+   pasco build            # base texts deterministas por plataforma (sin arg = todas)
+   pasco diff             # cambios desde el último release (→ CHANGELOG)
+   pasco refine linkedin  # variantes IA (stub en M1, M3/M4) — agente propone, vos elegís
+   pasco check            # checks declarativos (stub en M1, M4)
+   pasco status           # estado por entrada — origen · superficies · in-sync/stale/never (D18)
+   pasco status --write-checklist   # regenera CHECKLIST.md desde el ledger (AUTO-GENERATED)
    ```
 
 6. **Deploy:** pegá lo generado en cada plataforma (ver `CHECKLIST.md`) o dejá que git/API
-   actualice GitHub README y web. Marcá cada plataforma en `CHECKLIST.md` cuando la verifiques.
+   actualice GitHub README y web. Confirmá cada pega con el ledger (D18):
+
+   ```bash
+   pasco status --mark experience:exp-example-labs linkedin
+   # registra deployedAt + contentHash en content/deployments.yaml — solo `pasco` lo escribe
+   ```
+
+   El ledger responde por cada pieza: ¿mía o del template? (`origin`), ¿publicada dónde?,
+   ¿en-sync o stale? — y `pasco status --write-checklist` regenera `CHECKLIST.md`
+   (vista AUTO-GENERADA: no la edites a mano después de eso).
 7. **Versioná:** cada cambio entra con `CHANGELOG.md` actualizado → sabés qué re-pegar y dónde.
 
 ## Estructura
 
 ```
 profile-data-<username>/
-├── content/             # ← TU información (YAML)
+├── content/             # ← TU información (YAML · deployments.yaml = ledger D18)
 ├── profiles/            # outputs generados (se commitean: son los artefactos de deploy)
 ├── CHANGELOG.md         # cada cambio: fecha + qué plataformas re-pegar
 ├── CHECKLIST.md         # verificación por plataforma post-pega
-└── .pacrc               # configuración del CLI (workspace path, defaults)
+└── .pascorc             # configuración del CLI (workspace path, defaults)
 ```
 
 ## Reglas
 
 - Los datos de ejemplo en `content/` son una **persona ficticia** (Alex Rivera) — documentan el schema.
-- `profiles/` se regenera con `pac build`; no lo edites a mano (se pisa).
-- El engine es de solo lectura sobre este repo, salvo `pac refine` (escribe la variante elegida).
+- `profiles/` se regenera con `pasco build`; no lo edites a mano (se pisa).
+- El engine es de solo lectura sobre este repo, salvo `pasco refine` (variante elegida) y
+  `pasco status --mark` (ledger de deploy) — ambas escriben solo en `content/` (D14).
 - Multi-identidad: si mañana manejás una **identidad comercial/marca**, creá otro workspace
   (mismo engine) — uno por identidad, mismo naming: `profile-data-<identidad>`
   (p.ej. `profile-data-topia`).

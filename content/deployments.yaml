@@ -1,0 +1,11 @@
+# deployments.yaml — per-entry deploy ledger (D18, SPEC §19 of the engine).
+#
+# ONLY `pasco` writes this file (same write rule as `refine --choose`, D14):
+#   pasco status --mark <ledgerKey> <surface>   # confirm a manual paste —
+#     records deployedAt + the current contentHash for that (unit, surface).
+#
+# An empty ledger = nothing deployed, nothing stale (fresh-workspace guarantee).
+#
+# Report: `pasco status` · checklist as a generated view: `pasco status --write-checklist`.
+#
+# Do not edit by hand — `pasco` validates, dedupes and hashes it.

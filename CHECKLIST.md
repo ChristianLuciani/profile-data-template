@@ -1,5 +1,12 @@
 # CHECKLIST — verificación por plataforma post-deploy
 
+> **Estado de este archivo (D18, SPEC §19 del engine):** el estado por entrada de deploy
+> vive en `content/deployments.yaml` — reportalo con `pasco status`. Cuando confirmes pegás
+> con `pasco status --mark <ledgerKey> <surface>`, este archivo pasa a ser la vista
+> AUTO-GENERADA del ledger: `pasco status --write-checklist` lo **sobrescribe** desde el
+> ledger — desde ese punto, no lo edites a mano. Hasta entonces: las listas de abajo son
+> tu verificación manual post-pega.
+
 Después de pegar/actualizar una plataforma, verificá y marcá. La consistencia factual
 entre redes ES tu citabilidad (GEO): si un LLM cruza dos perfiles y encuentra
 contradicciones, te descarta.

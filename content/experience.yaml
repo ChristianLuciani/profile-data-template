@@ -3,15 +3,22 @@
 # Contrato v1: array de { role, org, start (YYYY-MM-DD), end (YYYY-MM-DD | present),
 #   highlights (langMap: {lang: string}) }. start <= end lo verifica core.driftCheck.
 # v1.1 proposal: highlights como lista por idioma ({lang: string[]}) — ver PR del engine.
+# v1.3 (D18, SPEC §19 del engine): cada fila de ejemplo lleva `id` (dirección del ledger
+#   `<block>:<id>` — sin id, `pasco status` la lista como untracked) y `origin: template`
+#   (procedencia — las filas que VOS escribís no llevan el flag: absent = user).
 
-- role: "Senior AI Engineer"
+- id: exp-example-labs
+  origin: template
+  role: "Senior AI Engineer"
   org: "Example Labs"
   start: "2023-02-01"
   end: "present"
   highlights:
     en: "Led design of a local-first LLM tutoring platform field-tested in the Amazon (Aug 2024). Reduced inference cost 70% by routing to small local models."
     es: "Lideré el diseño de una plataforma de tutoría LLM local-first probada en la Amazonía (ago 2024). Reduje 70% el costo de inferencia enrutando a modelos locales pequeños."
-- role: "Research Physicist"
+- id: exp-example-university
+  origin: template
+  role: "Research Physicist"
   org: "National University"
   start: "2018-09-01"
   end: "2022-12-01"
