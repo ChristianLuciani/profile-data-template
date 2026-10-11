@@ -1,0 +1,53 @@
+# build — generated views (R2 on-ramp, profile-as-code#122). The user NEVER installs
+# the engine: `pasco` runs from npm at this template's declared pin
+# (`@profile-as-code/cli@0.2.0`) and commits `profiles/` — on THIS repo the bot never
+# pushes to `main` (rule 6). Keep prose commented: a bare `**bold**:` is a YAML alias.
+name: build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/**"
+      - ".pascorc"
+      - ".github/workflows/build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: pasco build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install the pinned engine from npm
+        run: npm i -g @profile-as-code/cli@0.2.0
+      - name: Validate the workspace
+        run: pasco validate
+      - name: Build generated views
+        run: pasco build
+      - name: Sync profiles/ (user workspaces only)
+        run: |
+          set -euo pipefail
+          git add profiles/
+          if git diff --cached --quiet; then
+            echo "profiles/ already in sync — nothing to commit"
+            exit 0
+          fi
+          if [ "$GITHUB_REPOSITORY" = "ChristianLuciani/profile-data-template" ]; then
+            echo "template repo — generated views are not committed by the bot (rule 6)"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(profiles): generated views via pasco"
+          git push

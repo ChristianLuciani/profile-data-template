@@ -39,8 +39,17 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
    cd profile-data-<username>
    ```
 
-3. Instalá el CLI del engine (M1): `pnpm --filter @profile-as-code/cli build` en el monorepo
-   `profile-as-code` (o `npm i -g profile-as-code` cuando se publique).
+3. **No hace falta instalar el engine.** `.github/workflows/build.yml` corre `pasco`
+   desde npm y commitea `profiles/` por vos: editá `content/` en el editor web de
+   GitHub y las vistas generadas aparecen solas. El template fija la versión que
+   espera — **`@profile-as-code/cli@0.2.0`**, donde `pasco` es el bin que instala
+   ese paquete ([OFICIAL] [WEB: registry.npmjs.org, verificado 2026-10-09]).
+
+   Solo para correrlo local: `npm i -g @profile-as-code/cli@0.2.0`.
+
+   > En un fork, habilitá Actions (vienen deshabilitadas) y en *Settings → Actions →
+   > General → Workflow permissions* elegí **Read and write** — el workflow
+   > commitea `profiles/`.
 
 4. Editá `content/` — reemplazá el ejemplo ficticio con tus datos (contrato:
    `schema/profile.schema.json`; cada archivo ES una root property — `bios.yaml` es el
@@ -50,7 +59,7 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
    - `bios.yaml`, `headlines.yaml` — por plataforma/idioma/longitud
    - `skills.yaml`, `experience.yaml`, `projects.yaml`, `publications.yaml`, `keywords.yaml`
 
-5. Construí y validá:
+5. Construí y validá (local — el workflow ya corre `validate` + `build` en cada push):
 
    ```bash
    pasco validate         # schema (fail) + drift/geo (warn) — D12
@@ -81,6 +90,7 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
 profile-data-<username>/
 ├── content/             # ← TU información (YAML · deployments.yaml = ledger D18)
 ├── profiles/            # outputs generados (se commitean: son los artefactos de deploy)
+├── .github/workflows/   # build.yml = `pasco` desde npm → commitea profiles/ (R2)
 ├── CHANGELOG.md         # cada cambio: fecha + qué plataformas re-pegar
 ├── CHECKLIST.md         # verificación por plataforma post-pega
 └── .pascorc             # configuración del CLI (workspace path, defaults)
