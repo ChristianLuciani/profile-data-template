@@ -1,16 +1,17 @@
-## 2026-10-10 — engine 0.2.0 published: pin + R2 build workflow (issue #11)
-- Qué cambió: el README deja de mandar a compilar el engine desde el monorepo
-  ("`npm i -g profile-as-code` cuando se publique") — el paquete real es
-  **`@profile-as-code/cli@0.2.0`** (`pasco` es el bin) y el template lo fija;
-  arranque sin terminal (editás `content/` en el browser). Nuevo
-  `.github/workflows/build.yml` (R2 de `profile-as-code#122`): `pasco validate`
-  + `build` desde npm commitea `profiles/`; en el template el bot no pushea a
-  `main` (regla 6) — fuera de sync, el job falla. AGENTS.md: mapa + pin.
+## 2026-10-10 — pin del engine (publicado el 2026-10-09) + workflow build R2 (issue #11)
+- Qué cambió: el README deja de mandar a compilar el engine desde el monorepo —
+  el paquete real es **`@profile-as-code/cli@0.2.0`** (`pasco` es el bin) y el
+  template lo fija; arranque sin terminal (editás `content/` en el browser).
+  Nuevo `.github/workflows/build.yml` (R2 de `profile-as-code#122`): `validate` +
+  `build` desde npm commitea `profiles/` en tu workspace; en un repo `is_template`
+  el bot no pushea a `main` y deja un `::warning::` de drift. AGENTS.md: mapa +
+  pin + la excepción del bot declarada en la regla 6. Drift corregido en el
+  mismo paso: `profiles/github-profile/` → **`profiles/github-readme/`**
+  (`CHECKLIST.md`, `profiles/README.md`) y `pac refine` → `pasco refine`.
 - Re-pegar en: — (scaffold).
-- Verificado 2026-10-10: `@profile-as-code/cli@0.2.0 validate` exit 0 (schema
-  valid · drift 0 · geo 81/100) · `build` determinista · yaml + links OK.
-- **Fuera de este PR** (hard stop D5): CONTRIBUTING completo + release del
-  template (ROADMAP item 7 del hub) → issue nuevo.
+- Verificado 2026-10-10 con `@profile-as-code/cli@0.2.0`: `validate` exit 0
+  (schema valid · drift 0 · geo 81/100) · `build` determinista · yaml + links OK.
+- **Fuera de este PR** (hard stop D5): CONTRIBUTING + release del template → #12.
 
 ## 2026-09-15 — migración identity.email (v1.5/#71) + rename .pascorc (#38)
 - Qué cambió:

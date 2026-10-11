@@ -12,7 +12,7 @@ entre redes ES tu citabilidad (GEO): si un LLM cruza dos perfiles y encuentra
 contradicciones, te descarta.
 
 ## GitHub (profile README)
-- [ ] README actualizado vía git/API (commit en profiles/github-profile)
+- [ ] README actualizado vía git/API (commit en profiles/github-readme)
 - [ ] Hechos (rol, fechas, papers) idénticos al resto de las redes
 - [ ] Proyectos pinned = los 3-6 que querés mostrar
 - [ ] Links a todos los perfiles (sameAs)

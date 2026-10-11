@@ -22,9 +22,9 @@ accurate, and the user's responsibility.
 | `content/experience.yaml` · `projects.yaml` · `publications.yaml` | History, evidence-backed |
 | `content/bios.yaml` · `headlines.yaml` · `positioning.yaml` | Per-platform texts, variant-based |
 | `content/skills.yaml` · `keywords.yaml` | Skills + SEO-ish keywords |
-| `profiles/` | Generated per-platform outputs — never hand-edited |
+| `profiles/` | Rendered per-platform outputs (README, LinkedIn…) |
 | `.github/workflows/` | `checks.yml` (offline) · `build.yml` (`pasco` from npm) |
-| `.pascorc` | Engine CLI config (`pasco`): `workspace`, `defaults`, `diff` |
+| `.pascorc` | Engine CLI config (`pasco`): lang, variants, diff tag |
 | `CHECKLIST.md` | Post-deploy verification per platform |
 
 ## Rules for agents
@@ -40,8 +40,9 @@ accurate, and the user's responsibility.
 4. **i18n.** `en` essential, `es` native. Keep both in sync when editing texts.
 5. **Privacy.** This is personal data — private repo, no screenshots/URLs in
    public artifacts, no real data in the template itself.
-6. **Never push to `main`.** Branch + PR; the human merges. If it's a fork,
-   keep it in sync with upstream `profile-data-template`.
+6. **Never push to `main`.** Branch + PR; the human merges. If it's a fork, keep it
+   in sync with upstream. **In your own workspace** the `build.yml` bot is the
+   declared exception: committing `profiles/` to `main` is its job (R2 on-ramp).
 7. **Evidence rule.** Quantitative claims (limits, dates) carry source + date
    (`[OFICIAL]`/`[EXPERTO]`/`[BENCHMARK]`/`[?]`); epistemic notation
    `[MI]`/`[WEB]`/`[INF]`/`[?]` for inference vs. source.
