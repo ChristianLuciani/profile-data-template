@@ -58,7 +58,7 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
    - `bios.yaml`, `headlines.yaml` — por plataforma/idioma/longitud
    - `skills.yaml`, `experience.yaml`, `projects.yaml`, `publications.yaml`, `keywords.yaml`
 
-5. Construí y validá (local — el workflow ya corre `validate` + `build` al cambiar `content/`):
+5. Construí y validá:
 
    ```bash
    pasco validate         # schema (fail) + drift/geo (warn) — D12

@@ -1,6 +1,5 @@
-# build — generated views (R2, profile-as-code#122): `pasco` from npm at this pin, commits
-# `profiles/`. Deliberate exception to rule 6 — in the USER's workspace the bot pushes to
-# `main`; in an `is_template` repo it never commits (warns). Keep prose commented (YAML `*`).
+# build — generated views (R2, profile-as-code#122): `pasco` from npm at this pin, then
+# commits `profiles/` — except in an `is_template` repo (rule-6 exception, see AGENTS.md).
 name: build
 
 on:
@@ -15,6 +14,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     name: pasco build
@@ -23,7 +26,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install the pinned engine from npm
         run: npm i -g --ignore-scripts @profile-as-code/cli@0.2.0
       - name: Validate the workspace
@@ -39,7 +42,7 @@ jobs:
             exit 0
           fi
           if [ "${{ github.event.repository.is_template }}" = "true" ]; then
-            echo "::warning::profiles/ is out of sync — run 'pasco build' and commit it (the bot does not push to main here)"
+            echo "template repo — the bot never commits here (by design: this repo ships no generated profile)"
             exit 0
           fi
           git config user.name "github-actions[bot]"
