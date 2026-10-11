@@ -41,14 +41,14 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
 
 3. **No hace falta instalar el engine.** `.github/workflows/build.yml` corre `pasco`
    desde npm y commitea `profiles/` por vos: editá `content/` en el editor web de
-   GitHub y, al commitear, las vistas generadas aparecen solas. El template fija la
-   versión que espera — **`@profile-as-code/cli@0.2.0`** (`pasco` es el bin) —
+   GitHub y, al pushear a `main`, las vistas generadas se commitean solas. El template
+   fija la versión que espera — **`@profile-as-code/cli@0.2.0`** (`pasco` es el bin) —
    ([OFICIAL] [WEB: registry.npmjs.org, verificado 2026-10-09]). Para correrlo local:
    `npm i -g @profile-as-code/cli@0.2.0`.
 
-   > En **tu copia** (fork o *Use this template*): Actions habilitado y en
-   > *Settings → Actions → General → Workflow permissions* **Read and write** —
-   > el workflow commitea `profiles/`.
+   > En **tu copia** verificá que Actions esté habilitado. *No* hace falta tocar
+   > *Settings → Workflow permissions*: el workflow declara su `contents: write`.
+   > La primera vez, confirmá en la pestaña **Actions** que corrió.
 
 4. Editá `content/` — reemplazá el ejemplo ficticio con tus datos (contrato:
    `schema/profile.schema.json`; cada archivo ES una root property — `bios.yaml` es el
