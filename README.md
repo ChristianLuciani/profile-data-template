@@ -43,7 +43,7 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
    desde npm y commitea `profiles/` por vos: editá `content/` en el editor web de
    GitHub y, al pushear a `main`, las vistas generadas se commitean solas. El template
    fija la versión que espera — **`@profile-as-code/cli@0.3.0`** (`pasco` es el bin) —
-   ([OFICIAL] [WEB: registry.npmjs.org, verificado 2026-10-09]). Para correrlo local:
+   ([OFICIAL] [WEB: registry.npmjs.org, verificado 2026-10-12]). Para correrlo local:
    `npm i -g @profile-as-code/cli@0.3.0`.
 
    > En **tu copia** verificá que Actions esté habilitado. *No* hace falta tocar
