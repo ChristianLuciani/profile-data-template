@@ -41,7 +41,11 @@ jobs:
         run: pasco check
       - name: Build generated views
         run: pasco build
-      - name: Sync profiles/ (user workspaces only)
+      # One step, not three: the stages (stage → nothing-to-commit → guard →
+      # link-check → commit) must run in order with early exits, and a step
+      # cannot abort the job. Splitting them would need outputs + `if:` on every
+      # later step — more moving pieces for the same result.
+      - name: Gate and commit profiles/ (user workspaces only)
         env:
           # Hoisted out of the `run:` body on purpose: `${{ }}` interpolates before
           # the shell ever sees the script, so it must never be spliced inline.

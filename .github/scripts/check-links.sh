@@ -14,7 +14,14 @@ set -uo pipefail
 if [ "$#" -gt 0 ]; then
   candidates="$(printf '%s\n' "$@")"
 else
-  candidates="$(git ls-files '*.md')"
+  # A failed enumeration must NOT read as "no broken links": reporting success
+  # after checking zero files is the "gate that never fires" failure this repo
+  # has already paid for twice (see the NOTE in checks.yml). Zero *files* is a
+  # legitimate result; a broken `git ls-files` is not.
+  if ! candidates="$(git ls-files '*.md')"; then
+    echo "::error::git ls-files failed — cannot enumerate markdown files; refusing to report success"
+    exit 1
+  fi
 fi
 
 broken_marker="$(mktemp)"

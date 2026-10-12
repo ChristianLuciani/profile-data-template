@@ -36,9 +36,10 @@ one person's data.
 ## Local setup
 
 This is a data workspace, not an app — it has no build of its own. The engine is
-pinned: **`@profile-as-code/cli@0.3.0`** (`pasco` is the bin). The same pin
-lives in `README.md`, `AGENTS.md` and `.github/workflows/{checks,build}.yml` —
-if you bump it, bump all of them in one go.
+pinned: **`@profile-as-code/cli@0.3.0`** (`pasco` is the bin). The pin is mirrored
+in the files that must be bumped together — `README.md`, `AGENTS.md`, this one,
+and both workflows. (A `CHANGELOG.md` entry names the pin as *history*, not as a
+surface to edit.) The *Releases* section below carries the authoritative list.
 Source: `registry.npmjs.org` `@profile-as-code/cli` dist-tag `latest`
 ([OFICIAL] [WEB: registry.npmjs.org, verified 2026-10-12]).
 
@@ -122,8 +123,9 @@ instead (verified against engine 0.3.0).
 Cutting a release:
 
 1. Bump the pin in all of its surfaces (`README.md`, `AGENTS.md`,
-   `.github/workflows/checks.yml`, `.github/workflows/build.yml`) if the engine
-   version changed, and bump `.pascorc` only if the tag convention changed.
+   **this file**, `.github/workflows/checks.yml`, `.github/workflows/build.yml`)
+   if the engine version changed, and bump `.pascorc` only if the tag convention
+   changed.
 2. Add the entry at the top of `CHANGELOG.md`, headed
    `## vX.Y.Z — YYYY-MM-DD — <title>` (older entries predate the first tag and
    keep their dated headings).
@@ -136,14 +138,18 @@ Cutting a release:
    ```
 
 **Re-syncing a fork.** A fork or a "Use this template" copy does **not** follow
-upstream on its own. Compare tags, then take only the scaffold:
+upstream on its own. A git fork inherits the tags; a `--template` copy (the
+bootstrap the README recommends) starts as a single fresh commit with no tags
+and no upstream remote, so for it the anchor is the top entry of `CHANGELOG.md`
+and it must add the remote before it can compare anything:
 
 ```bash
 git remote add upstream https://github.com/ChristianLuciani/profile-data-template
 git fetch upstream --tags
-git tag -l                              # where you are
-git ls-remote --tags upstream           # where upstream is
-git diff vX.Y.Z upstream/vX.Y.Z -- README.md CONTRIBUTING.md docs/ .github/
+git ls-remote --tags upstream           # where upstream is, and which tags exist
+# diff your current state against an upstream release, scaffold paths only —
+# correct whether or not you have the tag locally:
+git diff HEAD upstream/vX.Y.Z -- README.md CONTRIBUTING.md docs/ .github/
 ```
 
 Never merge an upstream release over `content/` — that directory is *your* data.
