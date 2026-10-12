@@ -31,7 +31,16 @@ extends to example `content/` values that cite platform constraints.
 
 ## Repository hygiene
 
-- Never push to `main`; branch + PR; the maintainer merges.
+- Never push to `main`; branch + PR; the maintainer merges. **Declared
+  exception:** in a workspace created from this template, `build.yml` commits
+  generated `profiles/` to `main` as `github-actions[bot]` — that is its job
+  (R2 on-ramp). It never does so in this template repo itself: the `is_template`
+  guard is fail-closed, so a missing flag refuses to commit rather than pushing
+  blind (`CONTRIBUTING.md` § CI).
 - Docs in English; comments when present.
-- CI (`.github/workflows/checks.yml`): YAML parse + markdown links.
+- CI: `checks.yml` (content YAML parse · relative markdown links, plus a
+  self-test of that gate · `pasco validate` + `check`) · `workflow-lint.yml`
+  (the workflow files parse — kept as a separate workflow so it can cover
+  `checks.yml` itself) · `build.yml` (`pasco validate` + `check` + `build`, then
+  commits `profiles/`).
 - Claims change → update source + date, never silently.

@@ -1,3 +1,95 @@
+## v0.3.0 — 2026-10-12 — primer release del scaffold: CONTRIBUTING completo + release (issue #12, ROADMAP item 7)
+- Qué cambió:
+  - **Primer tag del scaffold: `v0.3.0`** — desde acá el template se versiona espejando
+    el pin del engine: `MAJOR.MINOR` = `@profile-as-code/cli`, `PATCH` = revisión propia
+    del scaffold. Corte del tag y re-sync de un fork: `CONTRIBUTING.md` § Releases. Las
+    entradas anteriores a esta no llevan tag (historia pre-release); el tag se crea
+    sobre `main` en el commit de merge.
+  - **`.pascorc` → `diff.tagPattern: "v*"`** — traía el default `release-*`, que no
+    matchea el tag del release. Reproducido contra el engine 0.3.0 en un repo de prueba
+    (tag `v0.3.0` a mitad de historia): con `v*` → `tag: v0.3.0`, base = commit del
+    release, 1 commit desde el tag; con `release-*` → `tag: null`, base = primer commit,
+    2 commits (el propio release incluido). El default habría hecho que `pasco diff`
+    nunca viera el release.
+  - **`CONTRIBUTING.md` completo** — setup local con el engine **pinneado**
+    (`npm i -g @profile-as-code/cli@0.3.0`, bin `pasco`), la regla "nunca editar
+    `profiles/` a mano" (`pasco build` + commit), sección **CI** (los dos workflows, la
+    excepción del bot y por qué su push no dispara `checks.yml`) y sección **Releases**
+    (esquema de versión + corte del tag + re-sync de un fork). Ya no manda a clonar el
+    engine ni a correr `scripts/schema-check/check.py`: esa no es la interfaz publicada.
+  - **`docs/STANDARDS.md`** — la regla "Never push to `main`" ahora declara la excepción
+    que `build.yml` ejecuta (el bot commitea `profiles/` en el workspace del usuario,
+    nunca en el template: guard fail-closed), y la línea de CI nombra los dos workflows
+    en vez de solo `checks.yml`.
+  - **Diferidos de los dos comentarios de review de #12 (los 8):**
+    - `content/bios.yaml` — `pac refine` → `pasco refine` (drift del rename #38).
+    - `AGENTS.md` — `.pascorc` nombra sus claves reales (`workspace`, `defaults`,
+      `diff`), fila de mapa para `.github/scripts/`, y `pasco check` en los comandos.
+    - **Gate que parsee los workflows** (job `yaml` de `checks.yml`): el propio
+      `checks.yml` documenta el `startup_failure` por un alias YAML incidental y
+      `build.yml` no tenía cobertura; ahora los dos se parsean en cada push/PR.
+    - **El commit generado pasa por un chequeo de links**: el push del bot usa
+      `GITHUB_TOKEN` y GitHub no dispara workflows por eventos propios ⇒ `checks.yml`
+      nunca veía `profiles/` generado. El link-check corre **dentro** de `build.yml`
+      antes del commit, con el script compartido `.github/scripts/check-links.sh` (una
+      copia, dos callers — antes la lógica vivía inline en `checks.yml`).
+    - **`build.yml`** — expresión hoisteada a `env:` (interpolaba antes de que el shell
+      viera el script); guard `is_template` **fail-closed** (campo ausente del payload
+      ⇒ error, no push a ciegas); acciones del job con `contents: write` **pinneadas por
+      SHA**, salidas de la API: `actions/checkout` `11d5960a…` (= `v4`, tip 2026-07-16)
+      y `actions/setup-node` `49933ea5…` (= `v4.4.0`).
+- **Rondas de review (misma rama):** cada corrección reproducida antes de corregir:
+  - **Claim falso "el engine es read-only salvo dos excepciones que escriben solo
+    en `content/`"** — son **cuatro** escritores y **dos quedan fuera** de
+    `content/`: `pasco build` → `profiles/`, `pasco status --write-checklist` →
+    `CHECKLIST.md` (verificado en el engine: `status.ts` escribe
+    `join(workspace, "CHECKLIST.md")`; `refine.ts` → `content/active.yaml`). La
+    misma frase falsa estaba en `README.md` → corregida en ambos.
+  - **El gate de workflows no podía cubrir `checks.yml`**: un error de YAML ahí es
+    un `startup_failure`, así que un job adentro nunca corre para reportarlo — la
+    clase de incidente que el propio archivo documenta. Movido a
+    **`.github/workflows/workflow-lint.yml`**, que no depende del archivo que
+    valida. Residual declarado: un error en el propio lint sigue siendo
+    `startup_failure` (nada se valida a sí mismo).
+  - **El gate de links podía pasar en silencio**: si `git ls-files` falla, la lista
+    vuelve vacía y reportaba éxito tras chequear 0 archivos → ahora exit 1
+    (pre-existente en la versión inline que este PR extrajo).
+  - **Falsos positivos del regex de links** (`[x](f.md "title")`, `[x](<a b.md>)`)
+    y el comentario del `|| true`, que afirmaba algo falso (un shell hijo no hereda
+    `-e`): regex endurecido y comentario reescrito.
+  - La lista de superficies del pin en § Releases omitía **este mismo archivo**, y
+    el snippet de re-sync no funcionaba para una copia `--template` (no tiene el
+    tag local) → ambos corregidos.
+  - Nuevo **self-test del gate de links** en `checks.yml` (fixture roto ⇒ exit 1,
+    en modo argumentos): ningún job ejercía su camino de falla, porque `build.yml`
+    no ejecuta esa rama en este repo (`is_template: true`).
+  - **Reconciliación del veredicto premerge publicado** (`PASS-CON-RIESGOS`,
+    corrido contra el head `27e4560`, dos commits atrás): sus dos MAJOR —F1 (gate
+    verde tras chequear 0 archivos) y F2 (la lista de superficies del pin)— ya
+    estaban corregidos en `d5a3d82`, y F3 en `bff8155`; F1 se reprodujo en el head
+    actual y da exit 1. Los dos NIT que seguían vivos se corrigen acá: la regla 3
+    de `AGENTS.md` no pedía `pasco check` (que este mismo PR promovió en Commands y
+    en CI) y `STANDARDS.md` describía `build.yml` solo con `build`.
+- Re-pegar en: — (scaffold).
+- **Premisas del issue corregidas (C2):**
+  - El issue pide pin `@profile-as-code/cli@0.2.0`; el repo **ya** pineaba `0.3.0` desde
+    el PR #14 (necesario para el schema M7). `CONTRIBUTING.md` documenta el pin real.
+  - El SHA que el comentario de review daba para `setup-node` (`11bd7190…`) es en
+    realidad un commit de `actions/checkout` (`v4.2.2`): pinear `setup-node` con ese
+    valor no resuelve la acción. Los de arriba salen de
+    `gh api repos/<owner>/<repo>/git/ref/tags/<ref>`.
+- Verificado 2026-10-12 (engine `@profile-as-code/cli@0.3.0` de npm): `validate` exit 0
+  (schema valid · drift 0 · geo 81/100) · `check` exit 0 (registry 0 findings · media 0
+  findings) · 12 `content/*.yaml` y **2 workflows** parsean · `.pascorc` JSON válido con
+  `tagPattern: "v*"` · probe de `diff` con los dos patrones (arriba) · gate de links: 11
+  `.md` tracked resuelven, y falla (exit 1) ante un fixture roto, en un lote mixto y
+  sobre el markdown generado estageado, mientras pasa en un archivo sin links y en uno
+  con solo externos/anclas · guard del bot: `false` procede, `true` saltea, ausente ⇒
+  exit 1 (fail-closed) · array vacío bajo `set -euo pipefail` no rompe el step ·
+  **3 workflows** parsean · el self-test del gate se ejecutó verbatim y se probó
+  contra un gate neutralizado (falla como debe) · el regex endurecido se probó en
+  los 4 casos nuevos (`"title"`, `<>`, `#frag`, nombre con espacios).
+
 ## 2026-10-12 — scaffold del registro de evidencia: media/ + packs + ejemplos (issue #8, D17/§18)
 - Qué cambió:
   - **`media/`** con `certificates/`, `photos/`, `press/` + `media/README.md`: qué

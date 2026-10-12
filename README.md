@@ -201,8 +201,9 @@ profile-data-<username>/
 
 - Los datos de ejemplo en `content/` son una **persona ficticia** (Alex Rivera) — documentan el schema.
 - `profiles/` se regenera con `pasco build`; no lo edites a mano (se pisa).
-- El engine es de solo lectura sobre este repo, salvo `pasco refine` (variante elegida) y
-  `pasco status --mark` (ledger de deploy) — ambas escriben solo en `content/` (D14).
+- El engine es de solo lectura sobre este repo salvo por sus 4 escritores: `pasco build`
+  (`profiles/`), `pasco refine` (`content/active.yaml`), `pasco status --mark`
+  (`content/deployments.yaml`, D14) y `pasco status --write-checklist` (`CHECKLIST.md`).
 - Multi-identidad: si mañana manejás una **identidad comercial/marca**, creá otro workspace
   (mismo engine) — uno por identidad, mismo naming: `profile-data-<identidad>`
   (p.ej. `profile-data-topia`).

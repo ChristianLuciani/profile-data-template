@@ -1,5 +1,5 @@
 {
   "workspace": ".",
   "defaults": { "lang": "en", "variants": 3 },
-  "diff": { "tagPattern": "release-*" }
+  "diff": { "tagPattern": "v*" }
 }

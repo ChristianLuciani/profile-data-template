@@ -1,0 +1,48 @@
+# workflow-lint — validate the workflow files themselves.
+#
+# Deliberately NOT a job inside checks.yml: a YAML error in checks.yml is a
+# `startup_failure` — the job never runs, so a gate living in that file can never
+# report the error. That is not hypothetical: checks.yml documents exactly that
+# failure (2026-08-12 onward, a bare `**bold**:` line parsed as a YAML alias
+# token; every run died in 0s and nobody noticed for weeks). Only a gate that
+# does not depend on the file it validates can cover checks.yml, and this is it.
+#
+# Coverage: every file in .github/workflows/ (checks.yml, build.yml, this one).
+# Residual, declared: an error in THIS file is still a startup_failure and is not
+# caught in-band — nothing can validate itself. Its only consequence is that this
+# lint does not run, so it is the one file whose breakage is not covered.
+#
+# It is a parse gate, not a full Actions linter (that would be actionlint, with
+# its schema + expression checks). It catches the class that actually bit: YAML
+# that does not parse.
+
+name: workflow-lint
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/**"
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+
+permissions:
+  contents: read
+
+jobs:
+  parse:
+    name: parse workflow yaml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse every workflow file
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import glob, yaml
+          files = sorted(glob.glob('.github/workflows/*.yml')) + sorted(glob.glob('.github/workflows/*.yaml'))
+          for f in files:
+              yaml.safe_load(open(f))
+          print(f"{len(files)} workflow file(s) parse OK")
+          PY
