@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# check-links.sh — fail if a relative markdown link does not resolve.
+#
+# One copy, two callers (a second copy would drift):
+#   - .github/workflows/checks.yml  job `links`  → every tracked `.md`
+#   - .github/workflows/build.yml   before the bot commits generated `profiles/`
+#     (that push carries GITHUB_TOKEN, which triggers no workflow, so
+#      checks.yml never sees the commit — see CONTRIBUTING.md § CI)
+#
+# Usage: check-links.sh [file ...]
+#        no arguments → every markdown file tracked by git
+set -uo pipefail
+
+if [ "$#" -gt 0 ]; then
+  candidates="$(printf '%s\n' "$@")"
+else
+  candidates="$(git ls-files '*.md')"
+fi
+
+broken_marker="$(mktemp)"
+trap 'rm -f "$broken_marker"' EXIT
+
+checked=0
+while IFS= read -r f; do
+  [ -n "$f" ] || continue
+  [ -e "$f" ] || continue
+  checked=$((checked + 1))
+  # NOTE: the trailing `|| true` is load-bearing. CI wraps steps in `bash -e`, so
+  # with pipefail a file with NO relative links makes the first grep exit 1 and
+  # silently aborts the step (lessons 19/34: a gate that fires wrongly is as bad
+  # as one that never fires). A link-less file is valid; a link to nowhere is not.
+  grep -oE '\]\([^)#][^)]*\)' "$f" 2>/dev/null \
+    | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' \
+    | grep -vE '^(https?:|mailto:)' \
+    | while IFS= read -r link; do
+        [ -z "$link" ] && continue
+        target="$(dirname "$f")/$link"
+        if [ ! -e "$target" ]; then
+          echo "BROKEN  $f  ->  $link"
+          echo broken >> "$broken_marker"
+        fi
+      done \
+    || true
+done <<< "$candidates"
+
+if [ -s "$broken_marker" ]; then
+  echo "::error::broken relative links found"
+  exit 1
+fi
+echo "relative markdown links resolve (${checked} file(s) checked)"

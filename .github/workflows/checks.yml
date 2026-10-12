@@ -2,19 +2,27 @@
 #
 # Three jobs on every push/PR:
 #
-# - yaml (offline, ~seconds): `content/*.yaml` parses.
+# - yaml (offline, ~seconds): `content/*.yaml` parses — and so do the workflow
+#   files themselves. That second half exists because this file's own history is
+#   the counter-example: it was a startup_failure for weeks (see NOTE below) and
+#   `build.yml` had no coverage at all.
 # - links (offline, ~seconds): relative markdown links in tracked `.md` files resolve.
 # - evidence (needs the engine, ~30s): `pasco validate` + `pasco check` — the
 #   §18.8 evidence/media gate CHECKLIST.md tells you to run before deploying.
 #   This is the ONLY place that gate runs automatically; build.yml has no
 #   `pull_request` trigger, so a check placed there could never gate a PR.
 #
-# The first two stay dependency-free by design. The third installs the pinned
-# engine from npm (same pin as build.yml — keep them in sync).
+# The first two stay offline by design. The third installs the pinned engine from
+# npm (same pin as build.yml — keep them in sync).
+#
+# The link check lives in `.github/scripts/check-links.sh`, not inline, because
+# build.yml needs the identical logic for the commit it makes with GITHUB_TOKEN —
+# such a push triggers no workflow, so this job would never see that commit.
 #
 # NOTE: the prose above MUST stay commented — bare `**bold**:` lines are parsed
 # by YAML as alias tokens (`*`) and make the whole workflow a startup_failure
-# (every run failed in 0s from 2026-08-12 until this fix).
+# (every run failed in 0s from 2026-08-12 until this fix). The `yaml` job below
+# now parses this very file, so that class of mistake fails loudly instead.
 
 name: checks
 
@@ -36,6 +44,16 @@ jobs:
         run: |
           set -euo pipefail
           python3 -c "import yaml,glob; fs=glob.glob('content/*.yaml'); [yaml.safe_load(open(f)) for f in fs]; print(f'{len(fs)} yaml file(s) OK')"
+      - name: Parse workflow YAML
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import glob, yaml
+          files = sorted(glob.glob('.github/workflows/*.yml')) + sorted(glob.glob('.github/workflows/*.yaml'))
+          for f in files:
+              yaml.safe_load(open(f))
+          print(f"{len(files)} workflow file(s) parse OK")
+          PY
 
   links:
     name: internal doc links
@@ -43,32 +61,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check relative markdown links resolve
-        run: |
-          set -uo pipefail
-          while IFS= read -r f; do
-            # NOTE: trailing `|| true` is load-bearing. The runner wraps the
-            # step in `bash -e`, so with pipefail a file with NO relative links
-            # makes the first grep exit 1 and silently aborts the step
-            # (lessons 19/34: a gate that fires wrongly is as bad as one that
-            # never fires). A link-less file is valid; a link to nowhere is not.
-            grep -oE '\]\([^)#][^)]*\)' "$f" 2>/dev/null \
-              | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' \
-              | grep -vE '^(https?:|mailto:)' \
-              | while IFS= read -r link; do
-                  [ -z "$link" ] && continue
-                  target="$(dirname "$f")/$link"
-                  if [ ! -e "$target" ]; then
-                    echo "BROKEN  $f  ->  $link"
-                    echo broken >> /tmp/broken
-                  fi
-                done \
-              || true
-          done < <(git ls-files '*.md')
-          if [ -s /tmp/broken ]; then
-            echo "::error::broken relative links found"
-            exit 1
-          fi
-          echo "all relative markdown links resolve"
+        run: bash .github/scripts/check-links.sh
 
   evidence:
     name: evidence & media checks
