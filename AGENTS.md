@@ -27,7 +27,8 @@ accurate, and the user's responsibility.
 | `docs/evidence-packs.md` · `docs/power-user-symlinks.md` | Per-domain proof checklists · stow/symlink tradeoffs |
 | `profiles/` | Rendered per-platform outputs (README, LinkedIn… + `assets/` when media is bundled) |
 | `.github/workflows/` | `checks.yml` (offline) · `build.yml` (`pasco` from npm) |
-| `.pascorc` | Engine CLI config (`pasco`): lang, variants, diff tag |
+| `.github/scripts/check-links.sh` | Relative-link gate shared by `checks.yml` and `build.yml` (one copy, two callers) |
+| `.pascorc` | Engine CLI config (`pasco`): `workspace`, `defaults` (lang, variants), `diff` (`tagPattern`) |
 | `CHECKLIST.md` | Post-deploy verification per platform |
 
 ## Rules for agents
@@ -64,8 +65,9 @@ accurate, and the user's responsibility.
 # YAML parse only (no engine)
 python3 -c "import yaml,glob; [yaml.safe_load(open(f)) for f in glob.glob('content/*.yaml')]; print('yaml OK')"
 
-# pinned engine: schema + drift/geo + generated views
+# pinned engine: schema + drift/geo, the §18.8 evidence gate, generated views
 npx -y @profile-as-code/cli@0.3.0 validate
+npx -y @profile-as-code/cli@0.3.0 check
 npx -y @profile-as-code/cli@0.3.0 build
 ```
 
