@@ -4,7 +4,7 @@ Esta carpeta contiene los **artefactos de deploy** renderizados por `pasco build
 
 ```
 profiles/
-├── github-profile/README.md   # se pushea al repo <user>/<user> (git/API)
+├── github-readme/README.md    # se pushea al repo <user>/<user> (git/API)
 ├── linkedin.md                # se pega en LinkedIn (manual)
 ├── upwork.md                  # se pega en Upwork (manual)
 ├── x.md
@@ -14,4 +14,4 @@ profiles/
 
 - **No edites a mano** estos archivos: `pasco build` los regenera desde `content/`.
 - Se **commitean** porque son el rastro de qué está publicado y en qué versión.
-- La variante elegida en `pac refine` se guarda en `active` (content) y queda como la vigente.
+- La variante elegida en `pasco refine` se guarda en `active` (content) y queda como la vigente.

@@ -1,3 +1,17 @@
+## 2026-10-10 — pin del engine (publicado el 2026-10-09) + workflow build R2 (issue #11)
+- Qué cambió: el README deja de mandar a compilar el engine desde el monorepo — el
+  paquete real es **`@profile-as-code/cli@0.2.0`** (`pasco` es el bin) y el template
+  lo fija; arranque sin terminal (editás `content/` en el browser). Nuevo
+  `.github/workflows/build.yml` (R2 de `profile-as-code#122`): `validate` + `build`
+  desde npm (node 22, el mínimo del engine) commitea `profiles/` en tu workspace; en
+  un repo `is_template` el bot no pushea a `main` (excepción declarada a la regla 6).
+  AGENTS.md: mapa + pin. Drift corregido: `profiles/github-profile/` →
+  **`profiles/github-readme/`** (`CHECKLIST.md`, `profiles/README.md`).
+- Re-pegar en: — (scaffold).
+- Verificado 2026-10-10 con el engine pinneado: `validate` exit 0 (schema valid ·
+  drift 0 · geo 81/100) · `build` determinista · yaml + links OK.
+- **Fuera de este PR** (hard stop D5): CONTRIBUTING + release del template → #12.
+
 ## 2026-09-15 — migración identity.email (v1.5/#71) + rename .pascorc (#38)
 - Qué cambió:
   - **Email como hecho (v1.5, issue #71, engine PR #72):** el ejemplo Alex Rivera

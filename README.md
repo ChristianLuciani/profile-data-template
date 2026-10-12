@@ -39,8 +39,16 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
    cd profile-data-<username>
    ```
 
-3. Instalá el CLI del engine (M1): `pnpm --filter @profile-as-code/cli build` en el monorepo
-   `profile-as-code` (o `npm i -g profile-as-code` cuando se publique).
+3. **No hace falta instalar el engine.** `.github/workflows/build.yml` corre `pasco`
+   desde npm y commitea `profiles/` por vos: editá `content/` en el editor web de
+   GitHub y, al pushear a `main`, las vistas generadas se commitean solas. El template
+   fija la versión que espera — **`@profile-as-code/cli@0.2.0`** (`pasco` es el bin) —
+   ([OFICIAL] [WEB: registry.npmjs.org, verificado 2026-10-09]). Para correrlo local:
+   `npm i -g @profile-as-code/cli@0.2.0`.
+
+   > En **tu copia** verificá que Actions esté habilitado. *No* hace falta tocar
+   > *Settings → Workflow permissions*: el workflow declara su `contents: write`.
+   > La primera vez, confirmá en la pestaña **Actions** que corrió.
 
 4. Editá `content/` — reemplazá el ejemplo ficticio con tus datos (contrato:
    `schema/profile.schema.json`; cada archivo ES una root property — `bios.yaml` es el
