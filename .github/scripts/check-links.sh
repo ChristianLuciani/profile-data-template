@@ -32,12 +32,21 @@ while IFS= read -r f; do
   [ -n "$f" ] || continue
   [ -e "$f" ] || continue
   checked=$((checked + 1))
-  # NOTE: the trailing `|| true` is load-bearing. CI wraps steps in `bash -e`, so
-  # with pipefail a file with NO relative links makes the first grep exit 1 and
-  # silently aborts the step (lessons 19/34: a gate that fires wrongly is as bad
-  # as one that never fires). A link-less file is valid; a link to nowhere is not.
-  grep -oE '\]\([^)#][^)]*\)' "$f" 2>/dev/null \
-    | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' \
+  # The trailing `|| true` is defensive, not load-bearing: this script runs as a
+  # child shell, so it does not inherit `-e` from the caller — and no caller sets
+  # it. It is kept because with errexit ON, a file with NO relative links makes
+  # the first grep exit 1 and would abort the script early, silently skipping the
+  # remaining files (lessons 19/34: a gate that fires wrongly is as bad as one
+  # that never fires). A link-less file is valid; a link to nowhere is not.
+  # Strip inline code spans BEFORE looking for links: a link shown inside
+  # backticks renders as text, not as a link, so scanning it only yields false
+  # BROKEN reports — which is how this repo's own CHANGELOG tripped this gate the
+  # moment it documented the regex's edge cases. A gate that fires wrongly is as
+  # bad as one that never fires.
+  # Residual: fenced code blocks and spans split across lines are still scanned.
+  sed -E 's/`[^`]*`//g' "$f" \
+    | grep -oE '\]\([^)#][^)]*\)' \
+    | sed -E 's/^\]\(//; s/\)$//; s/[[:space:]]+"[^"]*"$//; s/^<//; s/>$//; s/#.*$//' \
     | grep -vE '^(https?:|mailto:)' \
     | while IFS= read -r link; do
         [ -z "$link" ] && continue

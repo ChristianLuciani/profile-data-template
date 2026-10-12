@@ -26,7 +26,7 @@ accurate, and the user's responsibility.
 | `media/` | Versioned small binaries (`certificates/`, `photos/`, `press/`) — bundled to `profiles/<platform>/assets/` |
 | `docs/evidence-packs.md` · `docs/power-user-symlinks.md` | Per-domain proof checklists · stow/symlink tradeoffs |
 | `profiles/` | Rendered per-platform outputs (README, LinkedIn… + `assets/` when media is bundled) |
-| `.github/workflows/` | `checks.yml` (offline) · `build.yml` (`pasco` from npm) |
+| `.github/workflows/` | `checks.yml` (offline) · `workflow-lint.yml` (offline) · `build.yml` (`pasco` from npm) |
 | `.github/scripts/check-links.sh` | Relative-link gate shared by `checks.yml` and `build.yml` (one copy, two callers) |
 | `.pascorc` | Engine CLI config (`pasco`): `workspace`, `defaults` (lang, variants), `diff` (`tagPattern`) |
 | `CHECKLIST.md` | Post-deploy verification per platform |
@@ -39,8 +39,9 @@ accurate, and the user's responsibility.
 2. **Source at the source.** A drift between `content/` and `profiles/` is fixed
    by regenerating the output, not by editing the output by hand.
 3. **Validate before commit.** `content/*.yaml` must parse and match the engine
-   schema. The engine is pinned: `@profile-as-code/cli@0.3.0` (README +
-   `build.yml`); run `pasco validate` + `pasco build` and commit `profiles/`.
+   schema. The engine is pinned: `@profile-as-code/cli@0.3.0` (the authoritative
+   list of the surfaces that carry the pin is `CONTRIBUTING.md` § Releases); run
+   `pasco validate` + `pasco build` and commit `profiles/`.
 4. **i18n.** `en` essential, `es` native. Keep both in sync when editing texts.
 5. **Privacy.** This is personal data — private repo, no screenshots/URLs in
    public artifacts, no real data in the template itself.

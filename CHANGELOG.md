@@ -38,6 +38,32 @@
       ⇒ error, no push a ciegas); acciones del job con `contents: write` **pinneadas por
       SHA**, salidas de la API: `actions/checkout` `11d5960a…` (= `v4`, tip 2026-07-16)
       y `actions/setup-node` `49933ea5…` (= `v4.4.0`).
+- **Ronda de review (misma rama):** seis cambios, todos reproducidos antes de
+  corregir:
+  - **Claim falso "el engine es read-only salvo dos excepciones que escriben solo
+    en `content/`"** — son **cuatro** escritores y **dos quedan fuera** de
+    `content/`: `pasco build` → `profiles/`, `pasco status --write-checklist` →
+    `CHECKLIST.md` (verificado en el engine: `status.ts` escribe
+    `join(workspace, "CHECKLIST.md")`; `refine.ts` → `content/active.yaml`). La
+    misma frase falsa estaba en `README.md` → corregida en ambos.
+  - **El gate de workflows no podía cubrir `checks.yml`**: un error de YAML ahí es
+    un `startup_failure`, así que un job adentro nunca corre para reportarlo — la
+    clase de incidente que el propio archivo documenta. Movido a
+    **`.github/workflows/workflow-lint.yml`**, que no depende del archivo que
+    valida. Residual declarado: un error en el propio lint sigue siendo
+    `startup_failure` (nada se valida a sí mismo).
+  - **El gate de links podía pasar en silencio**: si `git ls-files` falla, la lista
+    vuelve vacía y reportaba éxito tras chequear 0 archivos → ahora exit 1
+    (pre-existente en la versión inline que este PR extrajo).
+  - **Falsos positivos del regex de links** (`[x](f.md "title")`, `[x](<a b.md>)`)
+    y el comentario del `|| true`, que afirmaba algo falso (un shell hijo no hereda
+    `-e`): regex endurecido y comentario reescrito.
+  - La lista de superficies del pin en § Releases omitía **este mismo archivo**, y
+    el snippet de re-sync no funcionaba para una copia `--template` (no tiene el
+    tag local) → ambos corregidos.
+  - Nuevo **self-test del gate de links** en `checks.yml` (fixture roto ⇒ exit 1,
+    en modo argumentos): ningún job ejercía su camino de falla, porque `build.yml`
+    no ejecuta esa rama en este repo (`is_template: true`).
 - Re-pegar en: — (scaffold).
 - **Premisas del issue corregidas (C2):**
   - El issue pide pin `@profile-as-code/cli@0.2.0`; el repo **ya** pineaba `0.3.0` desde
@@ -53,7 +79,10 @@
   `.md` tracked resuelven, y falla (exit 1) ante un fixture roto, en un lote mixto y
   sobre el markdown generado estageado, mientras pasa en un archivo sin links y en uno
   con solo externos/anclas · guard del bot: `false` procede, `true` saltea, ausente ⇒
-  exit 1 (fail-closed) · array vacío bajo `set -euo pipefail` no rompe el step.
+  exit 1 (fail-closed) · array vacío bajo `set -euo pipefail` no rompe el step ·
+  **3 workflows** parsean · el self-test del gate se ejecutó verbatim y se probó
+  contra un gate neutralizado (falla como debe) · el regex endurecido se probó en
+  los 4 casos nuevos (`"title"`, `<>`, `#frag`, nombre con espacios).
 
 ## 2026-10-12 — scaffold del registro de evidencia: media/ + packs + ejemplos (issue #8, D17/§18)
 - Qué cambió:

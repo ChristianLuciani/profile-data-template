@@ -58,9 +58,17 @@ pasco check            # expiry, privacy, media transport — the pre-deploy gat
 pasco build
 ```
 
-The engine is **read-only** over this workspace, with two exceptions that write
-into `content/` only: `pasco refine` (the variant you pick) and
-`pasco status --mark` (the deploy ledger, D18).
+The engine is read-only over this workspace except for the **four** commands that
+write — and not one of them rewrites your facts behind your back:
+
+| Command | Writes |
+|---|---|
+| `pasco build` | `profiles/<platform>/` (+ bundled `assets/`) — derived, and committed |
+| `pasco refine` | `content/active.yaml` — the variant you picked |
+| `pasco status --mark` | `content/deployments.yaml` — the deploy ledger (D18) |
+| `pasco status --write-checklist` | `CHECKLIST.md` — the AUTO-GENERATED view of that ledger |
+
+Everything else only reads.
 
 ### Never edit `profiles/` by hand
 
@@ -78,12 +86,17 @@ the same rule as ground rule 2 in `AGENTS.md`.
 
 ## CI
 
-Two workflows, both installing the pinned engine from npm:
+Three workflows. Two install the pinned engine from npm; `workflow-lint.yml` is
+offline and validates the workflow files themselves — deliberately **not** from
+inside `checks.yml`, because a YAML error there is a `startup_failure` and a job
+in that file can never run to report it (the incident the file's own NOTE
+records).
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| `.github/workflows/checks.yml` | every push to `main` + every PR | `yaml` — `content/*.yaml` **and** `.github/workflows/*.yml` parse · `links` — relative markdown links resolve · `evidence` — `pasco validate` + `pasco check` |
-| `.github/workflows/build.yml` | push to `main` touching `content/**`, `.pascorc` or itself; manual dispatch | `pasco validate` + `check` + `build`, then commits `profiles/` |
+| `.github/workflows/checks.yml` | every push to `main` + every PR | `yaml` — `content/*.yaml` parse · `links` — relative markdown links resolve, plus a self-test that the gate still rejects a broken link · `evidence` — `pasco validate` + `pasco check` |
+| `.github/workflows/workflow-lint.yml` | push to `main` + PR touching `.github/workflows/**` | parses every file in `.github/workflows/` — the parse class that made each `checks.yml` run a `startup_failure` from 2026-08-12 |
+| `.github/workflows/build.yml` | push to `main` touching `content/**`, `.pascorc`, `.github/scripts/check-links.sh` or itself; manual dispatch | `pasco validate` + `check` + `build`, then commits `profiles/` |
 
 Three things about `build.yml` are worth knowing before you touch it:
 

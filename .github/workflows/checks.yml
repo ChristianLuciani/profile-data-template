@@ -2,11 +2,9 @@
 #
 # Three jobs on every push/PR:
 #
-# - yaml (offline, ~seconds): `content/*.yaml` parses — and so do the workflow
-#   files themselves. That second half exists because this file's own history is
-#   the counter-example: it was a startup_failure for weeks (see NOTE below) and
-#   `build.yml` had no coverage at all.
-# - links (offline, ~seconds): relative markdown links in tracked `.md` files resolve.
+# - yaml (offline, ~seconds): `content/*.yaml` parses.
+# - links (offline, ~seconds): relative markdown links in tracked `.md` files
+#   resolve, plus a self-test that the gate still rejects a broken link.
 # - evidence (needs the engine, ~30s): `pasco validate` + `pasco check` — the
 #   §18.8 evidence/media gate CHECKLIST.md tells you to run before deploying.
 #   This is the ONLY place that gate runs automatically; build.yml has no
@@ -21,8 +19,11 @@
 #
 # NOTE: the prose above MUST stay commented — bare `**bold**:` lines are parsed
 # by YAML as alias tokens (`*`) and make the whole workflow a startup_failure
-# (every run failed in 0s from 2026-08-12 until this fix). The `yaml` job below
-# now parses this very file, so that class of mistake fails loudly instead.
+# (every run failed in 0s from 2026-08-12 until this fix). This file cannot be
+# covered by the `yaml` job below: an error here IS a startup_failure, so any job
+# inside it never runs to report it. The workflow files are validated instead by
+# `.github/workflows/workflow-lint.yml` — a separate workflow, precisely so that
+# it survives this file being broken.
 
 name: checks
 
@@ -44,16 +45,6 @@ jobs:
         run: |
           set -euo pipefail
           python3 -c "import yaml,glob; fs=glob.glob('content/*.yaml'); [yaml.safe_load(open(f)) for f in fs]; print(f'{len(fs)} yaml file(s) OK')"
-      - name: Parse workflow YAML
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import glob, yaml
-          files = sorted(glob.glob('.github/workflows/*.yml')) + sorted(glob.glob('.github/workflows/*.yaml'))
-          for f in files:
-              yaml.safe_load(open(f))
-          print(f"{len(files)} workflow file(s) parse OK")
-          PY
 
   links:
     name: internal doc links
@@ -62,6 +53,24 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check relative markdown links resolve
         run: bash .github/scripts/check-links.sh
+      # A gate whose failure path is never exercised can quietly become a no-op —
+      # this repo has paid for exactly that, twice (see the NOTE at the top). The
+      # real run below only ever walks the SUCCESS path, and build.yml's use of
+      # the file-argument mode does not execute in this repo at all (`is_template`
+      # short-circuits it), so that mode is asserted here or nowhere.
+      - name: Self-test the link gate
+        run: |
+          set -euo pipefail
+          probe="$(mktemp -d)"
+          printf '# probe\n' > "$probe/target.md"
+          printf '# probe\n\n[ok](./target.md)\n' > "$probe/ok.md"
+          printf '# probe\n\n[gone](./nope.md)\n' > "$probe/broken.md"
+          if bash .github/scripts/check-links.sh "$probe/broken.md" >/dev/null 2>&1; then
+            echo "::error::the link gate accepted a broken link — the gate is not working"
+            exit 1
+          fi
+          bash .github/scripts/check-links.sh "$probe/ok.md" >/dev/null
+          echo "link gate self-test OK: rejects a broken link, accepts a good one"
 
   evidence:
     name: evidence & media checks

@@ -38,7 +38,8 @@ extends to example `content/` values that cite platform constraints.
   guard is fail-closed, so a missing flag refuses to commit rather than pushing
   blind (`CONTRIBUTING.md` § CI).
 - Docs in English; comments when present.
-- CI: `checks.yml` (content **and workflow** YAML parse · relative markdown
-  links · `pasco validate` + `check`) and `build.yml` (`pasco build`, then
-  commits `profiles/`).
+- CI: `checks.yml` (content YAML parse · relative markdown links, plus a
+  self-test of that gate · `pasco validate` + `check`) · `workflow-lint.yml`
+  (the workflow files parse — kept as a separate workflow so it can cover
+  `checks.yml` itself) · `build.yml` (`pasco build`, then commits `profiles/`).
 - Claims change → update source + date, never silently.
