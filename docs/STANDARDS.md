@@ -41,5 +41,6 @@ extends to example `content/` values that cite platform constraints.
 - CI: `checks.yml` (content YAML parse · relative markdown links, plus a
   self-test of that gate · `pasco validate` + `check`) · `workflow-lint.yml`
   (the workflow files parse — kept as a separate workflow so it can cover
-  `checks.yml` itself) · `build.yml` (`pasco build`, then commits `profiles/`).
+  `checks.yml` itself) · `build.yml` (`pasco validate` + `check` + `build`, then
+  commits `profiles/`).
 - Claims change → update source + date, never silently.

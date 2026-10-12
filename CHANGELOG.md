@@ -38,8 +38,7 @@
       ⇒ error, no push a ciegas); acciones del job con `contents: write` **pinneadas por
       SHA**, salidas de la API: `actions/checkout` `11d5960a…` (= `v4`, tip 2026-07-16)
       y `actions/setup-node` `49933ea5…` (= `v4.4.0`).
-- **Ronda de review (misma rama):** seis cambios, todos reproducidos antes de
-  corregir:
+- **Rondas de review (misma rama):** cada corrección reproducida antes de corregir:
   - **Claim falso "el engine es read-only salvo dos excepciones que escriben solo
     en `content/`"** — son **cuatro** escritores y **dos quedan fuera** de
     `content/`: `pasco build` → `profiles/`, `pasco status --write-checklist` →
@@ -64,6 +63,13 @@
   - Nuevo **self-test del gate de links** en `checks.yml` (fixture roto ⇒ exit 1,
     en modo argumentos): ningún job ejercía su camino de falla, porque `build.yml`
     no ejecuta esa rama en este repo (`is_template: true`).
+  - **Reconciliación del veredicto premerge publicado** (`PASS-CON-RIESGOS`,
+    corrido contra el head `27e4560`, dos commits atrás): sus dos MAJOR —F1 (gate
+    verde tras chequear 0 archivos) y F2 (la lista de superficies del pin)— ya
+    estaban corregidos en `d5a3d82`, y F3 en `bff8155`; F1 se reprodujo en el head
+    actual y da exit 1. Los dos NIT que seguían vivos se corrigen acá: la regla 3
+    de `AGENTS.md` no pedía `pasco check` (que este mismo PR promovió en Commands y
+    en CI) y `STANDARDS.md` describía `build.yml` solo con `build`.
 - Re-pegar en: — (scaffold).
 - **Premisas del issue corregidas (C2):**
   - El issue pide pin `@profile-as-code/cli@0.2.0`; el repo **ya** pineaba `0.3.0` desde
