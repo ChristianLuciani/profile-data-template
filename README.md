@@ -42,9 +42,9 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
 3. **No hace falta instalar el engine.** `.github/workflows/build.yml` corre `pasco`
    desde npm y commitea `profiles/` por vos: editá `content/` en el editor web de
    GitHub y, al pushear a `main`, las vistas generadas se commitean solas. El template
-   fija la versión que espera — **`@profile-as-code/cli@0.2.0`** (`pasco` es el bin) —
-   ([OFICIAL] [WEB: registry.npmjs.org, verificado 2026-10-09]). Para correrlo local:
-   `npm i -g @profile-as-code/cli@0.2.0`.
+   fija la versión que espera — **`@profile-as-code/cli@0.3.0`** (`pasco` es el bin) —
+   ([OFICIAL] [WEB: registry.npmjs.org, verificado 2026-10-12]). Para correrlo local:
+   `npm i -g @profile-as-code/cli@0.3.0`.
 
    > En **tu copia** verificá que Actions esté habilitado. *No* hace falta tocar
    > *Settings → Workflow permissions*: el workflow declara su `contents: write`.
@@ -83,12 +83,115 @@ plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills p
    (vista AUTO-GENERADA: no la edites a mano después de eso).
 7. **Versioná:** cada cambio entra con `CHANGELOG.md` actualizado → sabés qué re-pegar y dónde.
 
+## Evidencia — probar lo que afirmás
+
+Tu perfil se cree cuando está **probado**. Dos bloques opcionales (D17, SPEC §18 del
+engine) registran esa prueba. Si no los usás, dejá los archivos vacíos o borralos: el
+loader saltea archivos ausentes o vacíos.
+
+**Tres conceptos que NO se mezclan** (naming canónico, §18.1):
+
+| Concepto | Bloque | Qué es | Ejemplo |
+|---|---|---|---|
+| **Claim** | `projects[].evidence[]` | afirmación textual + fuente | "levanté $2M" → link a TechCrunch |
+| **Credential** | `content/credentials.yaml` | atestación de terceros | certificado AWS, título, premio, patente |
+| **Artifact** | `content/artifacts.yaml` | una obra o media | portfolio, galería, showreel, dataset, código |
+
+`publications[]` (papers, DOI) y `press[]` conservan sus bloques y **referencian** ids del
+registro vía `artifactRefs` — no se duplican. (`press[]` es del flavor **brand**: este
+template es `person`, así que un write-up sobre vos va como artifact `document` o como
+claim. Detalle en `docs/evidence-packs.md`.)
+
+### Agregar una credencial o un artifact
+
+1. **Poné el archivo** — si es chico y vale versionarlo (un escaneo, unos stills), va en
+   `media/`; si es grande (un showreel de 2 GB), hostealo afuera y usá `url`. Detalle y
+   límites de tamaño: `media/README.md`.
+2. **Declará el puntero** en `content/credentials.yaml` o `content/artifacts.yaml`.
+   Mínimo: `id`, `kind`, `title` (+ `issuer` en credenciales; `locator` en artifacts).
+   El `id` tiene que ser único en su bloque y ser un slug (`^[a-z0-9][a-z0-9._:-]*$`).
+3. **(Opcional) Cableala desde un claim.** Solo si querés que la prueba aparezca
+   asociada a un proyecto: agregá `credentialId: <id>` o `artifactId: <id>` en
+   `projects[].evidence[]`, o `artifactRefs: [<id>]` en `publications[]` (y `press[]`, si
+   el workspace fuera flavor `brand`).
+   **El `id` referenciado tiene que existir ya**: si apuntás a un id que no está en el
+   bloque, `pasco validate` **falla** con `dangling cross-ref` (exit 1) — no se ignora
+   en silencio. Si declarás la credencial pero no la cableás a nada, no pasa nada: no
+   es obligatorio referenciarla.
+   Y para que la referencia funcione en el output, la entrada referenciada tiene que
+   ser `visibility: public` — ver *Visibilidad* abajo.
+4. **Verificá y construí:**
+
+   ```bash
+   pasco validate   # schema (falla) + drift/geo (avisa)
+   pasco check      # expiración, privacidad y transporte de media
+   pasco build github-readme   # bundlea assets/ + manifest.json con sha256
+   ```
+
+   Los tres comandos en `0` = listo. `validate` y `check` también corren solos en cada
+   PR vía `.github/workflows/checks.yml` (job `evidence`).
+
+**Locators** — la matriz de capacidades (§18.3). Exactamente uno de `url` o `path`:
+
+| Locator | Para qué | En el render |
+|---|---|---|
+| `{ url: https://… }` | algo ya hosteado (Vimeo, Zenodo, tu sitio) | URL verbatim + live-link check |
+| `{ path: media/… }` | archivo versionado en este repo | viaja a `profiles/<platform>/assets/` — **nunca** como URL cruda |
+| `{ path: otra-cosa }` | colección externa grande | resuelve bajo `PASCO_EVIDENCE_ROOT` |
+
+**Regla de oro (workspace privado ⇒ sin hot-linking):** la media llega a la superficie
+pública **solo** por `media/ → assets/ → deploy`. Nunca pegues un link a un archivo de tu
+repo privado en un perfil público: para el resto del mundo es un 404. Un link
+`assets/<id>/<basename>` es deploy-relative y resuelve recién en la superficie pública.
+
+### Visibilidad — PII
+
+`visibility: public | unlisted | private` en ambos bloques. Ausente = `public` (un
+perfil pre-registro era público por diseño — la ausencia no oculta en silencio).
+
+La regla que el engine **hace cumplir** es binaria y más estricta de lo que sugieren
+los nombres: **solo `public` cuenta como público**. `unlisted` y `private` se tratan
+igual a los efectos del gate — ninguno de los dos puede ser referenciado desde material
+público.
+
+- `public` → los renderers la emiten. Lo único referenciable desde output público.
+- `unlisted` → **no se emite en los renders** y **no puede** referenciarse desde un
+  claim público. Pensalo como "guardado pero no publicado": existe para que el dato
+  esté en el workspace, no para compartirse por un render.
+- `private` → nunca sale del workspace.
+
+⚠️ **El caso que rompe el build:** si declarás una credencial `unlisted` y la cableás
+desde un claim (`projects[].evidence[].credentialId`), `pasco check` **falla** — igual
+que con `private`, y el mensaje del engine dice "visibility unlisted ... public output
+renders only public entries". Si querés que la credencial aparezca en el perfil, tiene
+que ser `public`. Si no querés que aparezca, no la referencies desde un claim.
+
+```bash
+pasco check   # falla (exit 1) si algo público referencia unlisted/private
+```
+
+El nombre de la regla en la SPEC es `no-private-in-public-output` (§18.8); el CLI lo
+emite como `check/private-in-public-output`. El mensaje dice "private" incluso cuando
+la visibility es `unlisted` — es un nombre histórico, no una descripción exacta.
+
+Empezá por `docs/evidence-packs.md` (checklists por dominio: diseñador, filmmaker,
+científico, ingeniero). Si querés versionar media grande o stowear una carpeta externa:
+`docs/power-user-symlinks.md` (spoiler: git guarda el *texto* del symlink, no los bytes).
+
 ## Estructura
 
 ```
 profile-data-<username>/
 ├── content/             # ← TU información (YAML · deployments.yaml = ledger D18)
+│   ├── credentials.yaml # atestaciones de terceros (opcional — D17/§18)
+│   └── artifacts.yaml   # obras y media (opcional — D17/§18)
+├── media/               # ← binarios chicos y versionables (opcional — §18.6)
+│   ├── certificates/    #   escaneos de credenciales
+│   ├── photos/          #   stills, galería
+│   └── press/           #   recortes de prensa
+├── docs/                # evidence-packs.md · power-user-symlinks.md
 ├── profiles/            # outputs generados (se commitean: son los artefactos de deploy)
+│   └── <platform>/assets/   # media bundleada + manifest.json (sha256) — solo con path locators
 ├── CHANGELOG.md         # cada cambio: fecha + qué plataformas re-pegar
 ├── CHECKLIST.md         # verificación por plataforma post-pega
 └── .pascorc             # configuración del CLI (workspace path, defaults)

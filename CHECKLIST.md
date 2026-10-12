@@ -11,6 +11,62 @@ Después de pegar/actualizar una plataforma, verificá y marcá. La consistencia
 entre redes ES tu citabilidad (GEO): si un LLM cruza dos perfiles y encuentra
 contradicciones, te descarta.
 
+## Evidencia (D17, SPEC §18) — antes de cualquier deploy
+
+Esto **no** es post-pega: es el gate previo. Las reglas las ejecuta `pasco check`
+(M7/§18.8 y M8/§18.6 están implementadas; requiere CLI ≥ 0.3.0). Los nombres entre
+paréntesis son el código que el CLI emite en el finding.
+
+`validate` + `check` también corren automáticamente en cada PR
+(`.github/workflows/checks.yml`, job `evidence`) — pero el job solo cubre lo que el
+engine sabe verificar. Los ítems manuales de abajo siguen siendo tuyos.
+
+- [ ] **`pasco check` sale limpio o con warns entendidos** — un error bloquea el deploy.
+- [ ] **`credential-expiry`** (`check/credential-expired`) — ninguna credencial con
+      `expires` en el pasado. El check avisa nombrando credencial e índice; renová el
+      dato o actualizá `expires`. Renová una vez al año, no cuando alguien te lo señala.
+- [ ] **`private-in-public-output`** (`check/private-in-public-output`) — nada
+      `unlisted` **ni** `private` referenciado desde material público. Solo `public`
+      cuenta como público: `unlisted` falla igual que `private`. Si salta, poné la
+      entrada en `public` o quitá la referencia.
+      *Este check FALLA el build (exit 1) — es un error, no un aviso.*
+- [ ] **`dangling-cross-ref`** (lo reporta `pasco validate`) — todo `credentialId` /
+      `artifactId` / `artifactRefs` apunta a un `id` que **existe** en su bloque. Un id
+      inexistente falla el load (exit 1), no se ignora.
+- [ ] **`verifyUrl` resuelve** — abrí cada `verifyUrl` de credenciales `public`: es el link
+      que un escéptico va a clickear. Un 404 deshace más de lo que suma la credencial.
+- [ ] **`media-missing-workspace`** (error) — todo `path: media/…` existe en el repo. El
+      workspace es la SSOT: si falta el archivo, es error y el asset no se bundlea.
+- [ ] **`media-path-unsafe`** (error) — ningún locator resuelve **fuera** de su base
+      (workspace o evidence root). Un `media/../../..` es error de contención, no un path válido.
+- [ ] **`media-not-a-file`** (error) — todo locator apunta a un **archivo**, no a un
+      directorio. `media/photos/` como locator falla.
+- [ ] **`media-oversize`** (warn) — ningún archivo > 50 MB versionado (GitHub bloquea en
+      100 MB). Para archivos grandes: git-lfs o `url` locator.
+- [ ] **`media-checksum-mismatch`** (error) — los checksums declarados coinciden con los
+      bytes. Aplica a artifacts inmutables (datasets, documentos): si el archivo cambió,
+      la promesa se rompió. Para media mutable, omití `checksum`.
+- [ ] **`media-symlink-external`** (warn) — si aparece, el render depende de tu máquina.
+      Declarar `checksum` o migrar a `PASCO_EVIDENCE_ROOT`
+      (ver `docs/power-user-symlinks.md`).
+- [ ] **`media-external-missing`** (warn) — esperado y benigno en CI: un runner sin
+      `PASCO_EVIDENCE_ROOT` saltea los assets externos y renderiza sin ellos. Si lo ves
+      **en tu máquina**, revisá que la env var esté seteada en esa shell.
+- [ ] **`media-unbundled-no-id`** (warn) — un `path` locator sin `id` no puede recibir un
+      target estable (`assets/<id>/…`). Poné `id` si querés que la media se bundlee.
+- [ ] **`.gitkeep` limpiado** — al agregar el primer archivo real a un subdirectorio de
+      `media/`, borrá su `.gitkeep` (existe solo para que git versione el directorio vacío).
+
+### Verificación de media bundleada (solo con `path` locators)
+
+- [ ] **`pasco build <platform>` bundleó assets/** — `profiles/<platform>/assets/` existe y
+      `assets/manifest.json` registra id, target, sha256 y bytes por asset.
+- [ ] **Los links `assets/…` resuelven en la superficie pública** — deploy-relative: solo
+      funcionan **después** de que `assets/` se commiteó al repo de deploy. Un
+      `assets/…` que no resuelve = el commit no incluyó los binarios.
+- [ ] **Ningún archivo de `media/` se pegó como URL cruda** — ni `raw.githubusercontent.com`
+      de un repo privado, ni un path absoluto local. Para el mundo son 404.
+
 ## GitHub (profile README)
 - [ ] README actualizado vía git/API (commit en profiles/github-readme)
 - [ ] Hechos (rol, fechas, papers) idénticos al resto de las redes

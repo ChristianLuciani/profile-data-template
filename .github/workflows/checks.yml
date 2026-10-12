@@ -1,14 +1,16 @@
 # checks — profile-data-template
 #
-# Deliberately minimal: this repo is a data scaffold, not an app. Two offline
-# checks (~seconds), both run on every push/PR to `main`:
+# Three jobs on every push/PR:
 #
-# - YAML: `content/*.yaml` parses (structure is validated by the engine's
-#   schema-check, not duplicated here).
-# - links: relative markdown links in tracked `.md` files resolve.
+# - yaml (offline, ~seconds): `content/*.yaml` parses.
+# - links (offline, ~seconds): relative markdown links in tracked `.md` files resolve.
+# - evidence (needs the engine, ~30s): `pasco validate` + `pasco check` — the
+#   §18.8 evidence/media gate CHECKLIST.md tells you to run before deploying.
+#   This is the ONLY place that gate runs automatically; build.yml has no
+#   `pull_request` trigger, so a check placed there could never gate a PR.
 #
-# Explicitly NOT here: schema validation against profile-as-code's contract —
-# that lives in the engine repo and is run locally via CONTRIBUTING.
+# The first two stay dependency-free by design. The third installs the pinned
+# engine from npm (same pin as build.yml — keep them in sync).
 #
 # NOTE: the prose above MUST stay commented — bare `**bold**:` lines are parsed
 # by YAML as alias tokens (`*`) and make the whole workflow a startup_failure
@@ -67,3 +69,22 @@ jobs:
             exit 1
           fi
           echo "all relative markdown links resolve"
+
+  evidence:
+    name: evidence & media checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Kept in sync with build.yml's pin — both must name the same version.
+      - name: Install the pinned engine from npm
+        run: npm i -g --ignore-scripts @profile-as-code/cli@0.3.0
+      # `pasco check` is the §18.8 gate CHECKLIST.md tells you to run before any
+      # deploy. It runs here (PR-triggered) rather than only in build.yml, which
+      # has no `pull_request` trigger and so could never gate a PR.
+      - name: Validate the workspace
+        run: pasco validate
+      - name: Evidence & media checks (§18.8)
+        run: pasco check
