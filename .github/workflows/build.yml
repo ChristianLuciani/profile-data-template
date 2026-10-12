@@ -31,6 +31,8 @@ jobs:
         run: npm i -g --ignore-scripts @profile-as-code/cli@0.3.0
       - name: Validate the workspace
         run: pasco validate
+      - name: Evidence & media checks (§18.8)
+        run: pasco check
       - name: Build generated views
         run: pasco build
       - name: Sync profiles/ (user workspaces only)

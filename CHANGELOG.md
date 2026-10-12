@@ -33,6 +33,31 @@
   esperando M7; M7 ya está mergeado y publicado, así que los ejemplos salen **vivos y
   validados**. El punto abierto del issue (loader debe saltear archivos
   ausentes/vacíos) queda **verificado como resuelto** en el engine actual.
+- **Ronda de review (misma rama):** tres correcciones donde la prosa no coincidía con
+  el comportamiento real del engine, las tres reproducidas antes de corregir:
+  - **`unlisted` no es un modo de compartir** — es indistinguible de `private` para el
+    gate: cablear una credencial `unlisted` desde un claim **falla** con
+    `check/private-in-public-output` (exit 1). README, `docs/evidence-packs.md` y
+    CHECKLIST lo vendían como "se comparte a pedido" y hasta lo recomendaban.
+  - **El gate de evidencia no corría en ningún lado** — `build.yml` solo hacía
+    `validate` + `build`, y no tiene trigger de `pull_request`, así que `pasco check`
+    nunca podía bloquear un PR. Nuevo job `evidence` en `checks.yml` (PR-triggered)
+    que instala el engine y corre `validate` + `check`.
+  - **La receta "agregar una credencial" omitía la consecuencia del `id`** — referenciar
+    un id inexistente falla `validate` con `dangling cross-ref` (exit 1), justo el
+    error que los docs describían a una página de distancia. La receta ahora declara
+    el paso de wiring como tal, con el requisito de `id` existente + `visibility: public`.
+  - Además: los 4 códigos `media-*` que faltaban en el CHECKLIST
+    (`media-path-unsafe`, `media-not-a-file`, `media-external-missing`,
+    `media-unbundled-no-id`, los cuatro reproducidos), el placeholder
+    `sha256:0000…` reemplazado por instrucción de `shasum -a 256` (el placeholder
+    pasaba `validate` pero rompía `check` en cuanto la entrada fuera pública),
+    `.gitkeep` como ítem de limpieza, y aclaración de que **`press[]` es brand-only**
+    (el template es flavor `person`: un write-up va como artifact `document`).
+- Verificación de la ronda: `validate` + `check` exit 0 con el CLI **publicado**
+  (`@profile-as-code/cli@0.3.0` de npm — el artefacto que corre CI, no el monorepo) ·
+  6 inyecciones de falla reproducidas · ambos workflows parsean como YAML (el repo ya
+  tuvo un `startup_failure` por prosa no comentada) · fresh clone verificado.
 
 ## 2026-10-10 — pin del engine (publicado el 2026-10-09) + workflow build R2 (issue #11)
 - Qué cambió: el README deja de mandar a compilar el engine desde el monorepo — el

@@ -23,6 +23,15 @@ Two rules the schema enforces:
 - `publications[]` (papers, DOI) and `press[]` are **not** registry kinds. They
   keep their own blocks and **reference** registry ids via `artifactRefs`.
 
+> **`press[]` is a brand-flavor block.** The engine's schema documents it as
+> *"additive, brand"* — media mentions **of a brand**. This template ships
+> `flavor: person` (the default: absent = person), so there is no
+> `content/press.yaml` here and the press rows below are **not usable as-is** in
+> this workspace. If you are running a personal profile, put a write-up about you
+> in `artifacts[]` (`kind: document`, `locator.url`) or in `projects[].evidence[]`
+> as a claim. Reach for `press[]` only if you flip the workspace to the brand
+> flavor.
+
 ### How entries link (the wiring people get wrong)
 
 References point **from** the claim/text block **to** the registry — never the
@@ -50,9 +59,10 @@ different meanings. Read the block you're editing.
 Required fields: credentials need `id`, `kind`, `title`, `issuer`. Artifacts
 need `id`, `kind`, `title`, `locator`. Everything else is optional.
 
-`visibility` on both: `public` (renderers emit it) · `unlisted` (shared on
-request) · `private` (never leaves the workspace). Certificates carry PII — see
-the privacy note at the end.
+`visibility` on both: `public` (renderers emit it, and the only value you may
+reference from a public claim) · `unlisted` (kept in the workspace, **not** emitted
+and **not** referencable from public output) · `private` (never leaves the
+workspace). Certificates carry PII — see the privacy note at the end.
 
 ---
 
@@ -64,7 +74,7 @@ the privacy note at the end.
 | Shot gallery | `artifacts[]` | `gallery` | `locator.path` for a few hero stills; `description` in **both** langs |
 | Design award (Awwwards, D&AD) | `credentials[]` | `award` | `issuer` = awarding body, `verifyUrl` = award page, `issued` |
 | Studio/agency title | `credentials[]` | `title` | only for formal accreditations, not job titles |
-| Client press write-up | `press[]` | — | reference the artifact via `artifactRefs`, don't duplicate |
+| Client press write-up | `artifacts[]` (`document`) | `document` | in a person workspace use an artifact + `locator.url`; `press[]` is brand-only |
 
 Notes: gallery images are the classic `media/` case — small, versionable. A
 showreel is not — host it and use `url`. Tag by discipline (`tags: [branding]`,
@@ -78,7 +88,7 @@ showreel is not — host it and use `url`. Tag by discipline (`tags: [branding]`
 | A film you made | `artifacts[]` | `portfolio` or `document` | `license`, `tags: [film]`, `description` |
 | Festival laurels / selection | `credentials[]` | `award` | `issuer` = festival, `issued` = year, `verifyUrl` = festival page |
 | Filmography entry | `publications[]` | — | keep in `publications[]`; `artifactRefs` to the artifact |
-| Press / review | `press[]` | — | `artifactRefs` to the film |
+| Press / review | `artifacts[]` (`document`) | `document` | in a person workspace use an artifact + `locator.url`; `press[]` is brand-only |
 | Union/guild membership | `credentials[]` | `certificate` | `expires` if it renews — the expiry check will remind you |
 
 Notes: the pattern is **`url` for anything video**. A 2 GB reel in git is the
@@ -137,14 +147,16 @@ embarrasses you on a live profile.
 ## Privacy first
 
 Credentials carry PII: full legal names, certificate serials, ID numbers.
-`visibility: private` means exactly that — the file stays in your workspace and
-renderers emit nothing. `pasco check` **fails the build**
-(`no-private-in-public-output`) if a public artifact or claim references private
-material, so a leak is caught before it deploys rather than after.
+`visibility: private` (or `unlisted`) means the entry is not emitted by renderers and
+**cannot** be referenced from a public claim. `pasco check` **fails the build**
+(`no-private-in-public-output`) if a public claim references either one, so a leak is
+caught before it deploys rather than after. Only `public` is referencable from public
+output — there is no "soft public" tier today.
 
-Ask of each entry: *would I paste this on a public profile?* If not →
-`unlisted` or `private`. That decision is yours, and it is cheap to make at
-entry time and expensive to walk back after a deploy.
+Ask of each entry: *would I paste this on a public profile?* If yes → `public`. If no →
+`private` (or `unlisted` if you want it kept but never wired into a claim). That
+decision is yours, and it is cheap to make at entry time and expensive to walk back
+after a deploy.
 
 ## Adding your first entry
 

@@ -71,6 +71,13 @@
 # Descomentá y poné el archivo real — si falta, `pasco check` falla con
 # `media-missing-workspace` (el workspace es la SSOT, D14).
 #
+# OJO con `checksum`: es una promesa de bytes, no un campo decorativo. Calculá el
+# real antes de escribirlo —
+#   shasum -a 256 media/certificates/aws-ml.pdf     # macOS/Linux
+# Un checksum que no coincide con los bytes es ERROR (`media-checksum-mismatch`) y
+# el asset NO se bundlea. Para media mutable (fotos, reels) OMITÍ el campo: el
+# manifest registra el sha256 del compile igual.
+#
 #  - id: cert-scan-aws-ml
 #    kind: document
 #    title: "AWS ML Specialty — certificate scan"
@@ -78,5 +85,5 @@
 #      en: "Scanned certificate as issued."
 #      es: "Certificado escaneado tal como fue emitido."
 #    locator: { path: "media/certificates/aws-ml.pdf" }
-#    checksum: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+#    checksum: "sha256:<64 hex — salida de shasum -a 256, NO ceros de relleno>"
 #    visibility: private

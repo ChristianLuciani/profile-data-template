@@ -98,7 +98,9 @@ loader saltea archivos ausentes o vacíos.
 | **Artifact** | `content/artifacts.yaml` | una obra o media | portfolio, galería, showreel, dataset, código |
 
 `publications[]` (papers, DOI) y `press[]` conservan sus bloques y **referencian** ids del
-registro vía `artifactRefs` — no se duplican.
+registro vía `artifactRefs` — no se duplican. (`press[]` es del flavor **brand**: este
+template es `person`, así que un write-up sobre vos va como artifact `document` o como
+claim. Detalle en `docs/evidence-packs.md`.)
 
 ### Agregar una credencial o un artifact
 
@@ -107,13 +109,27 @@ registro vía `artifactRefs` — no se duplican.
    límites de tamaño: `media/README.md`.
 2. **Declará el puntero** en `content/credentials.yaml` o `content/artifacts.yaml`.
    Mínimo: `id`, `kind`, `title` (+ `issuer` en credenciales; `locator` en artifacts).
-3. **Verificá y construí:**
+   El `id` tiene que ser único en su bloque y ser un slug (`^[a-z0-9][a-z0-9._:-]*$`).
+3. **(Opcional) Cableala desde un claim.** Solo si querés que la prueba aparezca
+   asociada a un proyecto: agregá `credentialId: <id>` o `artifactId: <id>` en
+   `projects[].evidence[]`, o `artifactRefs: [<id>]` en `publications[]` (y `press[]`, si
+   el workspace fuera flavor `brand`).
+   **El `id` referenciado tiene que existir ya**: si apuntás a un id que no está en el
+   bloque, `pasco validate` **falla** con `dangling cross-ref` (exit 1) — no se ignora
+   en silencio. Si declarás la credencial pero no la cableás a nada, no pasa nada: no
+   es obligatorio referenciarla.
+   Y para que la referencia funcione en el output, la entrada referenciada tiene que
+   ser `visibility: public` — ver *Visibilidad* abajo.
+4. **Verificá y construí:**
 
    ```bash
    pasco validate   # schema (falla) + drift/geo (avisa)
    pasco check      # expiración, privacidad y transporte de media
    pasco build github-readme   # bundlea assets/ + manifest.json con sha256
    ```
+
+   Los tres comandos en `0` = listo. `validate` y `check` también corren solos en cada
+   PR vía `.github/workflows/checks.yml` (job `evidence`).
 
 **Locators** — la matriz de capacidades (§18.3). Exactamente uno de `url` o `path`:
 
@@ -130,16 +146,33 @@ repo privado en un perfil público: para el resto del mundo es un 404. Un link
 
 ### Visibilidad — PII
 
-`visibility: public | unlisted | private` en ambos bloques. Las credenciales llevan datos
-personales (nombre legal, seriales), así que no toda prueba es para el mundo:
+`visibility: public | unlisted | private` en ambos bloques. Ausente = `public` (un
+perfil pre-registro era público por diseño — la ausencia no oculta en silencio).
 
-- `public` → los renderers la emiten.
-- `unlisted` → se comparte a pedido (DMs de clientes).
+La regla que el engine **hace cumplir** es binaria y más estricta de lo que sugieren
+los nombres: **solo `public` cuenta como público**. `unlisted` y `private` se tratan
+igual a los efectos del gate — ninguno de los dos puede ser referenciado desde material
+público.
+
+- `public` → los renderers la emiten. Lo único referenciable desde output público.
+- `unlisted` → **no se emite en los renders** y **no puede** referenciarse desde un
+  claim público. Pensalo como "guardado pero no publicado": existe para que el dato
+  esté en el workspace, no para compartirse por un render.
 - `private` → nunca sale del workspace.
 
-`pasco check` **falla el build** (`no-private-in-public-output`, SPEC §18.8; se emite
-como `check/private-in-public-output`) si algo público referencia material privado — la
-fuga se atrapa antes del deploy, no después.
+⚠️ **El caso que rompe el build:** si declarás una credencial `unlisted` y la cableás
+desde un claim (`projects[].evidence[].credentialId`), `pasco check` **falla** — igual
+que con `private`, y el mensaje del engine dice "visibility unlisted ... public output
+renders only public entries". Si querés que la credencial aparezca en el perfil, tiene
+que ser `public`. Si no querés que aparezca, no la referencies desde un claim.
+
+```bash
+pasco check   # falla (exit 1) si algo público referencia unlisted/private
+```
+
+El nombre de la regla en la SPEC es `no-private-in-public-output` (§18.8); el CLI lo
+emite como `check/private-in-public-output`. El mensaje dice "private" incluso cuando
+la visibility es `unlisted` — es un nombre histórico, no una descripción exacta.
 
 Empezá por `docs/evidence-packs.md` (checklists por dominio: diseñador, filmmaker,
 científico, ingeniero). Si querés versionar media grande o stowear una carpeta externa:
