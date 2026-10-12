@@ -1,3 +1,39 @@
+## 2026-10-12 — scaffold del registro de evidencia: media/ + packs + ejemplos (issue #8, D17/§18)
+- Qué cambió:
+  - **`media/`** con `certificates/`, `photos/`, `press/` + `media/README.md`: qué
+    pertenece ahí (chico y versionable), límites (>50 MB warn, 100 MB límite duro de
+    GitHub), la **regla de no-hot-link** (la media llega a lo público solo por
+    `media/ → assets/ → deploy`) y la alternativa `PASCO_EVIDENCE_ROOT`.
+  - **`docs/evidence-packs.md`** — checklists por dominio (diseñador, filmmaker,
+    científico, ingeniero) mapeados a los kinds reales del schema + metadata esperada.
+  - **`docs/power-user-symlinks.md`** — symlink/stow: git guarda el *texto* del link,
+    los targets absolutos rompen CI y clones frescos; nunca el mecanismo canónico.
+  - **`content/credentials.yaml` + `content/artifacts.yaml`** — ejemplos que
+    **validan hoy** (el schema M7 ya está deployado) + ejemplos comentados de
+    `visibility: private` y `locator.path`.
+  - **`README.md`** — sección de flujo de evidencia: claim ≠ credential ≠ artifact,
+    cómo agregar una entrada, matriz de locators, reglas de visibilidad y PII.
+  - **`CHECKLIST.md`** — gate de evidencia pre-deploy: `credential-expiry`,
+    `no-private-in-public-output`, `verifyUrl` resoluble, `media-missing-workspace`,
+    `media-oversize`, `media-symlink-external`, checksums y verificación de assets.
+  - **`AGENTS.md`** — mapa + regla 8 (naming del registro + regla de no-hot-link).
+  - **Pin del engine `0.2.0` → `0.3.0`** (README, `AGENTS.md`, `build.yml`) —
+    **necesario**: los bloques `credentials`/`artifacts` y los checks M7/M8 llegan
+    recién en el schema v1.4+, ausentes en 0.2.0 ([OFICIAL] registry.npmjs.org,
+    `@profile-as-code/cli` dist-tags `latest: 0.3.0`, verificado 2026-10-12).
+- Re-pegar en: — (scaffold).
+- Verificado 2026-10-12 contra el engine local v0.3.0 desde el monorepo:
+  `validate` exit 0 (schema valid · drift 0 · geo 81/100) · `check` exit 0 (registry 0
+  findings · media 0 findings) · `check` **falla** correctamente en un workspace de
+  prueba con credencial expirada (`credential-expired`, warn) y con un `path` de media
+  ausente (`media-missing-workspace`, error) · `build github-readme` bundlea
+  `assets/<id>/<basename>` + `manifest.json` con sha256 · loader OK en los 4 casos
+  (archivo ausente / vacío / `null` / solo comentarios) · JSON-LD `hasCredential` emitido.
+- **Nota de alcance:** el issue asumía que los ítems 5–6 debían quedar comentados
+  esperando M7; M7 ya está mergeado y publicado, así que los ejemplos salen **vivos y
+  validados**. El punto abierto del issue (loader debe saltear archivos
+  ausentes/vacíos) queda **verificado como resuelto** en el engine actual.
+
 ## 2026-10-10 — pin del engine (publicado el 2026-10-09) + workflow build R2 (issue #11)
 - Qué cambió: el README deja de mandar a compilar el engine desde el monorepo — el
   paquete real es **`@profile-as-code/cli@0.2.0`** (`pasco` es el bin) y el template

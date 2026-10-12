@@ -1,0 +1,82 @@
+# artifacts.yaml — obras y media (D17, SPEC §18 of the engine).
+# EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tus datos.
+#
+# Un artifact es una OBRA O ITEM DE MEDIA: portfolio, galería, showreel, dataset,
+# documento, código. Es un puntero — el engine NUNCA es dueño de los binarios (D14).
+#
+# Campos requeridos: id · kind · title · locator.
+#   id       slug estable, único en el bloque (lo referencian publications[]/press[]
+#            vía artifactRefs, y le da el target de bundle assets/<id>/<basename>)
+#   kind     portfolio | gallery | showreel | dataset | document | code
+#   title    nombre propio → string invariante (§11)
+#   locator  { url } O { path } — exactamente uno (§18.3)
+#
+# CROSS-REFS: la referencia vive en el OTRO lado — `publications[].artifactRefs` y
+#   `press[].artifactRefs` apuntan a `artifacts[].id`. Un id inexistente es un
+#   dangling ref y el load falla (core-check, §18.2). Los artifacts NO llevan
+#   `credentialId`: eso es de `projects[].evidence[]` (claims).
+#
+# Opcionales valiosos:
+#   description  langMap — en requerido, es nativo (§11); alimenta GEO
+#   checksum     "sha256:<64 hex>" — promesa de integridad para archivos INMUTABLES;
+#                un mismatch es ERROR y el asset no se bundlea (§18.6)
+#   license      derechos de uso (p. ej. CC-BY-4.0)
+#   tags         multi-área (§18.9): un workspace, varias disciplinas
+#   visibility   public | unlisted | private
+#
+# LOCATOR — la matriz de capacidades (§18.3):
+#   { url: https://… }   remoto → se emite verbatim (URL SSOT §18.4) + live-link check
+#   { path: media/… }    in-workspace → NUNCA se emite como URL cruda; viaja por
+#                        collectMedia → profiles/<platform>/assets/ (§18.6). Falta el
+#                        archivo ⇒ ERROR `media-missing-workspace`.
+#   { path: otra-cosa }  externo → resuelve bajo PASCO_EVIDENCE_ROOT (env) o el
+#                        gitignored .pasco/local.toml; falta ⇒ WARN (CI-degradable).
+#
+# Este bloque es OPCIONAL. Si no tenés artifacts, dejá el archivo vacío o borralo:
+# el loader saltea archivos ausentes/vacíos (verificado contra CLI 0.3.0).
+
+  - id: reel-2025
+    kind: showreel
+    title: "Reel 2025"
+    description:
+      en: "A three-minute reel: local-first AI infrastructure and classroom tooling."
+      es: "Un reel de tres minutos: infraestructura de IA local-first y herramientas de aula."
+    locator: { url: "https://vimeo.com/example" }
+    tags: [film, education]
+    visibility: public
+
+  - id: portfolio-socratic-tutor
+    kind: portfolio
+    title: "Socratic Tutor"
+    description:
+      en: "Case study: an offline-first tutoring system for low-connectivity classrooms."
+      es: "Caso de estudio: un sistema de tutoría offline-first para aulas de baja conectividad."
+    locator: { url: "https://example.com/portfolio/socratic-tutor" }
+    license: "CC-BY-4.0"
+    tags: [education, ai]
+    visibility: public
+
+  - id: dataset-plasma-bench
+    kind: dataset
+    title: "Dense Plasma Benchmark Dataset"
+    description:
+      en: "Benchmark corpus released with the 2022 dense-plasma study."
+      es: "Corpus de benchmark publicado con el estudio de plasmas densos de 2022."
+    locator: { url: "https://zenodo.org/record/example" }
+    tags: [science]
+    visibility: public
+
+# Ejemplo de artifact con bytes LOCALES: el archivo vive en media/ y `pasco build`
+# lo copia a profiles/<platform>/assets/<id>/<basename> (+ manifest.json con sha256).
+# Descomentá y poné el archivo real — si falta, `pasco check` falla con
+# `media-missing-workspace` (el workspace es la SSOT, D14).
+#
+#  - id: cert-scan-aws-ml
+#    kind: document
+#    title: "AWS ML Specialty — certificate scan"
+#    description:
+#      en: "Scanned certificate as issued."
+#      es: "Certificado escaneado tal como fue emitido."
+#    locator: { path: "media/certificates/aws-ml.pdf" }
+#    checksum: "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+#    visibility: private

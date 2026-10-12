@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: 22
       - name: Install the pinned engine from npm
-        run: npm i -g --ignore-scripts @profile-as-code/cli@0.2.0
+        run: npm i -g --ignore-scripts @profile-as-code/cli@0.3.0
       - name: Validate the workspace
         run: pasco validate
       - name: Build generated views
