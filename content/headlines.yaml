@@ -1,5 +1,5 @@
-# headlines.yaml — la línea bajo el nombre, por plataforma/idioma
-# Contrato v1: array de { platform (enum), lang (en|es|fr), text }.
+# headlines.yaml — the line under your name, per platform/language
+# Contract v1: array of { platform (enum), lang (en|es|fr), text }.
 
   - platform: linkedin
     lang: en

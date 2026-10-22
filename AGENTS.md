@@ -31,7 +31,7 @@ accurate, and the user's responsibility.
 | `.github/ISSUE_TEMPLATE/` · `PULL_REQUEST_TEMPLATE.md` | Issue forms (bug/feature) + PR privacy/checklist |
 | `.github/dependabot.yml` | Weekly SHA-pin updates for GitHub Actions |
 | `.pascorc` | Engine CLI config (`pasco`): `workspace`, `defaults` (lang, variants), `diff` (`tagPattern`) |
-| `CHECKLIST.md` | Post-deploy verification per platform |
+| `CHECKLIST.md` | Post-deploy verification per platform (EN) · `CHECKLIST.es.md` (ES, hand-maintained) |
 | `SECURITY.md` | Private disclosure policy — never a public issue |
 
 ## Rules for agents
@@ -69,8 +69,10 @@ accurate, and the user's responsibility.
 10. **Never flip visibility, create a release, or merge a PR.** Those are
     human-only actions (repo-governance §2). Prepare the branch and the PR;
     the maintainer decides.
-11. **Keep the README pair in sync.** A change to the start flow, layout or
-    commands lands in `README.md` **and** `README.es.md` in the same commit.
+11. **Keep the language pairs in sync.** A change to the start flow, layout or
+    commands lands in `README.md` **and** `README.es.md`, and in `CHECKLIST.md`
+    **and** `CHECKLIST.es.md`, in the same commit. The engine regenerates only
+    `CHECKLIST.md` (English); the Spanish checklist is hand-maintained.
 12. **Pin every action by full commit SHA** (40 chars + `# vX.Y.Z` comment).
     Dependabot updates pins; never replace one with a mutable tag.
 

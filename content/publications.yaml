@@ -1,6 +1,6 @@
-# publications.yaml — papers. DOI/orcid = ancla GEO (resoluble, verificable).
-# EJEMPLO: persona ficticia (Alex Rivera).
-# Contrato v1: array de { title, venue, year, doi (^10\.\d{4,9}/…), orcidId (NNNN-NNNN-NNNN-NNNX) }.
+# publications.yaml — papers. DOI/orcid = GEO anchor (resolvable, verifiable).
+# EXAMPLE: fictional persona (Alex Rivera).
+# Contract v1: array of { title, venue, year, doi (^10\.\d{4,9}/…), orcidId (NNNN-NNNN-NNNN-NNNX) }.
 
   - id: pub-example-tutoring
     origin: template
@@ -11,10 +11,10 @@
   - id: pub-example-plasmas
     origin: template
     title: "Computational methods for dense plasmas"
-    venue: "Physical Review C (ficticio)"
+    venue: "Physical Review C (fictional)"
     year: 2022
     doi: "10.0000/example.2022.042"
 
-# v1.1 proposal: authors [{ name }] — no forma parte del contrato v1.
-# v1.3 (D18, SPEC §19 del engine): filas de ejemplo con `id` (ledger `<block>:<id>`) y
+# v1.1 proposal: authors [{ name }] — not part of the v1 contract.
+# v1.3 (D18, SPEC §19 of the engine): example rows carry `id` (ledger `<block>:<id>`) and
 #   `origin: template` — absent = user-authored.

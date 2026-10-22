@@ -1,119 +1,126 @@
-# CHECKLIST — verificación por plataforma post-deploy
+# CHECKLIST — per-platform post-deploy verification
 
-> **Estado de este archivo (D18, SPEC §19 del engine):** el estado por entrada de deploy
-> vive en `content/deployments.yaml` — reportalo con `pasco status`. Cuando confirmes pegás
-> con `pasco status --mark <ledgerKey> <surface>`, este archivo pasa a ser la vista
-> AUTO-GENERADA del ledger: `pasco status --write-checklist` lo **sobrescribe** desde el
-> ledger — desde ese punto, no lo edites a mano. Hasta entonces: las listas de abajo son
-> tu verificación manual post-pega.
+[Español](CHECKLIST.es.md)
 
-Después de pegar/actualizar una plataforma, verificá y marcá. La consistencia factual
-entre redes ES tu citabilidad (GEO): si un LLM cruza dos perfiles y encuentra
-contradicciones, te descarta.
+> **State of this file (D18, SPEC §19 of the engine):** per-entry deploy state lives in
+> `content/deployments.yaml` — report it with `pasco status`. Once you confirm a paste
+> with `pasco status --mark <ledgerKey> <surface>`, this file becomes the ledger's
+> AUTO-GENERATED view: `pasco status --write-checklist` **overwrites** it from the ledger
+> (in English) — from that point on, do not edit it by hand. Until then, the lists below
+> are your manual post-paste verification.
+>
+> **Translation note:** `CHECKLIST.es.md` is a hand-maintained Spanish translation. The
+> engine only regenerates `CHECKLIST.md`; the Spanish file is not regenerated and must be
+> re-synced by hand (or retired) after you run `--write-checklist`.
 
-## Antes de publicar tu fork — privacidad del repo
+After pasting/updating a platform, verify and mark it. Factual consistency across
+platforms IS your citability (GEO): if an LLM cross-references two profiles and finds
+contradictions, it drops you.
 
-Esto no es post-pega: es el gate de privacidad del **workspace**. En el template
-(`profile-data-template`) se cumple por diseño; en tu copia es tuyo.
+## Before publishing your fork — repository privacy
 
-- [ ] **El repo es privado desde antes de cargar datos.** Si lo creaste público,
-      cambialo a privado *y* asumí que lo publicado ya pudo indexarse.
-- [ ] **`git status` no muestra `.pasco/`, `.env*` ni `media/` con bytes** — el
-      estado local y los binarios van gitignoreados, no commiteados.
-- [ ] **Ningún link crudo a un archivo de un repo privado** en `profiles/`
-      (`raw.githubusercontent.com/...`): el asset viaja por `assets/`, nunca por URL.
-- [ ] **Secret scanning + push protection activos** (Settings → Code security).
-      Un token pegado una vez queda en la historia aunque lo borres después.
-- [ ] **Los datos de otra persona no están acá.** `content/identity.yaml` describe
-      a quien publica, no a un cliente o exempleador sin permiso.
-- [ ] **`LICENSE` lleva tu copyright**, no el del template.
-- [ ] Si trabajás en **este** template: `bash .github/scripts/check-example-data.sh`
-      (en tu fork el job de CI se saltea y el script falla a propósito, porque tu
-      identidad deja de ser el ejemplo).
+This is not post-paste: it is the **workspace** privacy gate. In the template
+(`profile-data-template`) it holds by design; in your copy it is yours.
 
-## Evidencia (D17, SPEC §18) — antes de cualquier deploy
+- [ ] **The repo has been private since before you loaded data.** If you created it
+      public, switch it to private *and* assume what was published may already be indexed.
+- [ ] **`git status` shows no `.pasco/`, `.env*` or `media/` bytes** — local state and
+      binaries are gitignored, not committed.
+- [ ] **No raw link to a file in a private repo** in `profiles/`
+      (`raw.githubusercontent.com/...`): the asset travels through `assets/`, never as a URL.
+- [ ] **Secret scanning + push protection enabled** (Settings → Code security).
+      A token pasted once stays in history even if you delete it afterwards.
+- [ ] **Someone else's data is not here.** `content/identity.yaml` describes the person
+      publishing, not a client or former employer without permission.
+- [ ] **`LICENSE` carries your copyright**, not the template's.
+- [ ] If you are working in **this** template: `bash .github/scripts/check-example-data.sh`
+      (in your fork the CI job skips and the script fails on purpose, because your
+      identity stops being the example).
 
-Esto **no** es post-pega: es el gate previo. Las reglas las ejecuta `pasco check`
-(M7/§18.8 y M8/§18.6 están implementadas; requiere CLI ≥ 0.3.0). Los nombres entre
-paréntesis son el código que el CLI emite en el finding.
+## Evidence (D17, SPEC §18) — before any deploy
 
-`validate` + `check` también corren automáticamente en cada PR
-(`.github/workflows/checks.yml`, job `evidence`) — pero el job solo cubre lo que el
-engine sabe verificar. Los ítems manuales de abajo siguen siendo tuyos.
+This is **not** post-paste: it is the gate before deploying. `pasco check` executes the
+rules (M7/§18.8 and M8/§18.6 are implemented; requires CLI ≥ 0.3.0). The names in
+parentheses are the codes the CLI emits in the finding.
 
-- [ ] **`pasco check` sale limpio o con warns entendidos** — un error bloquea el deploy.
-- [ ] **`credential-expiry`** (`check/credential-expired`) — ninguna credencial con
-      `expires` en el pasado. El check avisa nombrando credencial e índice; renová el
-      dato o actualizá `expires`. Renová una vez al año, no cuando alguien te lo señala.
-- [ ] **`private-in-public-output`** (`check/private-in-public-output`) — nada
-      `unlisted` **ni** `private` referenciado desde material público. Solo `public`
-      cuenta como público: `unlisted` falla igual que `private`. Si salta, poné la
-      entrada en `public` o quitá la referencia.
-      *Este check FALLA el build (exit 1) — es un error, no un aviso.*
-- [ ] **`dangling-cross-ref`** (lo reporta `pasco validate`) — todo `credentialId` /
-      `artifactId` / `artifactRefs` apunta a un `id` que **existe** en su bloque. Un id
-      inexistente falla el load (exit 1), no se ignora.
-- [ ] **`verifyUrl` resuelve** — abrí cada `verifyUrl` de credenciales `public`: es el link
-      que un escéptico va a clickear. Un 404 deshace más de lo que suma la credencial.
-- [ ] **`media-missing-workspace`** (error) — todo `path: media/…` existe en el repo. El
-      workspace es la SSOT: si falta el archivo, es error y el asset no se bundlea.
-- [ ] **`media-path-unsafe`** (error) — ningún locator resuelve **fuera** de su base
-      (workspace o evidence root). Un `media/../../..` es error de contención, no un path válido.
-- [ ] **`media-not-a-file`** (error) — todo locator apunta a un **archivo**, no a un
-      directorio. `media/photos/` como locator falla.
-- [ ] **`media-oversize`** (warn) — ningún archivo > 50 MB versionado (GitHub bloquea en
-      100 MB). Para archivos grandes: git-lfs o `url` locator.
-- [ ] **`media-checksum-mismatch`** (error) — los checksums declarados coinciden con los
-      bytes. Aplica a artifacts inmutables (datasets, documentos): si el archivo cambió,
-      la promesa se rompió. Para media mutable, omití `checksum`.
-- [ ] **`media-symlink-external`** (warn) — si aparece, el render depende de tu máquina.
-      Declarar `checksum` o migrar a `PASCO_EVIDENCE_ROOT`
-      (ver `docs/power-user-symlinks.md`).
-- [ ] **`media-external-missing`** (warn) — esperado y benigno en CI: un runner sin
-      `PASCO_EVIDENCE_ROOT` saltea los assets externos y renderiza sin ellos. Si lo ves
-      **en tu máquina**, revisá que la env var esté seteada en esa shell.
-- [ ] **`media-unbundled-no-id`** (warn) — un `path` locator sin `id` no puede recibir un
-      target estable (`assets/<id>/…`). Poné `id` si querés que la media se bundlee.
-- [ ] **`.gitkeep` limpiado** — al agregar el primer archivo real a un subdirectorio de
-      `media/`, borrá su `.gitkeep` (existe solo para que git versione el directorio vacío).
+`validate` + `check` also run automatically on every PR
+(`.github/workflows/checks.yml`, job `evidence`) — but the job only covers what the
+engine knows how to verify. The manual items below are still yours.
 
-### Verificación de media bundleada (solo con `path` locators)
+- [ ] **`pasco check` exits clean or with understood warnings** — an error blocks the deploy.
+- [ ] **`credential-expiry`** (`check/credential-expired`) — no credential with
+      `expires` in the past. The check names the credential and index; renew the data or
+      update `expires`. Renew once a year, not when someone points it out.
+- [ ] **`private-in-public-output`** (`check/private-in-public-output`) — nothing
+      `unlisted` **nor** `private` referenced from public material. Only `public` counts
+      as public: `unlisted` fails just like `private`. If it fires, set the entry to
+      `public` or drop the reference.
+      *This check FAILS the build (exit 1) — it is an error, not a warning.*
+- [ ] **`dangling-cross-ref`** (`pasco validate` reports it) — every `credentialId` /
+      `artifactId` / `artifactRefs` points at an `id` that **exists** in its block. An id
+      that does not exist fails the load (exit 1); it is not ignored.
+- [ ] **`verifyUrl` resolves** — open every `verifyUrl` of `public` credentials: it is the
+      link a skeptic will click. A 404 undoes more than the credential adds.
+- [ ] **`media-missing-workspace`** (error) — every `path: media/…` exists in the repo.
+      The workspace is the SSOT: if the file is missing, it is an error and the asset is
+      not bundled.
+- [ ] **`media-path-unsafe`** (error) — no locator resolves **outside** its base
+      (workspace or evidence root). A `media/../../..` is a containment error, not a valid path.
+- [ ] **`media-not-a-file`** (error) — every locator points at a **file**, not a
+      directory. `media/photos/` as a locator fails.
+- [ ] **`media-oversize`** (warn) — no file > 50 MB versioned (GitHub blocks at 100 MB).
+      For large files: git-lfs or a `url` locator.
+- [ ] **`media-checksum-mismatch`** (error) — declared checksums match the bytes. Applies
+      to immutable artifacts (datasets, documents): if the file changed, the promise broke.
+      For mutable media, omit `checksum`.
+- [ ] **`media-symlink-external`** (warn) — if it appears, the render depends on your
+      machine. Declare a `checksum` or migrate to `PASCO_EVIDENCE_ROOT`
+      (see `docs/power-user-symlinks.md`).
+- [ ] **`media-external-missing`** (warn) — expected and benign in CI: a runner without
+      `PASCO_EVIDENCE_ROOT` skips external assets and renders without them. If you see it
+      **on your machine**, check that the env var is set in that shell.
+- [ ] **`media-unbundled-no-id`** (warn) — a `path` locator without an `id` cannot get a
+      stable target (`assets/<id>/…`). Add `id` if you want the media bundled.
+- [ ] **`.gitkeep` cleaned up** — when you add the first real file to a `media/`
+      subdirectory, delete its `.gitkeep` (it exists only so git versions the empty directory).
 
-- [ ] **`pasco build <platform>` bundleó assets/** — `profiles/<platform>/assets/` existe y
-      `assets/manifest.json` registra id, target, sha256 y bytes por asset.
-- [ ] **Los links `assets/…` resuelven en la superficie pública** — deploy-relative: solo
-      funcionan **después** de que `assets/` se commiteó al repo de deploy. Un
-      `assets/…` que no resuelve = el commit no incluyó los binarios.
-- [ ] **Ningún archivo de `media/` se pegó como URL cruda** — ni `raw.githubusercontent.com`
-      de un repo privado, ni un path absoluto local. Para el mundo son 404.
+### Bundled-media verification (only with `path` locators)
+
+- [ ] **`pasco build <platform>` bundled assets/** — `profiles/<platform>/assets/` exists and
+      `assets/manifest.json` records id, target, sha256 and bytes per asset.
+- [ ] **`assets/…` links resolve on the public surface** — deploy-relative: they only work
+      **after** `assets/` was committed to the deploy repo. An `assets/…` that does not
+      resolve = the commit did not include the binaries.
+- [ ] **No `media/` file was pasted as a raw URL** — not a `raw.githubusercontent.com` link
+      to a private repo, not a local absolute path. For the world they are 404s.
 
 ## GitHub (profile README)
-- [ ] README actualizado vía git/API (commit en profiles/github-readme)
-- [ ] Hechos (rol, fechas, papers) idénticos al resto de las redes
-- [ ] Proyectos pinned = los 3-6 que querés mostrar
-- [ ] Links a todos los perfiles (sameAs)
+- [ ] README updated via git/API (commit in profiles/github-readme)
+- [ ] Facts (role, dates, papers) identical to the rest of the platforms
+- [ ] Pinned projects = the 3-6 you want to show
+- [ ] Links to every profile (sameAs)
 
 ## LinkedIn
-- [ ] Headline ≤ límite oficial (ver skill) y coherente con positioning.statement
-- [ ] About pegado y revisado (variante elegida en `active`)
-- [ ] Skills ordenadas por peso (platformWeights)
-- [ ] Featured: projects + publications (DOI resolubles)
-- [ ] Fechas de experiencia idénticas a GitHub/web
+- [ ] Headline ≤ official limit (see the skill) and coherent with positioning.statement
+- [ ] About pasted and reviewed (variant chosen in `active`)
+- [ ] Skills ordered by weight (platformWeights)
+- [ ] Featured: projects + publications (resolvable DOIs)
+- [ ] Experience dates identical to GitHub/web
 
 ## Upwork
-- [ ] Title/overview pegado (EN-first) y coherente con audience.clients
-- [ ] Especialidades y skills correctas (platformWeights upwork)
-- [ ] Portfolio conectado a los proyectos activos
-- [ ] Tarifa/availability coherente (no contradice el resto)
+- [ ] Title/overview pasted (EN-first) and coherent with audience.clients
+- [ ] Specialties and skills correct (platformWeights upwork)
+- [ ] Portfolio connected to active projects
+- [ ] Rate/availability coherent (does not contradict the rest)
 
 ## X
-- [ ] Bio ≤ límite oficial; anclas semánticas presentes sin stuffing
-- [ ] Pinned: el post que querés que un visitante nuevo vea
+- [ ] Bio ≤ official limit; semantic anchors present without stuffing
+- [ ] Pinned: the post a new visitor should see
 
 ## ResearchGate
-- [ ] Publicaciones sincronizadas (DOI, ORCID resolubles)
-- [ ] Bio y skills coherentes
+- [ ] Publications synchronized (resolvable DOI, ORCID)
+- [ ] Bio and skills coherent
 
 ## Substack
-- [ ] Perfil: bio + secciones + featured coherentes
-- [ ] Newsletter citable (RSS visible, sobre linkeada desde otros perfiles)
+- [ ] Profile: bio + sections + featured coherent
+- [ ] Citable newsletter (visible RSS, linked from the other profiles)

@@ -1,35 +1,35 @@
-# positioning.yaml — TU enunciado de posicionamiento + ángulos por audiencia + anclas GEO
-# EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tu posicionamiento.
-# Contrato v1: statement/audiences/geo.semanticAssociations (3-5) + geo.citationsGoal (langMap).
+# positioning.yaml — YOUR positioning statement + per-audience angles + GEO anchors
+# EXAMPLE: fictional persona (Alex Rivera). Replace with your positioning.
+# Contract v1: statement/audiences/geo.semanticAssociations (3-5) + geo.citationsGoal (langMap).
 
-# Una sola línea que define TODO: la raíz de la que derivan headline, bio, ángulos.
+# One line that defines EVERYTHING: the root every headline, bio and angle derives from.
 statement:
   en: "Physicist turned AI engineer: sovereign, local-first infrastructure for education."
   es: "Físico convertido en ingeniero de IA: infraestructura soberana y local-first para educación."
 
-# Ángulo por audiencia: los HECHOS son iguales; la lectura cambia según quién mira.
+# Angle per audience: the FACTS stay the same; the reading changes with who is looking.
 audiences:
-  recruiters:            # LinkedIn, GitHub → credibilidad técnica
+  recruiters:            # LinkedIn, GitHub → technical credibility
     en: "Proven in production: shipped 3 OSS projects, 2 peer-reviewed papers, real field deployments."
     es: "Probado en producción: 3 proyectos OSS, 2 papers arbitrados, despliegues reales en campo."
-  clients:               # Upwork → servicio y resultado
+  clients:               # Upwork → service and outcome
     en: "Custom AI infrastructure and data pipelines — you own the code, the model runs locally."
     es: "Infraestructura de IA y pipelines a medida — el código es tuyo y el modelo corre local."
-  peers:                 # X, ResearchGate, Substack → ideas y ciencia
+  peers:                 # X, ResearchGate, Substack → ideas and science
     en: "Open-source sovereignty: why local models beat APIs for educational AI."
     es: "Soberanía open source: por qué los modelos locales superan a las APIs en IA educativa."
 
-# GEO: anclas semánticas — qué debe asociar un LLM con tu identidad (sin stuffing).
+# GEO: semantic anchors — what an LLM should associate with your identity (no stuffing).
 geo:
   semanticAssociations:
     - "sovereign AI"       # reinforced via skills[].geoKeywords
     - "local-first"        # reinforced via statement + projects
     - "education"          # reinforced via statement + projects
     - "physics"            # reinforced via skills[].keywords (computational physics)
-  # Nota (v1.1): el check de refuerzo matchea substring contra statement/citationsGoal/
-  # keywords.geo/skills/projects — bios, headlines y audiences NO entran aún al haystack.
+  # Note (v1.1): the reinforcement check matches substrings against statement/citationsGoal/
+  # keywords.geo/skills/projects — bios, headlines and audiences are not in the haystack yet.
   citationsGoal:
     en: "Be cited as a source/authority on sovereign educational AI."
     es: "Ser citado como fuente/autoridad en IA educativa soberana."
-  # structuredData { person, sameAs } es OUTPUT del geoCheck del engine (schema.org/Person JSON-LD),
-  # no dato de entrada del usuario — ver docs/SPEC.md §8 y schema/README.md.
+  # structuredData { person, sameAs } is OUTPUT of the engine's geoCheck (schema.org/Person JSON-LD),
+  # not user input — see docs/SPEC.md §8 and schema/README.md.

@@ -181,7 +181,7 @@ profile-data-<username>/
 ├── profiles/             # generated deploy artifacts (committed, never hand-edited)
 ├── .github/              # CI, link/secret/example-data gates, issue templates
 ├── .pascorc              # CLI config: workspace, defaults, diff.tagPattern
-├── CHECKLIST.md          # per-platform post-deploy verification
+├── CHECKLIST.md          # per-platform post-deploy verification (EN · .es)
 └── CHANGELOG.md          # every change: date + what to re-paste
 ```
 
