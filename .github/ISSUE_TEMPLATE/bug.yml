@@ -1,0 +1,66 @@
+name: Bug report
+description: Something in the template — docs, CI, example content — is wrong or broken.
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This is the public template repository. Never paste your real profile
+        data, screenshots with personal data, tokens, or credentials here.**
+
+        - Security problem → report it privately, see `SECURITY.md` (do not open an issue).
+        - Your own data workspace → that is your fork, not this repo.
+        - Engine behaviour → [profile-as-code issues](https://github.com/ChristianLuciani/profile-as-code/issues).
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Docs (README / CONTRIBUTING / CHECKLIST / docs/)
+        - CI (workflows, scripts, gates)
+        - Example content (content/*.yaml)
+        - Release / versioning
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: The observed behaviour, with the exact file and line if you have them.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: |
+        Steps, command, or a link to a public gist/repo. Use fictional data only.
+      placeholder: |
+        1. ...
+        2. `pasco validate`
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Node version, engine version (`pasco --help`), template tag or commit.
+      placeholder: "node 22.14 · @profile-as-code/cli@0.3.0 · v0.3.0"
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: I have not included real personal data, secrets, or private media.
+          required: true
+        - label: I searched existing issues and this is not a duplicate.
+          required: true

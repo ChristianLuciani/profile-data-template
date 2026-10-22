@@ -41,12 +41,17 @@ engine never mutates your repo:
 
 ```bash
 git lfs install
-git lfs track "media/**/*.{mp4,zip,psd}"
+# One pattern per extension: git-lfs globs do not expand braces.
+git lfs track "media/**/*.mp4" "media/**/*.zip" "media/**/*.psd"
 git add .gitattributes
 ```
 
 CI needs `lfs: true` on checkout, otherwise `pasco check` checksums the *pointer
 file* instead of the content. A declared `checksum` makes that mistake visible.
+
+> This **template** repository ships `media/` empty on purpose, and
+> `.github/scripts/check-example-data.sh` fails the build if a binary lands here.
+> Your fork is where the bytes belong (or an external host, via a `url` locator).
 
 ## The no-hot-link rule (important)
 

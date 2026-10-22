@@ -1,9 +1,15 @@
-# Local / secrets — nunca subir
+# Local / secrets — never commit
 .env
 .env.*
 *.local
 assets/private/
 .DS_Store
 
-# Harness artifacts
+# Engine local state: .pasco/local.toml may hold an absolute evidence root path
+# (see docs/power-user-symlinks.md). Per-machine, never shared.
+.pasco/
+
+# Harness / tooling artifacts
 .pi/
+node_modules/
+*.log

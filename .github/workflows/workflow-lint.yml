@@ -35,7 +35,8 @@ jobs:
     name: parse workflow yaml
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Parse every workflow file
         run: |
           set -euo pipefail

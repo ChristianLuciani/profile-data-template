@@ -11,6 +11,26 @@ Después de pegar/actualizar una plataforma, verificá y marcá. La consistencia
 entre redes ES tu citabilidad (GEO): si un LLM cruza dos perfiles y encuentra
 contradicciones, te descarta.
 
+## Antes de publicar tu fork — privacidad del repo
+
+Esto no es post-pega: es el gate de privacidad del **workspace**. En el template
+(`profile-data-template`) se cumple por diseño; en tu copia es tuyo.
+
+- [ ] **El repo es privado desde antes de cargar datos.** Si lo creaste público,
+      cambialo a privado *y* asumí que lo publicado ya pudo indexarse.
+- [ ] **`git status` no muestra `.pasco/`, `.env*` ni `media/` con bytes** — el
+      estado local y los binarios van gitignoreados, no commiteados.
+- [ ] **Ningún link crudo a un archivo de un repo privado** en `profiles/`
+      (`raw.githubusercontent.com/...`): el asset viaja por `assets/`, nunca por URL.
+- [ ] **Secret scanning + push protection activos** (Settings → Code security).
+      Un token pegado una vez queda en la historia aunque lo borres después.
+- [ ] **Los datos de otra persona no están acá.** `content/identity.yaml` describe
+      a quien publica, no a un cliente o exempleador sin permiso.
+- [ ] **`LICENSE` lleva tu copyright**, no el del template.
+- [ ] Si trabajás en **este** template: `bash .github/scripts/check-example-data.sh`
+      (en tu fork el job de CI se saltea y el script falla a propósito, porque tu
+      identidad deja de ser el ejemplo).
+
 ## Evidencia (D17, SPEC §18) — antes de cualquier deploy
 
 Esto **no** es post-pega: es el gate previo. Las reglas las ejecuta `pasco check`
