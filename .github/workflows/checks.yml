@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Parse content YAML
         run: |
           set -euo pipefail
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Check relative markdown links resolve
         run: bash .github/scripts/check-links.sh
       # A gate whose failure path is never exercised can quietly become a no-op —
@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       # Template-only guard. A fork legitimately carries a real identity, media
       # and non-example emails, so the check must NOT run there — it would fail on
       # every PR of every user workspace. Upstream is matched by name as well as
@@ -107,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           # Full history: a secret removed from HEAD is still leaked once pushed.
           fetch-depth: 0
@@ -132,9 +132,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       # actions/setup-node@v4.4.0 → 49933ea5288caeca8642d1e84afbd3f7d6820020
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: 22
       # Kept in sync with build.yml's pin — both must name the same version.
