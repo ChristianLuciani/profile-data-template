@@ -1,9 +1,9 @@
-# projects.yaml — con status, keywords y evidencia (verificable = GEO)
-# EJEMPLO: persona ficticia (Alex Rivera).
-# Contrato v1: array de { name, status (active|maintained|archived|experimental|planning),
-#   description (langMap), links (array de URLs), keywords[], evidence[] }.
-# evidence: { claim (langMap), source (URL), verified (YYYY-MM-DD) } — claims resolubles.
-# v1.3 (D18, SPEC §19 del engine): filas de ejemplo con `id` (ledger `<block>:<id>`) y
+# projects.yaml — with status, keywords and evidence (verifiable = GEO)
+# EXAMPLE: fictional persona (Alex Rivera).
+# Contract v1: array of { name, status (active|maintained|archived|experimental|planning),
+#   description (langMap), links (array of URLs), keywords[], evidence[] }.
+# evidence: { claim (langMap), source (URL), verified (YYYY-MM-DD) } — resolvable claims.
+# v1.3 (D18, SPEC §19 of the engine): example rows carry `id` (ledger `<block>:<id>`) and
 #   `origin: template` — absent = user-authored.
 
   - id: proj-example-socratic-tutor

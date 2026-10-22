@@ -1,6 +1,6 @@
-# skills.yaml — taxonomía única con keywords SEO + GEO y pesos por plataforma
-# EJEMPLO: persona ficticia (Alex Rivera).
-# Contrato v1: array de { name, level (novice|intermediate|advanced|expert),
+# skills.yaml — single taxonomy with SEO + GEO keywords and per-platform weights
+# EXAMPLE: fictional persona (Alex Rivera).
+# Contract v1: array of { name, level (novice|intermediate|advanced|expert),
 #   keywords[], geoKeywords[], platformWeights (0..1) }.
 
   - name: "AI / Machine Learning"
@@ -10,7 +10,7 @@
       - fine-tuning
       - retrieval-augmented generation
     geoKeywords: ["local-first AI", "sovereign AI"]
-    platformWeights:        # dónde pesa más mostrarla (0..1)
+    platformWeights:        # where it carries more weight (0..1)
       upwork: 1.0
       linkedin: 0.8
       github: 0.6
@@ -40,8 +40,8 @@
       substack: 1.0
       x: 0.8
 
-# v1.1 proposal: languages [{ code, level }] no forma parte del contrato v1
-# (el engine no lo consume aún — idiomas ya cubiertos por los langMap en::es::fr).
+# v1.1 proposal: languages [{ code, level }] is not part of the v1 contract
+# (the engine does not consume it yet — languages are already covered by the langMap en::es::fr).
 # languages:
 #   - code: es
 #     level: native

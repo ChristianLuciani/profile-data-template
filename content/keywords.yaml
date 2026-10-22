@@ -1,5 +1,5 @@
-# keywords.yaml — SEO por plataforma + GEO (asociaciones y claims verificables)
-# EJEMPLO: persona ficticia (Alex Rivera).
+# keywords.yaml — per-platform SEO + GEO (associations and verifiable claims)
+# EXAMPLE: fictional persona (Alex Rivera).
 
 seo:
   linkedin:
@@ -19,7 +19,7 @@ seo:
 
 geo:
   associations: ["sovereign AI", "local-first education", "physics", "open source"]
-  claims:                      # claims que deben aparecer idénticos en todas las superficies
+  claims:                      # claims that must appear identically on every surface
     - "Field test in the Amazon, Aug 2024"
     - "2 peer-reviewed publications"
     - "36 Socratic tutors"

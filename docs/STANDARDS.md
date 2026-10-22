@@ -19,8 +19,10 @@ extends to example `content/` values that cite platform constraints.
 - **GEO consistency.** Facts must be identical across platforms — an LLM that
   cross-references profiles must find the same facts (see `CHECKLIST.md`).
 - **i18n.** Data is bilingual by design (`en` essential, `es` native). Repo
-  *docs* are English (D8); `README.es.md` is a maintained translation of
-  `README.md`, not a second source — both change in the same PR.
+  *docs* are English (D8); `README.es.md` and `CHECKLIST.es.md` are maintained
+  translations, not second sources — each pair changes in the same PR. The
+  engine regenerates only `CHECKLIST.md` (English), so the Spanish checklist is
+  hand-maintained.
 - **Drift-check.** `profiles/` outputs derive from `content/`; a mismatch is a
   bug to fix at the source, not the output.
 

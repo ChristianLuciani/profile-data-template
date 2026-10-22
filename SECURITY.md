@@ -52,7 +52,8 @@ bounty. Credit is given in the advisory unless you ask otherwise.
 
 - `.github/workflows/**`, `.github/scripts/**` — privilege, trigger, pinning and
   injection issues (e.g. untrusted input reaching a `run:` block).
-- Guidance in `README.md`, `CONTRIBUTING.md`, `CHECKLIST.md`, `docs/**` that
+- Guidance in `README.md`, `CONTRIBUTING.md`, `CHECKLIST.md` (and its
+  `CHECKLIST.es.md` translation), `docs/**` that
   could lead a forker to publish personal data or to widen CI permissions.
 - The template bootstrap flow (private-by-default, "Use this template", the
   `build.yml` commit guard).
