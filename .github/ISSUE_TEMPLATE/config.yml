@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/ChristianLuciani/profile-data-template/security/advisories/new
+    about: Report privately — never in a public issue. See SECURITY.md.
+  - name: Question about using the template
+    url: https://github.com/ChristianLuciani/profile-data-template/blob/main/CONTRIBUTING.md
+    about: Start flow, local setup, CI and releases are documented here.
+  - name: Engine (profile-as-code) issues
+    url: https://github.com/ChristianLuciani/profile-as-code/issues
+    about: Bugs in pasco, the schema, or the renderers belong in the engine repo.

@@ -1,215 +1,274 @@
 # profile-data-template
 
-> **Workspace de datos de profile-as-code** — tu identidad profesional como código.
-> Este repo es un **template**: usalo con *Use this template* o fork/clone, y reemplazá el contenido
-> de ejemplo con TUS datos. El engine ([profile-as-code](https://github.com/ChristianLuciani/profile-as-code))
-> NUNCA vive aquí ni copia tus datos — solo los lee por ruta.
+> **Your professional identity as code.** A forkable data workspace for the
+> [profile-as-code](https://github.com/ChristianLuciani/profile-as-code) engine:
+> facts live in YAML, per-platform texts are rendered from them, and one source
+> of truth keeps every profile consistent.
 
-## Qué es esto
+[![checks](https://github.com/ChristianLuciani/profile-data-template/actions/workflows/checks.yml/badge.svg)](https://github.com/ChristianLuciani/profile-data-template/actions/workflows/checks.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![engine: 0.3.0](https://img.shields.io/badge/engine-%40profile--as--code%2Fcli%400.3.0-blue)](https://www.npmjs.com/package/@profile-as-code/cli)
 
-Un solo source of truth (YAML versionado) de tus hechos profesionales → textos optimizados por
-plataforma (LinkedIn, GitHub, Upwork, X, ResearchGate, Substack…) con skills por plataforma.
+**This repository is a template, not the engine.** It contains no application
+code. You copy it, replace the fictional example with your own facts, and the
+engine validates and renders the result.
 
-- **Hechos** (fechas, proyectos, papers, DOIs) → deterministas, validados, con drift-check (GEO: un
-  LLM que cruza tus perfiles debe encontrar los mismos hechos).
-- **Textos** (headlines, bios, ángulos) → generados por plataforma, en variantes que VOS elegís,
-  por idioma (`en` esencial, `es` nativo, `fr` deseable).
-- **Deploy** → manual con checklist (LinkedIn, Upwork…) o git/API (GitHub README, web).
+| You want… | It lives in |
+|---|---|
+| This workspace layout, docs, CI | **this repo** |
+| The `pasco` CLI, the schema, the renderers | [profile-as-code](https://github.com/ChristianLuciani/profile-as-code) |
+| `schema/profile.schema.json` | [engine schema](https://github.com/ChristianLuciani/profile-as-code/blob/main/schema/profile.schema.json) |
+| The engine SPEC (`§9` covers this template) | [engine docs/SPEC.md](https://github.com/ChristianLuciani/profile-as-code/blob/main/docs/SPEC.md) |
+| Prior art / research notes | [engine docs/research/01-prior-art.md](https://github.com/ChristianLuciani/profile-as-code/blob/main/docs/research/01-prior-art.md) |
 
-## Uso — arranque en <10 min
+## Status
 
-1. Creá tu workspace con el CLI de GitHub (recomendado: crea el repo **privado directamente**
-   —elimina los dos pasos manuales, renombrar y flipar a privado, donde más se deja la data
-   expuesta):
+- Scaffold **v0.3.0**, tracking `@profile-as-code/cli@0.3.0` — the current
+  `latest` on npm, verified 2026-10-21 ([OFICIAL] [WEB: registry.npmjs.org]).
+- The example content is a **fictional persona** (Alex Rivera) that documents the
+  schema. Do not put real data in this repository; your data belongs in your fork.
+- Maintained on a best-effort basis. Issues and PRs are triaged; see
+  [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Why this exists
+
+A profile is published in many places and each one drifts. This workspace makes
+the facts the source of truth:
+
+- **Facts** (dates, roles, projects, papers, DOIs) are deterministic, validated,
+  and drift-checked — an LLM cross-referencing your profiles must find the same
+  facts everywhere (GEO consistency).
+- **Texts** (headlines, bios, angles) are generated per platform and per language
+  (`en` essential, `es` native; `fr` is desirable), in variants you choose.
+- **Evidence** is a first-class registry: claims, third-party credentials, and
+  artifacts are different things and are named as such.
+- **Deploy** is tracked: a ledger records what was pasted where, and whether it
+  is still in sync with `content/`.
+
+## Start in under 10 minutes — private first
+
+> **Privacy rule #0:** create the repository **private before you write a single
+> fact**. A public profile-data repo exposes your contact details, history and
+> media. The CLI path below creates it private in one step.
+
+1. Create your workspace from the template, private:
 
    ```sh
    gh repo create profile-data-<username> \
-     --template https://github.com/ChristianLuciani/profile-data-template \
+     --template ChristianLuciani/profile-data-template \
      --private
    ```
 
-   Alternativa manual: **Use this template** o **fork** en GitHub (el fork queda conectado
-   upstream) y **renombrá el resultado a `profile-data-<username>`** — el owner va en el
-   nombre y el prefijo de la familia gana (terminología canónica: SPEC §9.1 del engine).
-   Hacelo **privado** — tus datos no son públicos (salvo que quieras).
-2. Cloná y entrá:
+   Manual alternative: **Use this template** (or fork) on GitHub, then **rename it
+   to `profile-data-<username>`** and make it **private**. The name carries the
+   owner and the family prefix (canonical naming, engine SPEC §9.1).
+
+2. Clone it:
 
    ```bash
-   git clone git@github.com:<tu-usuario>/profile-data-<username>.git
+   git clone git@github.com:<your-user>/profile-data-<username>.git
    cd profile-data-<username>
    ```
 
-3. **No hace falta instalar el engine.** `.github/workflows/build.yml` corre `pasco`
-   desde npm y commitea `profiles/` por vos: editá `content/` en el editor web de
-   GitHub y, al pushear a `main`, las vistas generadas se commitean solas. El template
-   fija la versión que espera — **`@profile-as-code/cli@0.3.0`** (`pasco` es el bin) —
-   ([OFICIAL] [WEB: registry.npmjs.org, verificado 2026-10-12]). Para correrlo local:
-   `npm i -g @profile-as-code/cli@0.3.0`.
+3. **You do not need to install the engine to get output.** In your copy,
+   `.github/workflows/build.yml` installs the pinned `pasco` from npm and commits
+   the generated `profiles/` on every push to `main` that touches `content/`.
+   Edit `content/` in GitHub's web editor and the views appear.
 
-   > En **tu copia** verificá que Actions esté habilitado. *No* hace falta tocar
-   > *Settings → Workflow permissions*: el workflow declara su `contents: write`.
-   > La primera vez, confirmá en la pestaña **Actions** que corrió.
+   > Confirm **Actions** is enabled in your copy. You do **not** need to change
+   > *Settings → Workflow permissions*: the workflow declares its own
+   > `contents: write`. Check the **Actions** tab after the first push.
 
-4. Editá `content/` — reemplazá el ejemplo ficticio con tus datos (contrato:
-   `schema/profile.schema.json`; cada archivo ES una root property — `bios.yaml` es el
-   array `bios[]` directamente, sin key wrapper):
-   - `identity.yaml` — nombre, ubicación, links canónicos (TU source of truth de URLs)
-   - `positioning.yaml` — tu enunciado de posicionamiento + ángulos por audiencia + anclas GEO
-   - `bios.yaml`, `headlines.yaml` — por plataforma/idioma/longitud
-   - `skills.yaml`, `experience.yaml`, `projects.yaml`, `publications.yaml`, `keywords.yaml`
-
-5. Construí y validá:
+   For local runs, Node **22+** is required (engine `engines`):
 
    ```bash
-   pasco validate         # schema (fail) + drift/geo (warn) — D12
-   pasco build            # base texts deterministas por plataforma (sin arg = todas)
-   pasco diff             # cambios desde el último release (→ CHANGELOG)
-   pasco refine linkedin  # variantes IA (stub en M1, M3/M4) — agente propone, vos elegís
-   pasco check            # checks declarativos (stub en M1, M4)
-   pasco status           # estado por entrada — origen · superficies · in-sync/stale/never (D18)
-   pasco status --write-checklist   # regenera CHECKLIST.md desde el ledger (AUTO-GENERATED)
+   npm i -g @profile-as-code/cli@0.3.0
    ```
 
-6. **Deploy:** pegá lo generado en cada plataforma (ver `CHECKLIST.md`) o dejá que git/API
-   actualice GitHub README y web. Confirmá cada pega con el ledger (D18):
+4. Replace the example in `content/` with your facts. Each file **is** its root
+   property — `bios.yaml` is the `bios[]` array directly, with no wrapper key
+   ([schema](https://github.com/ChristianLuciani/profile-as-code/blob/main/schema/profile.schema.json)):
+
+   - `identity.yaml` — name, location, canonical links (the SSOT for your URLs)
+   - `positioning.yaml` — positioning statement, audience angles, GEO anchors
+   - `bios.yaml`, `headlines.yaml` — per platform, language and length
+   - `skills.yaml`, `experience.yaml`, `projects.yaml`, `publications.yaml`, `keywords.yaml`
+
+5. Validate and build:
+
+   ```bash
+   pasco validate         # schema FAILS (exit 1); drift/GEO WARN (exit 0)
+   pasco check            # evidence registry + media transport gate
+   pasco build            # deterministic per-platform output (no arg = all)
+   pasco diff             # changes since the last release tag → CHANGELOG
+   pasco refine linkedin  # PARTIAL: emits an agent task; --choose records the pick
+   pasco status           # per-entry: origin · surfaces · in-sync/stale/never
+   pasco status --write-checklist   # regenerates CHECKLIST.md from the ledger
+   ```
+
+6. **Deploy.** Paste each generated text into its platform (see
+   [CHECKLIST.md](CHECKLIST.md)), or let git/API update your GitHub README and
+   site. Record each paste so the ledger knows what is live:
 
    ```bash
    pasco status --mark experience:exp-example-labs linkedin
-   # registra deployedAt + contentHash en content/deployments.yaml — solo `pasco` lo escribe
+   # writes deployedAt + contentHash to content/deployments.yaml — only pasco writes it
    ```
 
-   El ledger responde por cada pieza: ¿mía o del template? (`origin`), ¿publicada dónde?,
-   ¿en-sync o stale? — y `pasco status --write-checklist` regenera `CHECKLIST.md`
-   (vista AUTO-GENERADA: no la edites a mano después de eso).
-7. **Versioná:** cada cambio entra con `CHANGELOG.md` actualizado → sabés qué re-pegar y dónde.
+7. **Version.** Every change ships with a `CHANGELOG.md` entry, so you know what
+   to re-paste and where.
 
-## Evidencia — probar lo que afirmás
+## What the engine writes
 
-Tu perfil se cree cuando está **probado**. Dos bloques opcionales (D17, SPEC §18 del
-engine) registran esa prueba. Si no los usás, dejá los archivos vacíos o borralos: el
-loader saltea archivos ausentes o vacíos.
+The engine is read-only over your workspace except for **four** commands — and
+none of them rewrites your facts:
 
-**Tres conceptos que NO se mezclan** (naming canónico, §18.1):
+| Command | Writes |
+|---|---|
+| `pasco build` | `profiles/<platform>/` (+ bundled `assets/`) — derived, committed |
+| `pasco refine` | `content/active.yaml` — the variant you picked |
+| `pasco status --mark` | `content/deployments.yaml` — the deploy ledger (D18) |
+| `pasco status --write-checklist` | `CHECKLIST.md` — AUTO-GENERATED view of the ledger |
 
-| Concepto | Bloque | Qué es | Ejemplo |
+Everything else only reads. `profiles/` is generated output and **is** committed:
+it is the deploy artifact. Never hand-edit it — fix `content/` and rebuild.
+
+## The three evidence concepts (do not mix them)
+
+| Concept | Block | It is | Example |
 |---|---|---|---|
-| **Claim** | `projects[].evidence[]` | afirmación textual + fuente | "levanté $2M" → link a TechCrunch |
-| **Credential** | `content/credentials.yaml` | atestación de terceros | certificado AWS, título, premio, patente |
-| **Artifact** | `content/artifacts.yaml` | una obra o media | portfolio, galería, showreel, dataset, código |
+| **Claim** | `projects[].evidence[]` | a textual assertion + source | "raised $2M" → TechCrunch link |
+| **Credential** | `content/credentials.yaml` | a third-party attestation | AWS cert, degree, award, patent |
+| **Artifact** | `content/artifacts.yaml` | a work or media item | portfolio, showreel, dataset, code |
 
-`publications[]` (papers, DOI) y `press[]` conservan sus bloques y **referencian** ids del
-registro vía `artifactRefs` — no se duplican. (`press[]` es del flavor **brand**: este
-template es `person`, así que un write-up sobre vos va como artifact `document` o como
-claim. Detalle en `docs/evidence-packs.md`.)
+`publications[]` and `press[]` keep their own blocks and **reference** registry
+ids via `artifactRefs`; they are not registry kinds. (`press[]` is a **brand**
+flavor block; this template ships `flavor: person`, so a write-up *about you* is
+an artifact of `kind: document` or a claim. See
+[docs/evidence-packs.md](docs/evidence-packs.md).)
 
-### Agregar una credencial o un artifact
+A reference to an `id` that does not exist fails the load (`dangling cross-ref`,
+exit 1) — it is not silently ignored.
 
-1. **Poné el archivo** — si es chico y vale versionarlo (un escaneo, unos stills), va en
-   `media/`; si es grande (un showreel de 2 GB), hostealo afuera y usá `url`. Detalle y
-   límites de tamaño: `media/README.md`.
-2. **Declará el puntero** en `content/credentials.yaml` o `content/artifacts.yaml`.
-   Mínimo: `id`, `kind`, `title` (+ `issuer` en credenciales; `locator` en artifacts).
-   El `id` tiene que ser único en su bloque y ser un slug (`^[a-z0-9][a-z0-9._:-]*$`).
-3. **(Opcional) Cableala desde un claim.** Solo si querés que la prueba aparezca
-   asociada a un proyecto: agregá `credentialId: <id>` o `artifactId: <id>` en
-   `projects[].evidence[]`, o `artifactRefs: [<id>]` en `publications[]` (y `press[]`, si
-   el workspace fuera flavor `brand`).
-   **El `id` referenciado tiene que existir ya**: si apuntás a un id que no está en el
-   bloque, `pasco validate` **falla** con `dangling cross-ref` (exit 1) — no se ignora
-   en silencio. Si declarás la credencial pero no la cableás a nada, no pasa nada: no
-   es obligatorio referenciarla.
-   Y para que la referencia funcione en el output, la entrada referenciada tiene que
-   ser `visibility: public` — ver *Visibilidad* abajo.
-4. **Verificá y construí:**
+### Visibility — the rule is stricter than the names suggest
 
-   ```bash
-   pasco validate   # schema (falla) + drift/geo (avisa)
-   pasco check      # expiración, privacidad y transporte de media
-   pasco build github-readme   # bundlea assets/ + manifest.json con sha256
-   ```
+`visibility: public | unlisted | private` (absent = `public`). Only `public`
+counts as public. `unlisted` and `private` are treated the same by the gate:
+neither can be referenced from public output, and neither is emitted in renders.
+`pasco check` fails the build if public material references one.
 
-   Los tres comandos en `0` = listo. `validate` y `check` también corren solos en cada
-   PR vía `.github/workflows/checks.yml` (job `evidence`).
+### Media — one path to the public web
 
-**Locators** — la matriz de capacidades (§18.3). Exactamente uno de `url` o `path`:
+`media/` holds small, versionable binaries. A `path` locator is the source of
+truth; the renderer bundles it into `profiles/<platform>/assets/` with a
+`sha256` manifest, and the deployed output links a **deploy-relative**
+`assets/<id>/<basename>`. Never hot-link a file from a private repository: for
+the rest of the world it is a 404.
 
-| Locator | Para qué | En el render |
-|---|---|---|
-| `{ url: https://… }` | algo ya hosteado (Vimeo, Zenodo, tu sitio) | URL verbatim + live-link check |
-| `{ path: media/… }` | archivo versionado en este repo | viaja a `profiles/<platform>/assets/` — **nunca** como URL cruda |
-| `{ path: otra-cosa }` | colección externa grande | resuelve bajo `PASCO_EVIDENCE_ROOT` |
+Limits and tradeoffs: [media/README.md](media/README.md),
+[docs/power-user-symlinks.md](docs/power-user-symlinks.md).
 
-**Regla de oro (workspace privado ⇒ sin hot-linking):** la media llega a la superficie
-pública **solo** por `media/ → assets/ → deploy`. Nunca pegues un link a un archivo de tu
-repo privado en un perfil público: para el resto del mundo es un 404. Un link
-`assets/<id>/<basename>` es deploy-relative y resuelve recién en la superficie pública.
-
-### Visibilidad — PII
-
-`visibility: public | unlisted | private` en ambos bloques. Ausente = `public` (un
-perfil pre-registro era público por diseño — la ausencia no oculta en silencio).
-
-La regla que el engine **hace cumplir** es binaria y más estricta de lo que sugieren
-los nombres: **solo `public` cuenta como público**. `unlisted` y `private` se tratan
-igual a los efectos del gate — ninguno de los dos puede ser referenciado desde material
-público.
-
-- `public` → los renderers la emiten. Lo único referenciable desde output público.
-- `unlisted` → **no se emite en los renders** y **no puede** referenciarse desde un
-  claim público. Pensalo como "guardado pero no publicado": existe para que el dato
-  esté en el workspace, no para compartirse por un render.
-- `private` → nunca sale del workspace.
-
-⚠️ **El caso que rompe el build:** si declarás una credencial `unlisted` y la cableás
-desde un claim (`projects[].evidence[].credentialId`), `pasco check` **falla** — igual
-que con `private`, y el mensaje del engine dice "visibility unlisted ... public output
-renders only public entries". Si querés que la credencial aparezca en el perfil, tiene
-que ser `public`. Si no querés que aparezca, no la referencies desde un claim.
-
-```bash
-pasco check   # falla (exit 1) si algo público referencia unlisted/private
-```
-
-El nombre de la regla en la SPEC es `no-private-in-public-output` (§18.8); el CLI lo
-emite como `check/private-in-public-output`. El mensaje dice "private" incluso cuando
-la visibility es `unlisted` — es un nombre histórico, no una descripción exacta.
-
-Empezá por `docs/evidence-packs.md` (checklists por dominio: diseñador, filmmaker,
-científico, ingeniero). Si querés versionar media grande o stowear una carpeta externa:
-`docs/power-user-symlinks.md` (spoiler: git guarda el *texto* del symlink, no los bytes).
-
-## Estructura
+## Repository map
 
 ```
 profile-data-<username>/
-├── content/             # ← TU información (YAML · deployments.yaml = ledger D18)
-│   ├── credentials.yaml # atestaciones de terceros (opcional — D17/§18)
-│   └── artifacts.yaml   # obras y media (opcional — D17/§18)
-├── media/               # ← binarios chicos y versionables (opcional — §18.6)
-│   ├── certificates/    #   escaneos de credenciales
-│   ├── photos/          #   stills, galería
-│   └── press/           #   recortes de prensa
-├── docs/                # evidence-packs.md · power-user-symlinks.md
-├── profiles/            # outputs generados (se commitean: son los artefactos de deploy)
-│   └── <platform>/assets/   # media bundleada + manifest.json (sha256) — solo con path locators
-├── CHANGELOG.md         # cada cambio: fecha + qué plataformas re-pegar
-├── CHECKLIST.md         # verificación por plataforma post-pega
-└── .pascorc             # configuración del CLI (workspace path, defaults)
+├── content/              # YOUR data (YAML)
+│   ├── credentials.yaml  # third-party attestations (optional, D17/§18)
+│   ├── artifacts.yaml    # works and media (optional, D17/§18)
+│   └── deployments.yaml  # deploy ledger (written only by pasco status --mark)
+├── media/                # small versionable binaries (optional, §18.6)
+├── docs/                 # evidence packs · symlink/stow tradeoffs · standards
+├── profiles/             # generated deploy artifacts (committed, never hand-edited)
+├── .github/              # CI, link/secret/example-data gates, issue templates
+├── .pascorc              # CLI config: workspace, defaults, diff.tagPattern
+├── CHECKLIST.md          # per-platform post-deploy verification
+└── CHANGELOG.md          # every change: date + what to re-paste
 ```
 
-## Reglas
+## CI and automation
 
-- Los datos de ejemplo en `content/` son una **persona ficticia** (Alex Rivera) — documentan el schema.
-- `profiles/` se regenera con `pasco build`; no lo edites a mano (se pisa).
-- El engine es de solo lectura sobre este repo salvo por sus 4 escritores: `pasco build`
-  (`profiles/`), `pasco refine` (`content/active.yaml`), `pasco status --mark`
-  (`content/deployments.yaml`, D14) y `pasco status --write-checklist` (`CHECKLIST.md`).
-- Multi-identidad: si mañana manejás una **identidad comercial/marca**, creá otro workspace
-  (mismo engine) — uno por identidad, mismo naming: `profile-data-<identidad>`
-  (p.ej. `profile-data-topia`).
+Five checks plus the build job. All actions are **pinned by full commit SHA**;
+[Dependabot](.github/dependabot.yml) keeps the pins current.
 
-## Enlaces
+| Workflow | Trigger | What it does |
+|---|---|---|
+| `checks.yml` → `yaml` | push to main + every PR | `content/*.yaml` parses |
+| `checks.yml` → `links` | same | relative markdown links resolve, plus a self-test that the gate rejects a broken link |
+| `checks.yml` → `example-data` | same | `content/` is still fictional, `media/` still empty, no local state tracked |
+| `checks.yml` → `secrets` | same | `gitleaks` (pinned CLI + SHA-256) scans the full history |
+| `checks.yml` → `evidence` | same | `pasco validate` + `pasco check` (the §18.8 gate) |
+| `workflow-lint.yml` | workflows change | every workflow file parses — kept separate so it can cover `checks.yml` itself |
+| `build.yml` | push to main touching `content/**`, `.pascorc`, the link script or itself | validate + check + build, then commits `profiles/` |
+
+The `example-data` job runs **only in this template repository** — a fork
+legitimately carries a real identity, so the guard skips there (running it in a
+fork would fail on every PR).
+
+The build job is the only one with `contents: write`. In **user workspaces** it
+commits the generated output as `github-actions[bot]`; in **this template** it
+refuses (the `is_template` check is fail-closed: a missing flag aborts instead of
+pushing blind). Its push uses `GITHUB_TOKEN`, so it triggers no workflow — that is
+why it runs the link gate itself, through the same
+[`.github/scripts/check-links.sh`](.github/scripts/check-links.sh) used by `checks.yml`.
+
+## Security and privacy
+
+- **No real data in this repository.** `content/` is a fictional example and
+  `media/` ships empty; CI fails here if that stops being true (the guard skips
+  in forks, where real data is the point).
+- **Never paste real profile data, tokens or private media into an issue or PR.**
+  This repo is public; your workspace is not.
+- **Security reports go through GitHub privately**, never a public issue: see
+  [SECURITY.md](SECURITY.md).
+- **Forking is your responsibility.** Create the fork private, keep the engine
+  pinned, and review dependency updates before merging them.
+- Local state that may contain machine paths (`.pasco/`) is gitignored.
+
+## Contributing
+
+Contributions are welcome when they help **every user of the family**, not one
+person's data. Start with [CONTRIBUTING.md](CONTRIBUTING.md); the
+[Code of Conduct](CODE_OF_CONDUCT.md) applies. Open an issue before a large
+feature; bugs and proposals have issue templates.
+
+## Releases
+
+Versions mirror the engine pin: `MAJOR.MINOR` is the engine line, `PATCH` is this
+scaffold's revision. `v0.3.0` is the first tagged release. Tagging, the re-sync
+of a fork, and the list of files that must be bumped together are in
+[CONTRIBUTING.md § Releases](CONTRIBUTING.md#releases).
+
+## Troubleshooting
+
+| Symptom | Cause / fix |
+|---|---|
+| `pasco: command not found` | Install it (`npm i -g @profile-as-code/cli@0.3.0`) or run `npx -y @profile-as-code/cli@0.3.0 <cmd>` |
+| `validate` fails on `dangling cross-ref` | A `credentialId` / `artifactId` / `artifactRefs` points to an `id` that does not exist |
+| `check` fails on private-in-public-output | A public claim references an `unlisted`/`private` entry — make it `public` or drop the reference |
+| The build bot commits nothing | Confirm this is a user workspace (not the template), Actions is enabled, and the push touched one of the watched paths |
+| A workflow dies in 0s (`startup_failure`) | A YAML error in that workflow. `workflow-lint.yml` exists for exactly this class and parses the files in CI |
+| Generated README links 404 | `assets/` was not committed with the output, or the link is not deploy-relative |
+
+## Roadmap
+
+The scaffold follows the engine's milestones; the current line is engine `0.3.x`.
+Priorities and open work live in [issues](https://github.com/ChristianLuciani/profile-data-template/issues)
+and in the engine's roadmap. `pasco check` executes the registry and media rules
+today; the remaining declarative catalog ships with engine M3/M4.
+
+## License
+
+[MIT](LICENSE). When you fork this template for your own workspace, replace the
+`Copyright (c)` line in `LICENSE` with your name.
+
+## Links
 
 - Engine: https://github.com/ChristianLuciani/profile-as-code
-- Spec del engine: `docs/SPEC.md` allí (§9 = este template)
-- Prior-art: `docs/research/01-prior-art.md`
+- Engine spec: https://github.com/ChristianLuciani/profile-as-code/blob/main/docs/SPEC.md
+- Schema: https://github.com/ChristianLuciani/profile-as-code/blob/main/schema/profile.schema.json
+- Prior art: https://github.com/ChristianLuciani/profile-as-code/blob/main/docs/research/01-prior-art.md
+- Media pipeline: https://github.com/ChristianLuciani/profile-as-code/blob/main/docs/media-pipeline.md
+
+---
+
+[Español](README.es.md)

@@ -51,8 +51,23 @@ an individual is officially representing the community in public spaces.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement. All complaints
-will be reviewed and investigated promptly and fairly.
+reported privately to the maintainer through GitHub's private advisory form:
+
+→ https://github.com/ChristianLuciani/profile-data-template/security/advisories/new
+  (start the title with `conduct:`)
+
+If you do not have a GitHub account, or the form is unavailable to you, open a
+public issue **without any details** and ask for a private channel. Do not post
+the incident, names, or screenshots in a public thread.
+
+All complaints will be reviewed and investigated promptly and fairly, and the
+reporter's identity will be kept confidential. The maintainer aims to
+acknowledge a report within 5 business days. Consequences follow the Community
+Impact Guidelines and may range from a private warning to a permanent ban from
+the project's spaces.
+
+For severe abuse on GitHub itself, you can also use GitHub's own
+[report abuse](https://github.com/contact/report-abuse) flow.
 
 ## Attribution
 
@@ -62,9 +77,7 @@ version 2.1, available at
 
 [homepage]: https://www.contributor-covenant.org
 [v2.1]: https://www.contributor-covenant.org/version/2/1/code_of_conduct.html
+[Mozilla CoC]: https://github.com/mozilla/diversity
 
 Community Impact Guidelines were inspired by
 [Mozilla's code of conduct enforcement ladder][Mozilla CoC].
-
-[homepage]: https://www.contributor-covenant.org
-[Mozilla CoC]: https://github.com/mozilla/diversity

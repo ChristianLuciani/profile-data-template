@@ -1,21 +1,28 @@
 # checks — profile-data-template
 #
-# Three jobs on every push/PR:
+# Five jobs on every push/PR:
 #
 # - yaml (offline, ~seconds): `content/*.yaml` parses.
 # - links (offline, ~seconds): relative markdown links in tracked `.md` files
 #   resolve, plus a self-test that the gate still rejects a broken link.
+# - example-data (offline, ~seconds): the shipped `content/` is still a fictional
+#   example and `media/` is still empty — a forker must never inherit real data.
+# - secrets (offline, ~seconds): gitleaks scans the full history.
 # - evidence (needs the engine, ~30s): `pasco validate` + `pasco check` — the
 #   §18.8 evidence/media gate CHECKLIST.md tells you to run before deploying.
 #   This is the ONLY place that gate runs automatically; build.yml has no
 #   `pull_request` trigger, so a check placed there could never gate a PR.
 #
-# The first two stay offline by design. The third installs the pinned engine from
+# The first four stay offline by design. The fifth installs the pinned engine from
 # npm (same pin as build.yml — keep them in sync).
 #
 # The link check lives in `.github/scripts/check-links.sh`, not inline, because
 # build.yml needs the identical logic for the commit it makes with GITHUB_TOKEN —
 # such a push triggers no workflow, so this job would never see that commit.
+#
+# Every action is pinned by full commit SHA, here as in every workflow: a
+# retagged action is arbitrary code with the workflow's token. Dependabot
+# (.github/dependabot.yml) updates the pins; do not replace a SHA with a tag.
 #
 # NOTE: the prose above MUST stay commented — bare `**bold**:` lines are parsed
 # by YAML as alias tokens (`*`) and make the whole workflow a startup_failure
@@ -40,7 +47,8 @@ jobs:
     name: yaml parse
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Parse content YAML
         run: |
           set -euo pipefail
@@ -50,7 +58,8 @@ jobs:
     name: internal doc links
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Check relative markdown links resolve
         run: bash .github/scripts/check-links.sh
       # A gate whose failure path is never exercised can quietly become a no-op —
@@ -72,12 +81,60 @@ jobs:
           bash .github/scripts/check-links.sh "$probe/ok.md" >/dev/null
           echo "link gate self-test OK: rejects a broken link, accepts a good one"
 
+  example-data:
+    name: template example data
+    runs-on: ubuntu-latest
+    steps:
+      # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      # Template-only guard. A fork legitimately carries a real identity, media
+      # and non-example emails, so the check must NOT run there — it would fail on
+      # every PR of every user workspace. Upstream is matched by name as well as
+      # by the flag, so a fork cannot silence it by copying the repo.
+      - name: Guard that content/ stays fictional and media/ empty
+        env:
+          IS_TEMPLATE: ${{ github.event.repository.is_template }}
+        run: |
+          set -euo pipefail
+          if [ "${IS_TEMPLATE:-}" != "true" ] && [ "${GITHUB_REPOSITORY}" != "ChristianLuciani/profile-data-template" ]; then
+            echo "not the template repository — the example-data guard only applies upstream"
+            exit 0
+          fi
+          bash .github/scripts/check-example-data.sh
+
+  secrets:
+    name: secret scan
+    runs-on: ubuntu-latest
+    steps:
+      # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          # Full history: a secret removed from HEAD is still leaked once pushed.
+          fetch-depth: 0
+      # The OSS gitleaks CLI, not the proprietary gitleaks-action: this template is
+      # forked by third parties, and an action under a commercial EULA would put
+      # that obligation on every fork. Version + SHA-256 are pinned; bump both
+      # together (checksums: the release's gitleaks_<ver>_checksums.txt).
+      - name: Scan git history with gitleaks
+        env:
+          GITLEAKS_VERSION: "8.30.1"
+          GITLEAKS_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+        run: |
+          set -euo pipefail
+          curl -fsSL -o gitleaks.tgz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+          ./gitleaks git . --no-banner --redact --exit-code 1
+
   evidence:
     name: evidence & media checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      # actions/setup-node@v4.4.0 → 49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22
       # Kept in sync with build.yml's pin — both must name the same version.

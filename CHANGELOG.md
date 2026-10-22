@@ -1,3 +1,63 @@
+## Unreleased — 2026-10-21 — publicación OSS: gobernanza, seguridad y README bilingüe
+
+Preparación para publicar el template como open source. Sin cambios de schema ni
+de contenido de ejemplo: el workspace sigue validando contra
+`@profile-as-code/cli@0.3.0` (`validate` 0 hallazgos, `check` 0 hallazgos,
+2026-10-21).
+
+- **Gobernanza que faltaba**
+  - `SECURITY.md` — canal privado (GitHub advisory), alcance (workflows, docs,
+    bootstrap, data de ejemplo), fuera de alcance (engine, forks, plataforma),
+    latencia esperada (ack ≤3 días hábiles, triage ≤7, disclosure 90 días) y
+    baseline de hardening. Los forks quedan explícitamente fuera: el maintainer
+    no tiene acceso a ellos.
+  - `CODE_OF_CONDUCT.md` — canal de enforcement real (advisory privado con
+    prefijo `conduct:`), confidencialidad, SLA de 5 días y escalera de
+    consecuencias. Antes decía "reportá a los líderes" sin decir cómo.
+  - `.github/ISSUE_TEMPLATE/` (bug, feature, config) y
+    `PULL_REQUEST_TEMPLATE.md` — con la regla de privacidad al frente: nunca
+    datos reales, media privada ni tokens en un hilo público.
+  - `CONTRIBUTING.md` — sección "Before you open anything" (routing por tipo de
+    reporte), expectativa de triage a 7 días, paridad README EN/ES y la regla de
+    pin por SHA para actions.
+- **Seguridad del CI**
+  - **Todas las actions pinneadas por commit SHA** (`checks.yml` y
+    `workflow-lint.yml` usaban `@v4`; `build.yml` ya lo hacía). Un tag re-apuntado
+    es código arbitrario con el token del job.
+  - **`dependabot.yml`** — actualiza los pins de GitHub Actions semanalmente.
+  - **Job `secrets`** — gitleaks OSS (MIT) con versión y SHA-256 pinneados sobre
+    la historia completa. Se eligió el CLI y no `gitleaks-action` porque este
+    template se forkea: no se le impone una EULA comercial a cada fork.
+  - **Job `example-data`** — `.github/scripts/check-example-data.sh` falla si
+    `content/identity.yaml` deja de declarar la persona ficticia, si un email sale
+    de `example.*`, si aparece un path absoluto de home o un scheme no http(s) en
+    `content/`, si `media/` trae un binario, o si `.pasco/`/`.env*` queda
+    trackeado. **Corre solo en el repo template** (un fork lleva una identidad
+    real: ahí el job se saltea y el script no aplica).
+  - **`.gitignore`** — `.pasco/` (el `local.toml` puede guardar un evidence root
+    absoluto, y la doc ya lo daba por ignorado), `node_modules/`, `*.log`.
+- **Documentación para un visitante externo**
+  - `README.md` reescrito en inglés (idioma primario OSS, D8) con badges, tabla
+    "esto es el template / esto es el engine", estado, quickstart privado-primero,
+    mapa de repo, CI, seguridad, troubleshooting y roadmap. `README.es.md` es la
+    traducción mantenida.
+  - Los punteros a `schema/profile.schema.json`, `docs/SPEC.md` y
+    `docs/research/01-prior-art.md` ahora son URLs absolutas al repo del engine:
+    antes eran rutas relativas que en este repo no existen (404 para un outsider).
+  - `pasco check`/`pasco refine` descritos según el CLI 0.3.0 real (`check` ejecuta
+    reglas de registro y media; `refine` es PARCIAL), no como stubs.
+  - `media/README.md` — el patrón de git-lfs con llaves (`*.{mp4,zip,psd}`) no
+    expande: se reemplazó por un patrón por extensión, y se aclaró que este
+    template embarca `media/` vacío.
+  - `CHECKLIST.md` — sección de privacidad del workspace antes del deploy.
+  - `docs/STANDARDS.md` y `AGENTS.md` — reglas de seguridad, disclosure privado,
+    paridad de READMEs, pin por SHA y prohibición de flipear visibilidad/mergear
+    desde una sesión de agente.
+- **Verificación local (2026-10-21):** `check-links.sh` OK ·
+  `check-example-data.sh` OK · `pasco validate` 0 hallazgos · `pasco check`
+  0 hallazgos · workflows y `dependabot.yml` parsean · historia sin coincidencias
+  de patrones de credenciales.
+
 ## v0.3.0 — 2026-10-12 — primer release del scaffold: CONTRIBUTING completo + release (issue #12, ROADMAP item 7)
 - Qué cambió:
   - **Primer tag del scaffold: `v0.3.0`** — desde acá el template se versiona espejando
