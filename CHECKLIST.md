@@ -3,15 +3,16 @@
 [Español](CHECKLIST.es.md)
 
 > **State of this file (D18, SPEC §19 of the engine):** per-entry deploy state lives in
-> `content/deployments.yaml` — report it with `pasco status`. Once you confirm a paste
-> with `pasco status --mark <ledgerKey> <surface>`, this file becomes the ledger's
-> AUTO-GENERATED view: `pasco status --write-checklist` **overwrites** it from the ledger
-> (in English) — from that point on, do not edit it by hand. Until then, the lists below
-> are your manual post-paste verification.
+> `content/deployments.yaml` — report it with `pasco status`. Once you start confirming
+> pastes with `pasco status --mark <ledgerKey> <surface>`, the ledger is the source of
+> truth: `pasco status --write-checklist` **overwrites** this file with its
+> AUTO-GENERATED view (in English). From that point on, do not edit it by hand. Until
+> then, the lists below are your manual post-paste verification.
 >
-> **Translation note:** `CHECKLIST.es.md` is a hand-maintained Spanish translation. The
-> engine only regenerates `CHECKLIST.md`; the Spanish file is not regenerated and must be
-> re-synced by hand (or retired) after you run `--write-checklist`.
+> **Translation note:** `CHECKLIST.es.md` is a hand-maintained Spanish translation of the
+> manual checklist. The engine only regenerates `CHECKLIST.md`, and the generated view
+> is not the manual checklist — the Spanish file cannot mirror it, so re-sync it by hand
+> or retire it after you run `--write-checklist`.
 
 After pasting/updating a platform, verify and mark it. Factual consistency across
 platforms IS your citability (GEO): if an LLM cross-references two profiles and finds
@@ -52,7 +53,7 @@ engine knows how to verify. The manual items below are still yours.
       `expires` in the past. The check names the credential and index; renew the data or
       update `expires`. Renew once a year, not when someone points it out.
 - [ ] **`private-in-public-output`** (`check/private-in-public-output`) — nothing
-      `unlisted` **nor** `private` referenced from public material. Only `public` counts
+      `unlisted` **or** `private` referenced from public material. Only `public` counts
       as public: `unlisted` fails just like `private`. If it fires, set the entry to
       `public` or drop the reference.
       *This check FAILS the build (exit 1) — it is an error, not a warning.*

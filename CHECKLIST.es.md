@@ -3,16 +3,16 @@
 [English](CHECKLIST.md)
 
 > **Estado de este archivo (D18, SPEC §19 del engine):** el estado por entrada de deploy
-> vive en `content/deployments.yaml` — reportalo con `pasco status`. Cuando confirmes pegás
-> con `pasco status --mark <ledgerKey> <surface>`, este archivo pasa a ser la vista
-> AUTO-GENERADA del ledger: `pasco status --write-checklist` lo **sobrescribe** desde el
-> ledger (en inglés) — desde ese punto, no lo edites a mano. Hasta entonces, las listas de
-> abajo son tu verificación manual post-pega.
+> vive en `content/deployments.yaml` — reportalo con `pasco status`. Cuando empieces a
+> confirmar pegadas con `pasco status --mark <ledgerKey> <surface>`, el ledger pasa a ser
+> la fuente de verdad: `pasco status --write-checklist` **sobrescribe** este archivo con
+> su vista AUTO-GENERADA (en inglés). Desde ese punto, no lo edites a mano. Hasta
+> entonces, las listas de abajo son tu verificación manual post-pega.
 >
-> **Nota de traducción:** este archivo es la traducción mantenida a mano de
-> `CHECKLIST.md`. El engine **solo regenera el inglés**; este español no se regenera y
-> queda desactualizado en cuanto corras `--write-checklist`. Re-sincronizalo a mano o
-> retiralo cuando uses el ledger.
+> **Nota de traducción:** este archivo es la traducción mantenida a mano del checklist
+> manual. El engine **solo regenera `CHECKLIST.md`**, y la vista generada no es el
+> checklist manual — este español no puede espejarla: re-sincronizalo a mano o retiralo
+> cuando corras `--write-checklist`.
 
 Después de pegar/actualizar una plataforma, verificá y marcá. La consistencia factual
 entre redes ES tu citabilidad (GEO): si un LLM cruza dos perfiles y encuentra
