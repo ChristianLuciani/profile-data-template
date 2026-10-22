@@ -1,26 +1,26 @@
-# identity.yaml — datos canónicos (independientes de idioma = ancla GEO)
-# EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tus datos.
-# Contrato: schema/profile.schema.json (profile-as-code). URLs viven SOLO acá.
-# v1.3 (engine issue #53): links son http(s) ONLY — sin mailto:/javascript: (la SSOT
-#   valida el scheme en el borde). El email de contacto es un HECHO del identity
-#   (v1.5, issue #71): vive en `email:` abajo — nunca como fila mailto: en links[].
+# identity.yaml — canonical facts (language-independent = GEO anchor)
+# EXAMPLE: fictional persona (Alex Rivera). Replace with your data.
+# Contract: schema/profile.schema.json (profile-as-code). URLs live ONLY here.
+# v1.3 (engine issue #53): links are http(s) ONLY — no mailto:/javascript: (the SSOT
+#   validates the scheme at the edge). The contact email is a FACT of identity
+#   (v1.5, issue #71): it lives in `email:` below — never as a mailto: row in links[].
 
 name: Alex Rivera
 location: Cuenca, Ecuador
 
-# v1.5 (issue #71): los renderers lo emiten como href mailto: (solo output) y como
-# propiedad schema.org `email` en el JSON-LD; `sameAs` queda solo con URLs de página.
+# v1.5 (issue #71): renderers emit it as a mailto: href (output only) and as the
+# schema.org `email` property in JSON-LD; `sameAs` keeps page URLs only.
 email: alex@example.com
 
-# photo: https://example.com/you.jpg   # contrato v1: URL (format uri). Path local pendiente de decisión (v1.1).
+# photo: https://example.com/you.jpg   # contract v1: URL (format uri). Local path pending a decision (v1.1).
 
-# v1.1 proposals (no forman parte del contrato v1 — ver PR del engine):
+# v1.1 proposals (not part of the v1 contract — see the engine PR):
 # handle: alexrivera            # GitHub/X handle
 # timezone: America/Guayaquil
-# orcid_id: "0000-0000-0000-0000"   # hay orcidId en publications[] (formato validado)
+# orcid_id: "0000-0000-0000-0000"   # publications[] has orcidId (format validated)
 
-# links CANÓNICOS: acá vive la verdad de tus URLs. Todas las plataformas derivan de acá.
-# Estructura v1: array de { platform, label, url } — el platform es texto libre.
+# CANONICAL links: the truth about your URLs lives here. Every platform derives from it.
+# v1 structure: array of { platform, label, url } — platform is free text.
 links:
   - platform: website
     label: Website

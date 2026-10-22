@@ -19,8 +19,10 @@ extends to example `content/` values that cite platform constraints.
 - **GEO consistency.** Facts must be identical across platforms — an LLM that
   cross-references profiles must find the same facts (see `CHECKLIST.md`).
 - **i18n.** Data is bilingual by design (`en` essential, `es` native). Repo
-  *docs* are English (D8); `README.es.md` is a maintained translation of
-  `README.md`, not a second source — both change in the same PR.
+  *docs* are English (D8); `README.es.md` and `CHECKLIST.es.md` are maintained
+  translations, not second sources — each pair changes in the same PR. The
+  engine regenerates only `CHECKLIST.md` (English), so the Spanish checklist is
+  hand-maintained.
 - **Drift-check.** `profiles/` outputs derive from `content/`; a mismatch is a
   bug to fix at the source, not the output.
 
@@ -62,7 +64,8 @@ extends to example `content/` values that cite platform constraints.
   (R2 on-ramp). It never does so in this template repo itself: the `is_template`
   guard is fail-closed, so a missing flag refuses to commit rather than pushing
   blind (`CONTRIBUTING.md` § CI).
-- Docs in English (D8); `README.es.md` mirrors `README.md`. Comments when present.
+- Docs in English (D8); `README.es.md` mirrors `README.md`, and
+  `CHECKLIST.es.md` mirrors the manual checklist. Comments when present.
 - CI: `checks.yml` (content YAML parse · relative markdown links, plus a
   self-test of that gate · template example-data guard · gitleaks secret scan ·
   `pasco validate` + `check`) · `workflow-lint.yml` (the workflow files parse —

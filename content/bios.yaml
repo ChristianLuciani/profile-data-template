@@ -1,7 +1,7 @@
-# bios.yaml — textos por plataforma/idioma/longitud
-# EJEMPLO: persona ficticia (Alex Rivera). El engine renderiza + `pasco refine` propone variantes.
-# Contrato v1: array de { platform (enum), lang (en|es|fr), length (short|medium|long), text }.
-# Las headlines viven en headlines.yaml (file = root property, schema/README.md).
+# bios.yaml — per-platform/language/length texts
+# EXAMPLE: fictional persona (Alex Rivera). The engine renders them + `pasco refine` proposes variants.
+# Contract v1: array of { platform (enum), lang (en|es|fr), length (short|medium|long), text }.
+# Headlines live in headlines.yaml (file = root property, schema/README.md).
 
   - platform: linkedin
     lang: en

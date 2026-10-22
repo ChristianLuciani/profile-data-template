@@ -35,7 +35,7 @@ rejected — a polite ping on the thread is welcome.
 | Area | Where | Notes |
 |---|---|---|
 | Instructions / start flow | `README.md`, `README.es.md` | The "<10 min start" must stay true end-to-end, in both languages |
-| Post-deploy checklist | `CHECKLIST.md` | Per-platform verification (GEO consistency) |
+| Post-deploy checklist | `CHECKLIST.md`, `CHECKLIST.es.md` | Per-platform verification (GEO consistency); the engine regenerates only the English file |
 | Example content | `content/` | Realistic-but-generic YAML that validates against the schema |
 | Docs & translations | `docs/`, README | English primary (D8); the *data* is bilingual by design |
 | CI / validation | `.github/workflows/`, `.github/scripts/` | YAML parse + link/secret/example-data gates + the evidence gate |
@@ -57,8 +57,13 @@ rejected — a polite ping on the thread is welcome.
    locally with `bash .github/scripts/check-example-data.sh`.
 5. **Forkers update the copyright.** When you fork this template for your own
    `profile-data`, replace the `Copyright (c)` line in `LICENSE` with your name.
-6. **Keep README and README.es in sync.** A change to the start flow, layout or
-   commands lands in both files in the same PR.
+6. **Keep the language pairs in sync.** A documentation change that affects a
+   paired surface lands in **both** members of the pair — `README.md` /
+   `README.es.md`, `CHECKLIST.md` / `CHECKLIST.es.md` — in the same PR: start
+   flow, layout, commands, checklist items, or any other paired content. Caveat:
+   the engine regenerates only `CHECKLIST.md` (in English) via
+   `pasco status --write-checklist`, so the Spanish checklist is hand-maintained
+   and must be re-synced after regeneration (or explicitly retired).
 7. **Pin actions by commit SHA.** Any action added to a workflow uses the full
    40-character SHA plus a `# vX.Y.Z` comment; Dependabot updates it. A mutable
    tag is a review blocker.

@@ -1,11 +1,11 @@
-# experience.yaml — trayectoria. HECHOS (fechas exactas = ancla GEO; no contradigas entre redes).
-# EJEMPLO: persona ficticia (Alex Rivera). Reemplazá con tu trayectoria.
-# Contrato v1: array de { role, org, start (YYYY-MM-DD), end (YYYY-MM-DD | present),
-#   highlights (langMap: {lang: string}) }. start <= end lo verifica core.driftCheck.
-# v1.1 proposal: highlights como lista por idioma ({lang: string[]}) — ver PR del engine.
-# v1.3 (D18, SPEC §19 del engine): cada fila de ejemplo lleva `id` (dirección del ledger
-#   `<block>:<id>` — sin id, `pasco status` la lista como untracked) y `origin: template`
-#   (procedencia — las filas que VOS escribís no llevan el flag: absent = user).
+# experience.yaml — career history. FACTS (exact dates = GEO anchor; never contradict across platforms).
+# EXAMPLE: fictional persona (Alex Rivera). Replace with your history.
+# Contract v1: array of { role, org, start (YYYY-MM-DD), end (YYYY-MM-DD | present),
+#   highlights (langMap: {lang: string}) }. core.driftCheck enforces start <= end.
+# v1.1 proposal: highlights as a per-language list ({lang: string[]}) — see the engine PR.
+# v1.3 (D18, SPEC §19 of the engine): every example row carries `id` (ledger direction
+#   `<block>:<id>` — without an id, `pasco status` lists it as untracked) and `origin: template`
+#   (provenance — rows YOU write do not carry the flag: absent = user).
 
 - id: exp-example-labs
   origin: template

@@ -107,7 +107,7 @@ los hechos sean la fuente de verdad:
    ```
 
 6. **Deploy.** Pegá cada texto generado en su plataforma (ver
-   [CHECKLIST.md](CHECKLIST.md)), o dejá que git/API actualice tu README de GitHub
+   [CHECKLIST.es.md](CHECKLIST.es.md)), o dejá que git/API actualice tu README de GitHub
    y tu web. Registrá cada pega para que el ledger sepa qué está vivo:
 
    ```bash
@@ -181,7 +181,7 @@ profile-data-<username>/
 ├── profiles/             # artefactos de deploy generados (commiteados, nunca a mano)
 ├── .github/              # CI, gates de links/secretos/data de ejemplo, plantillas de issue
 ├── .pascorc              # config del CLI: workspace, defaults, diff.tagPattern
-├── CHECKLIST.md          # verificación post-deploy por plataforma
+├── CHECKLIST.md          # verificación post-deploy por plataforma (EN · .es)
 └── CHANGELOG.md          # cada cambio: fecha + qué re-pegar
 ```
 
