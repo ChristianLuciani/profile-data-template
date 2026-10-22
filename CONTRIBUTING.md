@@ -55,12 +55,13 @@ rejected — a polite ping on the thread is welcome.
    locally with `bash .github/scripts/check-example-data.sh`.
 5. **Forkers update the copyright.** When you fork this template for your own
    `profile-data`, replace the `Copyright (c)` line in `LICENSE` with your name.
-6. **Keep the language pairs in sync.** A change to the start flow, layout or
-   commands lands in `README.md` **and** `README.es.md` in the same PR. The same
-   holds for `CHECKLIST.md` / `CHECKLIST.es.md` — with one caveat: the engine
-   regenerates only `CHECKLIST.md` (in English) via
-   `pasco status --write-checklist`, so the Spanish translation is hand-maintained
-   and must be re-synced after regeneration (or retired).
+6. **Keep the language pairs in sync.** A documentation change that affects a
+   paired surface lands in **both** members of the pair — `README.md` /
+   `README.es.md`, `CHECKLIST.md` / `CHECKLIST.es.md` — in the same PR: start
+   flow, layout, commands, checklist items, or any other paired content. Caveat:
+   the engine regenerates only `CHECKLIST.md` (in English) via
+   `pasco status --write-checklist`, so the Spanish checklist is hand-maintained
+   and must be re-synced after regeneration (or explicitly retired).
 7. **Pin actions by commit SHA.** Any action added to a workflow uses the full
    40-character SHA plus a `# vX.Y.Z` comment; Dependabot updates it. A mutable
    tag is a review blocker.

@@ -69,10 +69,12 @@ accurate, and the user's responsibility.
 10. **Never flip visibility, create a release, or merge a PR.** Those are
     human-only actions (repo-governance §2). Prepare the branch and the PR;
     the maintainer decides.
-11. **Keep the language pairs in sync.** A change to the start flow, layout or
-    commands lands in `README.md` **and** `README.es.md`, and in `CHECKLIST.md`
-    **and** `CHECKLIST.es.md`, in the same commit. The engine regenerates only
-    `CHECKLIST.md` (English); the Spanish checklist is hand-maintained.
+11. **Keep the language pairs in sync.** Any change to either member of a pair —
+    `README.md`/`README.es.md`, `CHECKLIST.md`/`CHECKLIST.es.md` — lands in
+    **both** in the same commit: start flow, layout, commands, checklist items,
+    or any other paired content. The engine regenerates only `CHECKLIST.md`
+    (English), so the Spanish checklist is hand-maintained: a checklist edit
+    must update it or explicitly retire it.
 12. **Pin every action by full commit SHA** (40 chars + `# vX.Y.Z` comment).
     Dependabot updates pins; never replace one with a mutable tag.
 

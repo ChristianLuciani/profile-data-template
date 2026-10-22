@@ -20,8 +20,9 @@
 - [ ] `bash .github/scripts/check-example-data.sh` passes.
 - [ ] If a workflow changed: every action is pinned by full commit SHA, and the
       job's `permissions:` is the minimum it needs.
-- [ ] Docs updated in the same PR (README EN **and** `README.es.md` when the
-      start flow changes; `CHANGELOG.md` for user-visible changes).
+- [ ] Docs updated in the same PR: **both** members of each language pair —
+      `README.md`/`README.es.md`, `CHECKLIST.md`/`CHECKLIST.es.md` — when the
+      paired content changes, plus `CHANGELOG.md` for user-visible changes.
 
 ## Review notes
 

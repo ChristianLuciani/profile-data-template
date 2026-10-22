@@ -64,7 +64,8 @@ extends to example `content/` values that cite platform constraints.
   (R2 on-ramp). It never does so in this template repo itself: the `is_template`
   guard is fail-closed, so a missing flag refuses to commit rather than pushing
   blind (`CONTRIBUTING.md` § CI).
-- Docs in English (D8); `README.es.md` mirrors `README.md`. Comments when present.
+- Docs in English (D8); `README.es.md` mirrors `README.md`, and
+  `CHECKLIST.es.md` mirrors the manual checklist. Comments when present.
 - CI: `checks.yml` (content YAML parse · relative markdown links, plus a
   self-test of that gate · template example-data guard · gitleaks secret scan ·
   `pasco validate` + `check`) · `workflow-lint.yml` (the workflow files parse —

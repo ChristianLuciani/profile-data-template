@@ -1,8 +1,9 @@
 ## Unreleased — 2026-10-21 — OSS publication: governance, security and bilingual README
 
-Preparation to publish the template as open source. No schema or example-content
-changes: the workspace still validates against `@profile-as-code/cli@0.3.0`
-(`validate` 0 findings, `check` 0 findings, 2026-10-21).
+Preparation to publish the template as open source. No schema changes; the only
+data change is one declared example-value normalization (see below). The
+workspace still validates against `@profile-as-code/cli@0.3.0` (`validate` 0
+findings, `check` 0 findings, 2026-10-21).
 
 - **Missing governance**
   - `SECURITY.md` — private channel (GitHub advisory), scope (workflows, docs,
@@ -56,9 +57,12 @@ changes: the workspace still validates against `@profile-as-code/cli@0.3.0`
   - `CHECKLIST.md`, `CHANGELOG.md`, `profiles/README.md` and the `content/*.yaml`
     comments are in English now. `CHECKLIST.es.md` is a hand-maintained Spanish
     translation; the engine only regenerates `CHECKLIST.md` (in English), so the
-    Spanish file must be re-synced by hand after `--write-checklist`. One data
-    value was normalized: the example venue `Physical Review C (ficticio)` →
-    `(fictional)`.
+    Spanish file must be re-synced by hand or retired after `--write-checklist`.
+    One data value was normalized: the example venue `Physical Review C (ficticio)`
+    → `(fictional)`.
+  - Parity rules extended to the checklist pair (`AGENTS.md` §11,
+    `CONTRIBUTING.md` rule 6, `docs/STANDARDS.md` §i18n, `SECURITY.md`), and
+    `PULL_REQUEST_TEMPLATE.md` now checks both language pairs.
 - **Local verification (2026-10-21):** `check-links.sh` OK ·
   `check-example-data.sh` OK · `pasco validate` 0 findings · `pasco check`
   0 findings · workflows and `dependabot.yml` parse · history with no credential

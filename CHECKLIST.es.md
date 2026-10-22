@@ -5,9 +5,10 @@
 > **Estado de este archivo (D18, SPEC §19 del engine):** el estado por entrada de deploy
 > vive en `content/deployments.yaml` — reportalo con `pasco status`. Cuando empieces a
 > confirmar pegadas con `pasco status --mark <ledgerKey> <surface>`, el ledger pasa a ser
-> la fuente de verdad: `pasco status --write-checklist` **sobrescribe** este archivo con
-> su vista AUTO-GENERADA (en inglés). Desde ese punto, no lo edites a mano. Hasta
-> entonces, las listas de abajo son tu verificación manual post-pega.
+> la fuente de verdad: `pasco status --write-checklist` **sobrescribe `CHECKLIST.md`**
+> (el archivo inglés) con su vista AUTO-GENERADA. Desde ese punto, no edites
+> `CHECKLIST.md` a mano; **este archivo español nunca se regenera**. Hasta entonces, las
+> listas de abajo son tu verificación manual post-pega.
 >
 > **Nota de traducción:** este archivo es la traducción mantenida a mano del checklist
 > manual. El engine **solo regenera `CHECKLIST.md`**, y la vista generada no es el
