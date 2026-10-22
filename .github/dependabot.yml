@@ -1,0 +1,23 @@
+# Dependabot — keep the SHA-pinned actions current.
+#
+# Every workflow pins actions by full commit SHA (a retagged action in a job with
+# `contents: write` would be code execution with push rights). Pinning trades
+# convenience for integrity; Dependabot is the other half of that trade: it opens
+# a PR when a pinned action publishes a new release, with the SHA and the version
+# comment updated together.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Guayaquil"
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore(ci)"

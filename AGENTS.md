@@ -26,10 +26,13 @@ accurate, and the user's responsibility.
 | `media/` | Versioned small binaries (`certificates/`, `photos/`, `press/`) — bundled to `profiles/<platform>/assets/` |
 | `docs/evidence-packs.md` · `docs/power-user-symlinks.md` | Per-domain proof checklists · stow/symlink tradeoffs |
 | `profiles/` | Rendered per-platform outputs (README, LinkedIn… + `assets/` when media is bundled) |
-| `.github/workflows/` | `checks.yml` (offline) · `workflow-lint.yml` (offline) · `build.yml` (`pasco` from npm) |
-| `.github/scripts/check-links.sh` | Relative-link gate shared by `checks.yml` and `build.yml` (one copy, two callers) |
+| `.github/workflows/` | `checks.yml` (yaml · links · example-data · secrets · evidence) · `workflow-lint.yml` (offline) · `build.yml` (`pasco` from npm) |
+| `.github/scripts/` | `check-links.sh` (shared by `checks.yml` and `build.yml`) · `check-example-data.sh` (template privacy guard) |
+| `.github/ISSUE_TEMPLATE/` · `PULL_REQUEST_TEMPLATE.md` | Issue forms (bug/feature) + PR privacy/checklist |
+| `.github/dependabot.yml` | Weekly SHA-pin updates for GitHub Actions |
 | `.pascorc` | Engine CLI config (`pasco`): `workspace`, `defaults` (lang, variants), `diff` (`tagPattern`) |
 | `CHECKLIST.md` | Post-deploy verification per platform |
+| `SECURITY.md` | Private disclosure policy — never a public issue |
 
 ## Rules for agents
 
@@ -59,6 +62,17 @@ accurate, and the user's responsibility.
    public surface only through the renderer's `assets/` output — never as a raw
    URL. `visibility: private` material must never be referenced from public
    output; `pasco check` fails the build if it is.
+9. **This repo is public; the data is not.** Never add real personal data, private
+   media, tokens or machine paths here — run
+   `bash .github/scripts/check-example-data.sh` before committing. `.pasco/` and
+   `.env*` stay gitignored and untracked.
+10. **Never flip visibility, create a release, or merge a PR.** Those are
+    human-only actions (repo-governance §2). Prepare the branch and the PR;
+    the maintainer decides.
+11. **Keep the README pair in sync.** A change to the start flow, layout or
+    commands lands in `README.md` **and** `README.es.md` in the same commit.
+12. **Pin every action by full commit SHA** (40 chars + `# vX.Y.Z` comment).
+    Dependabot updates pins; never replace one with a mutable tag.
 
 ## Commands
 
@@ -70,6 +84,10 @@ python3 -c "import yaml,glob; [yaml.safe_load(open(f)) for f in glob.glob('conte
 npx -y @profile-as-code/cli@0.3.0 validate
 npx -y @profile-as-code/cli@0.3.0 check
 npx -y @profile-as-code/cli@0.3.0 build
+
+# offline guards CI runs — cheap, run them before asking for review
+bash .github/scripts/check-links.sh
+bash .github/scripts/check-example-data.sh
 ```
 
 ## Context discipline

@@ -8,15 +8,35 @@ template is what every user forks to create *their own* data workspace.
 Contributions are welcome when they help **every user of the family**, not just
 one person's data.
 
+## Before you open anything
+
+| You have… | Go to |
+|---|---|
+| A security problem | **Do not open an issue.** Report it privately via [SECURITY.md](SECURITY.md) |
+| A conduct problem | Private report via [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
+| A bug in this template (docs, CI, example data) | The [bug form](.github/ISSUE_TEMPLATE/bug.yml) |
+| A proposal that helps every user | The [feature form](.github/ISSUE_TEMPLATE/feature.yml) — open it **before** a large PR |
+| A bug in the engine (`pasco`, schema, renderers) | [profile-as-code issues](https://github.com/ChristianLuciani/profile-as-code/issues) |
+
+**Privacy rule:** this repository is public and its `content/` is a fictional
+example. Never paste your real profile data, private media, tokens or
+credentials into an issue, PR, screenshot or test fixture. If a report needs
+real data to reproduce, redact it — or describe the shape of it instead.
+
+**What to expect:** this is a best-effort, single-maintainer project, with no
+SLA. The target is to triage a new issue within **7 days** and to answer a PR
+review within **7 days**; silence past that means it slipped, not that it was
+rejected — a polite ping on the thread is welcome.
+
 ## What you can contribute
 
 | Area | Where | Notes |
 |---|---|---|
-| Instructions / start flow | `README.md` | The "<10 min start" must stay true end-to-end |
+| Instructions / start flow | `README.md`, `README.es.md` | The "<10 min start" must stay true end-to-end, in both languages |
 | Post-deploy checklist | `CHECKLIST.md` | Per-platform verification (GEO consistency) |
 | Example content | `content/` | Realistic-but-generic YAML that validates against the schema |
 | Docs & translations | `docs/`, README | English primary (D8); the *data* is bilingual by design |
-| CI / validation | `.github/workflows/`, `.github/scripts/` | YAML parse + link checks + the evidence gate |
+| CI / validation | `.github/workflows/`, `.github/scripts/` | YAML parse + link/secret/example-data gates + the evidence gate |
 
 ## Ground rules
 
@@ -29,19 +49,27 @@ one person's data.
 3. **The template must validate.** `content/*.yaml` parses and matches the
    profile-as-code schema — run `pasco validate` (see *Local setup*).
 4. **No real personal data.** Keep example content realistic but generic — a
-   user's real data belongs in their own (private) fork.
+   user's real data belongs in their own (private) fork. The
+   `example-data` CI job enforces this **only in the template repository** (it
+   skips in forks, which carry a real identity by design); run the same guard
+   locally with `bash .github/scripts/check-example-data.sh`.
 5. **Forkers update the copyright.** When you fork this template for your own
    `profile-data`, replace the `Copyright (c)` line in `LICENSE` with your name.
+6. **Keep README and README.es in sync.** A change to the start flow, layout or
+   commands lands in both files in the same PR.
+7. **Pin actions by commit SHA.** Any action added to a workflow uses the full
+   40-character SHA plus a `# vX.Y.Z` comment; Dependabot updates it. A mutable
+   tag is a review blocker.
 
 ## Local setup
 
 This is a data workspace, not an app — it has no build of its own. The engine is
 pinned: **`@profile-as-code/cli@0.3.0`** (`pasco` is the bin). The pin is mirrored
-in the files that must be bumped together — `README.md`, `AGENTS.md`, this one,
-and both workflows. (A `CHANGELOG.md` entry names the pin as *history*, not as a
-surface to edit.) The *Releases* section below carries the authoritative list.
-Source: `registry.npmjs.org` `@profile-as-code/cli` dist-tag `latest`
-([OFICIAL] [WEB: registry.npmjs.org, verified 2026-10-12]).
+in the files that must be bumped together — `README.md`, `README.es.md`,
+`AGENTS.md`, this one, and both workflows. (A `CHANGELOG.md` entry names the pin
+as *history*, not as a surface to edit.) The *Releases* section below carries the
+authoritative list. Source: `registry.npmjs.org` `@profile-as-code/cli` dist-tag
+`latest` ([OFICIAL] [WEB: registry.npmjs.org, verified 2026-10-21]).
 
 ```bash
 # 1. YAML parse only — offline, no engine, ~seconds
@@ -56,6 +84,10 @@ pasco check            # expiry, privacy, media transport — the pre-deploy gat
 
 # 4. regenerate the committed output
 pasco build
+
+# 5. the offline guards CI runs (no engine needed)
+bash .github/scripts/check-links.sh
+bash .github/scripts/check-example-data.sh
 ```
 
 The engine is read-only over this workspace except for the **four** commands that
@@ -92,11 +124,27 @@ inside `checks.yml`, because a YAML error there is a `startup_failure` and a job
 in that file can never run to report it (the incident the file's own NOTE
 records).
 
+Every action is pinned by full commit SHA (with a version comment), in every
+workflow — a retagged action is arbitrary code holding the job's token, and the
+build job holds `contents: write`. `dependabot.yml` keeps the pins current; do
+not "fix" a pin back to a tag.
+
 | Workflow | Trigger | What it does |
 |---|---|---|
-| `.github/workflows/checks.yml` | every push to `main` + every PR | `yaml` — `content/*.yaml` parse · `links` — relative markdown links resolve, plus a self-test that the gate still rejects a broken link · `evidence` — `pasco validate` + `pasco check` |
+| `.github/workflows/checks.yml` | every push to `main` + every PR | `yaml` — `content/*.yaml` parse · `links` — relative markdown links resolve, plus a self-test that the gate still rejects a broken link · `example-data` — `content/` is still fictional, `media/` empty, no local state tracked · `secrets` — gitleaks scans the full history · `evidence` — `pasco validate` + `pasco check` |
 | `.github/workflows/workflow-lint.yml` | push to `main` + PR touching `.github/workflows/**` | parses every file in `.github/workflows/` — the parse class that made each `checks.yml` run a `startup_failure` from 2026-08-12 |
 | `.github/workflows/build.yml` | push to `main` touching `content/**`, `.pascorc`, `.github/scripts/check-links.sh` or itself; manual dispatch | `pasco validate` + `check` + `build`, then commits `profiles/` |
+
+The `secrets` job downloads the OSS gitleaks CLI (MIT) with a pinned version and
+SHA-256, deliberately not the proprietary `gitleaks-action`: a template forked by
+third parties should not push a commercial EULA onto every fork. Bump the version
+and the checksum together.
+
+The `example-data` job is the privacy guard specific to a template: it fails if
+`content/identity.yaml` stops declaring the documented example persona, if any
+email in `content/` leaves the `example.*` domains, if an absolute home path or a
+non-http(s) scheme appears in the data, if `media/` ships a file, or if `.pasco/`
+or `.env*` gets tracked.
 
 Three things about `build.yml` are worth knowing before you touch it:
 
@@ -135,7 +183,7 @@ instead (verified against engine 0.3.0).
 
 Cutting a release:
 
-1. Bump the pin in all of its surfaces (`README.md`, `AGENTS.md`,
+1. Bump the pin in all of its surfaces (`README.md`, `README.es.md`, `AGENTS.md`,
    **this file**, `.github/workflows/checks.yml`, `.github/workflows/build.yml`)
    if the engine version changed, and bump `.pascorc` only if the tag convention
    changed.

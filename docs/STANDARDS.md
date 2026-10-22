@@ -19,15 +19,40 @@ extends to example `content/` values that cite platform constraints.
 - **GEO consistency.** Facts must be identical across platforms — an LLM that
   cross-references profiles must find the same facts (see `CHECKLIST.md`).
 - **i18n.** Data is bilingual by design (`en` essential, `es` native). Repo
-  *docs* are English (D8).
+  *docs* are English (D8); `README.es.md` is a maintained translation of
+  `README.md`, not a second source — both change in the same PR.
 - **Drift-check.** `profiles/` outputs derive from `content/`; a mismatch is a
   bug to fix at the source, not the output.
 
 ## Privacy
 
 - **Private by default.** A forked workspace holds personal data; keep the repo
-  private (repo-governance of the profile-* family).
-- **No real data in the template.** Example content is realistic but generic.
+  private before writing facts (repo-governance of the profile-* family).
+- **No real data in the template.** Example content is realistic but generic:
+  fictional persona, `example.*` domains, empty `media/`. CI enforces it
+  (`.github/scripts/check-example-data.sh`).
+- **No personal data in public threads.** Issues, PRs and review comments in
+  this repository are public: redact before pasting, always.
+- **Local state is not shared.** `.pasco/` (local evidence root), `.env*` and
+  harness artifacts are gitignored.
+
+## Security
+
+- **Least privilege in CI.** Workflows default to `contents: read`; only
+  `build.yml` holds `contents: write`, and it never runs on `pull_request`.
+  There is no `pull_request_target`.
+- **Actions pinned by full commit SHA**, with Dependabot keeping the pins
+  current. The repository setting requiring SHA pinning is enabled on the public
+  repo.
+- **The engine is installed from npm at an exact pin with
+  `--ignore-scripts`**, never from a range or a branch.
+- **Secret scanning runs in CI** (`gitleaks` CLI, pinned version + SHA-256) over
+  the full history, on top of GitHub's native secret scanning and push
+  protection.
+- **Disclosure is private.** [SECURITY.md](../SECURITY.md) is the only channel
+  for a vulnerability; a public issue is a policy violation, not a shortcut.
+- **Never flip the repository visibility, cut a release, or merge a PR from an
+  agent session** — those are human decisions (repo-governance §2).
 
 ## Repository hygiene
 
@@ -37,10 +62,10 @@ extends to example `content/` values that cite platform constraints.
   (R2 on-ramp). It never does so in this template repo itself: the `is_template`
   guard is fail-closed, so a missing flag refuses to commit rather than pushing
   blind (`CONTRIBUTING.md` § CI).
-- Docs in English; comments when present.
+- Docs in English (D8); `README.es.md` mirrors `README.md`. Comments when present.
 - CI: `checks.yml` (content YAML parse · relative markdown links, plus a
-  self-test of that gate · `pasco validate` + `check`) · `workflow-lint.yml`
-  (the workflow files parse — kept as a separate workflow so it can cover
-  `checks.yml` itself) · `build.yml` (`pasco validate` + `check` + `build`, then
-  commits `profiles/`).
+  self-test of that gate · template example-data guard · gitleaks secret scan ·
+  `pasco validate` + `check`) · `workflow-lint.yml` (the workflow files parse —
+  kept as a separate workflow so it can cover `checks.yml` itself) · `build.yml`
+  (`pasco validate` + `check` + `build`, then commits `profiles/`).
 - Claims change → update source + date, never silently.
