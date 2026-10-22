@@ -266,6 +266,7 @@ today; the remaining declarative catalog ships with engine M3/M4.
 - Engine: https://github.com/ChristianLuciani/profile-as-code
 - Engine spec: https://github.com/ChristianLuciani/profile-as-code/blob/main/docs/SPEC.md
 - Schema: https://github.com/ChristianLuciani/profile-as-code/blob/main/schema/profile.schema.json
+- Roadmap: [ROADMAP.md](ROADMAP.md)
 - Prior art: https://github.com/ChristianLuciani/profile-as-code/blob/main/docs/research/01-prior-art.md
 - Media pipeline: https://github.com/ChristianLuciani/profile-as-code/blob/main/docs/media-pipeline.md
 

@@ -7,6 +7,11 @@
 # token; every run died in 0s and nobody noticed for weeks). Only a gate that
 # does not depend on the file it validates can cover checks.yml, and this is it.
 #
+# It runs on every push and every PR — no `paths:` filter. A path-filtered check
+# cannot be a required status check: on a PR that touches no workflow it never
+# reports, so GitHub leaves it "Expected — Waiting" forever. Running always keeps
+# it cheap (~7s) and lets the branch protection require it.
+#
 # Coverage: every file in .github/workflows/ (checks.yml, build.yml, this one).
 # Residual, declared: an error in THIS file is still a startup_failure and is not
 # caught in-band — nothing can validate itself. Its only consequence is that this
@@ -21,11 +26,7 @@ name: workflow-lint
 on:
   push:
     branches: [main]
-    paths:
-      - ".github/workflows/**"
   pull_request:
-    paths:
-      - ".github/workflows/**"
 
 permissions:
   contents: read
@@ -35,7 +36,7 @@ jobs:
     name: parse workflow yaml
     runs-on: ubuntu-latest
     steps:
-      # actions/checkout@v4 → 11d5960a326750d5838078e36cf38b85af677262 (2026-07-16)
+      # actions/checkout v7.0.1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Parse every workflow file
         run: |
