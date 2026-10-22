@@ -4,11 +4,19 @@ Esta carpeta contiene los **artefactos de deploy** renderizados por `pasco build
 Qué archivos aparecen lo decide el engine **pinneado** en este repo
 (`@profile-as-code/cli@0.3.0`), no `main` del engine.
 
-Con ese pin, `pasco build` escribe **un solo archivo**:
+Con ese pin y el **contenido de ejemplo**, `pasco build` produce:
 
 ```
 profiles/
 └── github-readme/README.md    # se pushea al repo <user>/<user> (git/API)
+```
+
+Y en cuanto agregás un artifact con `locator: { path: … }` (media versionada en
+`media/`), el mismo build suma el bundle — un directorio por plataforma:
+
+```
+profiles/github-readme/assets/manifest.json      # sha256 por asset
+profiles/github-readme/assets/<id>/<basename>
 ```
 
 - Los **paste artifacts por superficie** — `profiles/<platform>.md`, para pegar a
