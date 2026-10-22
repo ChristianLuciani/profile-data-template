@@ -18,6 +18,8 @@ one person's data.
 | A proposal that helps every user | The [feature form](.github/ISSUE_TEMPLATE/feature.yml) — open it **before** a large PR |
 | A bug in the engine (`pasco`, schema, renderers) | [profile-as-code issues](https://github.com/ChristianLuciani/profile-as-code/issues) |
 
+What is planned — and what is deliberately out of scope — lives in [ROADMAP.md](ROADMAP.md).
+
 **Privacy rule:** this repository is public and its `content/` is a fictional
 example. Never paste your real profile data, private media, tokens or
 credentials into an issue, PR, screenshot or test fixture. If a report needs
@@ -137,7 +139,7 @@ not "fix" a pin back to a tag.
 | Workflow | Trigger | What it does |
 |---|---|---|
 | `.github/workflows/checks.yml` | every push to `main` + every PR | `yaml` — `content/*.yaml` parse · `links` — relative markdown links resolve, plus a self-test that the gate still rejects a broken link · `example-data` — `content/` is still fictional, `media/` empty, no local state tracked · `secrets` — gitleaks scans the full history · `evidence` — `pasco validate` + `pasco check` |
-| `.github/workflows/workflow-lint.yml` | push to `main` + PR touching `.github/workflows/**` | parses every file in `.github/workflows/` — the parse class that made each `checks.yml` run a `startup_failure` from 2026-08-12 |
+| `.github/workflows/workflow-lint.yml` | every push to `main` + **every PR** | parses every file in `.github/workflows/` — the parse class that made each `checks.yml` run a `startup_failure` from 2026-08-12 |
 | `.github/workflows/build.yml` | push to `main` touching `content/**`, `.pascorc`, `.github/scripts/check-links.sh` or itself; manual dispatch | `pasco validate` + `check` + `build`, then commits `profiles/` |
 
 The `secrets` job downloads the OSS gitleaks CLI (MIT) with a pinned version and
