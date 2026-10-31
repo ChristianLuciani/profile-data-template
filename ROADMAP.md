@@ -19,7 +19,8 @@ file explains direction, so someone arriving cold knows where to contribute.
 ## Next release
 
 The template version mirrors the engine line (`CONTRIBUTING.md` § Releases):
-there is **no** `0.4` line to wait for — the engine ships `0.3.x` patches.
+the current engine line is `0.3.x` (no `0.4` release is announced), so the
+scaffold moves by engine `0.3.x` patches and its own revisions.
 
 The next scaffold tag is **`v0.3.2`**, for a docs-only or single-surface fix on
 this line. When a new engine patch lands, in this order:

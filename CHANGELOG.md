@@ -12,11 +12,13 @@ publication work merged after `v0.3.0` (see *Same release, merged 2026-10-21*).
   `CONTRIBUTING.md` (local setup + the authoritative surface list, which now
   names all of them), `SECURITY.md` (supported-versions matrix),
   `.github/ISSUE_TEMPLATE/bug.yml` (environment placeholder),
-  `.github/workflows/checks.yml` and `.github/workflows/build.yml`.
-- **`.pascorc` declares `"engine": "0.3.7"`** — the minimum CLI the workspace
-  accepts (the check new in engine 0.3.7, #348). An older `pasco` now fails the
-  load instead of rendering a tree this scaffold does not document; `pasco
-  doctor` reports `requires engine >= 0.3.7 (met)`.
+  `.github/workflows/checks.yml`, `.github/workflows/build.yml` and
+  `.github/workflows/preview.yml`.
+- **`.pascorc` declares `"engine": "0.3.7"`** — the floor `pasco doctor`,
+  `validate`, `build` and `preview` enforce from engine 0.3.7 on (#348); `doctor`
+  reports `requires engine >= 0.3.7 (met)`. Declared limit: an older CLI does not
+  read the key at all, so the gate only protects an install that is already at
+  least 0.3.7 — the pin in the install commands is what closes that gap.
 - **`.github/workflows/preview.yml`** — transport B of SPEC §7.9, which lives in
   the template, not the engine: `workflow_dispatch` only, `contents: read`, no
   Pages and no deploy. It installs the pinned CLI, runs `pasco preview --out
@@ -44,6 +46,11 @@ publication work merged after `v0.3.0` (see *Same release, merged 2026-10-21*).
   documented set, and the `pasco check` description now names the offline rules it
   executes at this pin (registry §18.8, media transport §18.6, max/min chars and
   fact-present over the built surfaces).
+- **One example-value normalization:** the `upwork`/`en` headline was 62 chars
+  against the 50-char limit that `pasco check` executes from this pin
+  (`max-chars`, source dated 2026-03-08) — shortened to fit, so `check` reports
+  **0 findings**. No fact changed; headline text is a per-platform surface, not a
+  fact.
 - **Local verification (2026-10-31):** `pasco doctor` 0.3.7 · schema v1.15 ·
   requirement met · `pasco validate` 0 findings (drift/GEO WARN only) · `pasco
   check` 0 findings · `pasco diff` resolves the `v0.3.0` tag · `bash

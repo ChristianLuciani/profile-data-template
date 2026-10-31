@@ -25,8 +25,10 @@ engine validates and renders the result.
 
 - Scaffold **v0.3.1**, tracking `@profile-as-code/cli@0.3.7` — the current
   `latest` on npm, verified 2026-10-31 ([OFICIAL] [WEB: registry.npmjs.org]).
-  `.pascorc` declares `"engine": "0.3.7"`, so an older CLI fails the load instead
-  of producing a tree this scaffold does not document (`pasco doctor`).
+  `.pascorc` declares `"engine": "0.3.7"` — the floor `pasco doctor`, `validate`,
+  `build` and `preview` enforce from 0.3.7 on. A CLI older than that does not read
+  the key at all: it applies its own rules and renders a tree this scaffold does
+  not document, so pin the install as the commands below do.
 - The example content is a **fictional persona** (Alex Rivera) that documents the
   schema. Do not put real data in this repository; your data belongs in your fork.
 - Maintained on a best-effort basis. Issues and PRs are triaged; see
@@ -137,7 +139,7 @@ ask it to. No reading command rewrites your facts as a side effect:
 | `pasco status --verify` | certification in `content/deployments.yaml` (the one opt-in network path) |
 | `pasco status --write-checklist` | `CHECKLIST.md` — AUTO-GENERATED view of the ledger |
 | `pasco preview` | `.pasco/preview/` (gitignored), or the `--out` directory you name |
-| `pasco export … --out`, `pasco entity --jsonld --out` | the directory or file you name, never the workspace |
+| `pasco export … --out`, `pasco entity --jsonld --out` | only the directory or file you pass; without `--out` they print to stdout |
 | `pasco post seed/task/choose/import` | `posts/<id>/…` — only if you use the MVP post flow |
 
 `profiles/` is generated output and **is** committed: it is the deploy artifact.
@@ -255,7 +257,7 @@ list of files that must be bumped together are in
 | Symptom | Cause / fix |
 |---|---|
 | `pasco: command not found` | Install it (`npm i -g @profile-as-code/cli@0.3.7`) or run `npx -y @profile-as-code/cli@0.3.7 <cmd>` |
-| `doctor` exits 1 on the engine requirement | Your installed `pasco` is older than the `engine` field in `.pascorc` — install the pinned version |
+| `doctor` exits 1, or `validate`/`build` refuse with an engine requirement | The installed `pasco` is below the `engine` floor in `.pascorc` — install at least that version (an older CLI ignores the floor) |
 | `validate` fails on `dangling cross-ref` | A `credentialId` / `artifactId` / `artifactRefs` points to an `id` that does not exist |
 | `check` fails on private-in-public-output | A public claim references an `unlisted`/`private` entry — make it `public` or drop the reference |
 | The build bot commits nothing | Confirm this is a user workspace (not the template), Actions is enabled, and the push touched one of the watched paths |

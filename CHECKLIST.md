@@ -41,7 +41,7 @@ This is not post-paste: it is the **workspace** privacy gate. In the template
 ## Evidence (D17, SPEC §18) — before any deploy
 
 This is **not** post-paste: it is the gate before deploying. `pasco check` executes the
-rules (M7/§18.8 and M8/§18.6 are implemented; requires CLI ≥ 0.3.0). The names in
+rules (M7/§18.8 and M8/§18.6 are implemented; requires CLI ≥ 0.3.7). The names in
 parentheses are the codes the CLI emits in the finding.
 
 `validate` + `check` also run automatically on every PR

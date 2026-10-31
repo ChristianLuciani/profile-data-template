@@ -75,7 +75,8 @@ pinned: **`@profile-as-code/cli@0.3.7`** (`pasco` is the bin). The pin is
 mirrored in every surface that must be bumped together: `README.md`,
 `README.es.md`, `AGENTS.md`, this file, `SECURITY.md`,
 `.github/ISSUE_TEMPLATE/bug.yml`, `.pascorc` (`engine`, the minimum the workspace
-accepts) and both workflows that install the CLI (`checks.yml`, `build.yml`).
+accepts) and the three workflows that install the CLI (`checks.yml`,
+`build.yml`, `preview.yml`).
 (A `CHANGELOG.md` entry names the pin as *history*, not as a surface to edit.)
 The *Releases* section below carries the authoritative list. Source:
 `registry.npmjs.org` `@profile-as-code/cli` dist-tag `latest`
@@ -114,7 +115,7 @@ it to. No reading command rewrites your facts behind your back:
 | `pasco status --verify` | certification in `content/deployments.yaml` (the one opt-in network path) |
 | `pasco status --write-checklist` | `CHECKLIST.md` — the AUTO-GENERATED view of that ledger |
 | `pasco preview` | `.pasco/preview/` (gitignored), or the `--out` directory you name |
-| `pasco export … --out`, `pasco entity --jsonld --out` | the directory or file you name, never the workspace |
+| `pasco export … --out`, `pasco entity --jsonld --out` | only the directory or file you pass; without `--out` they print to stdout |
 | `pasco post seed/task/choose/import` | `posts/<id>/…` — only if you use the MVP post flow |
 
 ### Never edit `profiles/` by hand
@@ -133,9 +134,9 @@ the same rule as ground rule 2 in `AGENTS.md`.
 
 ## CI
 
-Four workflows. Two install the pinned engine from npm, plus `preview.yml` on
-manual dispatch; `workflow-lint.yml` is offline and validates the workflow files
-themselves — deliberately **not** from inside `checks.yml`, because a YAML error
+Four workflows. Three install the pinned engine from npm (`checks.yml`,
+`build.yml` and the manual `preview.yml`); `workflow-lint.yml` is offline and
+validates the workflow files themselves — deliberately **not** from inside `checks.yml`, because a YAML error
 there is a `startup_failure` and a job in that file can never run to report it
 (the incident the file's own NOTE records).
 
@@ -204,8 +205,9 @@ Cutting a release:
    `README.md`, `README.es.md`, `AGENTS.md`, **this file**, `SECURITY.md` (the
    supported-versions matrix), `.github/ISSUE_TEMPLATE/bug.yml` (the environment
    placeholder), `.pascorc` → `engine` (the minimum the workspace accepts) and
-   both workflows that install the CLI (`.github/workflows/checks.yml`,
-   `.github/workflows/build.yml`). Leave `.pascorc` → `diff.tagPattern` alone
+   the three workflows that install the CLI (`.github/workflows/checks.yml`,
+   `.github/workflows/build.yml`, `.github/workflows/preview.yml`). Leave
+   `.pascorc` → `diff.tagPattern` alone
    unless the tag convention changes.
 
    Verify before you open the PR: `pasco doctor`, `pasco validate`, `pasco check`

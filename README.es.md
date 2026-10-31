@@ -25,8 +25,10 @@ valida y renderiza el resultado.
 
 - Scaffold **v0.3.1**, alineado a `@profile-as-code/cli@0.3.7` — el `latest`
   actual en npm, verificado 2026-10-31 ([OFICIAL] [WEB: registry.npmjs.org]).
-  `.pascorc` declara `"engine": "0.3.7"`, así que un CLI más viejo falla la carga
-  en vez de producir un árbol que este scaffold no documenta (`pasco doctor`).
+  `.pascorc` declara `"engine": "0.3.7"` — el piso que `pasco doctor`, `validate`,
+  `build` y `preview` hacen cumplir desde 0.3.7. Un CLI más viejo no lee la clave:
+  aplica sus propias reglas y renderiza un árbol que este scaffold no documenta, así
+  que pinneá la instalación como hacen los comandos de abajo.
 - El contenido de ejemplo es una **persona ficticia** (Alex Rivera) que documenta
   el schema. No pongas datos reales en este repositorio; tus datos van en tu fork.
 - Mantenimiento best-effort. Issues y PRs se triajan; ver
@@ -137,7 +139,7 @@ se lo pedís. Ningún comando de lectura reescribe tus hechos como efecto colate
 | `pasco status --verify` | la certificación en `content/deployments.yaml` (el único camino con red, opt-in) |
 | `pasco status --write-checklist` | `CHECKLIST.md` — vista AUTO-GENERADA del ledger |
 | `pasco preview` | `.pasco/preview/` (gitignored), o el directorio que pases en `--out` |
-| `pasco export … --out`, `pasco entity --jsonld --out` | el directorio o archivo que nombrás, nunca el workspace |
+| `pasco export … --out`, `pasco entity --jsonld --out` | solo el directorio o archivo que pasás; sin `--out` imprimen a stdout |
 | `pasco post seed/task/choose/import` | `posts/<id>/…` — solo si usás el flujo MVP de posts |
 
 `profiles/` es output generado y **sí** se commitea: es el artefacto de deploy.
@@ -257,7 +259,7 @@ de un fork y la lista de archivos que se bumpean juntos están en
 | Síntoma | Causa / fix |
 |---|---|
 | `pasco: command not found` | Instalalo (`npm i -g @profile-as-code/cli@0.3.7`) o corré `npx -y @profile-as-code/cli@0.3.7 <cmd>` |
-| `doctor` sale 1 por el requisito de engine | El `pasco` instalado es más viejo que el campo `engine` de `.pascorc` — instalá la versión pinneada |
+| `doctor` sale 1, o `validate`/`build` rechazan por el requisito de engine | El `pasco` instalado está por debajo del piso `engine` de `.pascorc` — instalá al menos esa versión (un CLI más viejo ignora el piso) |
 | `validate` falla con `dangling cross-ref` | Un `credentialId` / `artifactId` / `artifactRefs` apunta a un `id` que no existe |
 | `check` falla con private-in-public-output | Un claim público referencia una entrada `unlisted`/`private` — hacela `public` o quitá la referencia |
 | El bot de build no commitea nada | Confirmá que es un workspace de usuario (no el template), que Actions está habilitado, y que el push tocó uno de los paths vigilados |
