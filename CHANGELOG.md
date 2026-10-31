@@ -1,9 +1,61 @@
-## Unreleased — 2026-10-21 — OSS publication: governance, security and bilingual README
+## v0.3.1 — 2026-10-31 — engine 0.3.7 sync: pin, engine gate, manual preview, docs reconciliation
+
+No schema changes and no data migration: the example workspace validates
+unchanged. This release moves the scaffold from engine `0.3.0` to **`0.3.7`**
+(the `latest` on npm, published 2026-10-31 — [OFICIAL] [WEB: registry.npmjs.org])
+and repairs every claim the old pin made stale. It also first ships the OSS
+publication work merged after `v0.3.0` (see *Same release, merged 2026-10-21*).
+
+- **Pin moved to `@profile-as-code/cli@0.3.7`** in every surface that carries
+  it: `README.md` (badge, status, install, troubleshooting), `README.es.md`,
+  `AGENTS.md` (pin statement + the `npx` commands, plus `doctor`), this repo's
+  `CONTRIBUTING.md` (local setup + the authoritative surface list, which now
+  names all of them), `SECURITY.md` (supported-versions matrix),
+  `.github/ISSUE_TEMPLATE/bug.yml` (environment placeholder),
+  `.github/workflows/checks.yml` and `.github/workflows/build.yml`.
+- **`.pascorc` declares `"engine": "0.3.7"`** — the minimum CLI the workspace
+  accepts (the check new in engine 0.3.7, #348). An older `pasco` now fails the
+  load instead of rendering a tree this scaffold does not document; `pasco
+  doctor` reports `requires engine >= 0.3.7 (met)`.
+- **`.github/workflows/preview.yml`** — transport B of SPEC §7.9, which lives in
+  the template, not the engine: `workflow_dispatch` only, `contents: read`, no
+  Pages and no deploy. It installs the pinned CLI, runs `pasco preview --out
+  .pasco/preview` and uploads `index.html` as a workflow artifact (readable by
+  anyone with repository access — not the public web). Every action is pinned by
+  full commit SHA.
+- **`profiles/README.md` rewritten to the tree the pin actually renders**:
+  `github-readme/README.md` plus `profiles/<platform>.md` only for a manual
+  surface that has a bio row (`linkedin`, `upwork`, `x`, `substack`; the example's
+  `researchgate` gets none). It no longer promises files that a future engine
+  would add: the per-surface paste artifacts shipped in engine `0.3.5`
+  (profile-as-code #239) and the variant body store in `0.3.6` (#238) — the
+  chosen body is read from `profiles/<platform>/variants/<id>.md`.
+- **Writer inventory corrected** in `README.md`, `README.es.md` and
+  `CONTRIBUTING.md`. The "read-only except four commands / everything else only
+  reads" claim was false since engine `0.3.5`–`0.3.6`: `pasco edit --set` writes a
+  contract field, `preview` writes `.pasco/preview/` (or `--out`), `export … --out`
+  and `entity --jsonld --out` write where you point them, and `status --verify`
+  updates certification. The table now lists them and states the actual rule: the
+  engine writes only where the command's job is to write.
+- **`ROADMAP.md` premise fixed** — there is no engine `0.4` to wait for; the line
+  is `0.3.x`, the next scaffold tag is `v0.3.2`, and the paste artifacts and
+  variant store are shipped, not pending.
+- **Command inventory re-checked against 0.3.7** — `pasco doctor` added to the
+  documented set, and the `pasco check` description now names the offline rules it
+  executes at this pin (registry §18.8, media transport §18.6, max/min chars and
+  fact-present over the built surfaces).
+- **Local verification (2026-10-31):** `pasco doctor` 0.3.7 · schema v1.15 ·
+  requirement met · `pasco validate` 0 findings (drift/GEO WARN only) · `pasco
+  check` 0 findings · `pasco diff` resolves the `v0.3.0` tag · `bash
+  .github/scripts/check-links.sh` OK · `bash .github/scripts/check-example-data.sh`
+  OK · every workflow parses.
+
+### Same release, merged 2026-10-21 — OSS publication: governance, security and bilingual README
 
 Preparation to publish the template as open source. No schema changes; the only
-data change is one declared example-value normalization (see below). The
-workspace still validates against `@profile-as-code/cli@0.3.0` (`validate` 0
-findings, `check` 0 findings, 2026-10-21).
+data change is one declared example-value normalization (see below). Re-verified
+against `@profile-as-code/cli@0.3.7` on 2026-10-31: `validate` 0 findings,
+`check` 0 findings.
 
 - **Missing governance**
   - `SECURITY.md` — private channel (GitHub advisory), scope (workflows, docs,

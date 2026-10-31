@@ -1,0 +1,53 @@
+# preview — ONE self-contained HTML page of the rendered surfaces, on demand.
+#
+# This is transport B of engine SPEC §7.9: the preview lives in the template, not
+# in the engine. `pasco preview` renders one file (inline CSS, no JS, no external
+# asset — no server needed); the workflow hands it over as a downloadable
+# artifact. It is NOT a publication and nothing here deploys: there is no Pages,
+# no environment, no commit.
+#
+# `workflow_dispatch` only, deliberately: a preview is an opt-in act, never a
+# side effect of a push or a PR. There is also no schedule — a preview of stale
+# content is worse than no preview.
+#
+# Access: a workflow artifact inherits the visibility of this repository. Anyone
+# with read access to the repo can download `index.html`; it is NOT public web
+# unless the repository itself is public. Do not treat it as a publication.
+#
+# Actions are pinned by full commit SHA, same rule as every other workflow: a
+# retagged action would be code execution in this job. Dependabot keeps the pins
+# current.
+name: preview
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    name: pasco preview
+    runs-on: ubuntu-latest
+    steps:
+      # actions/checkout v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      # actions/setup-node v7.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+      # Same pin as checks.yml and build.yml — keep the three in sync.
+      - name: Install the pinned engine from npm
+        run: npm i -g --ignore-scripts @profile-as-code/cli@0.3.7
+      # --out writes without opening a browser and reports a destination that no
+      # ignore rule covers; `.pasco/` is gitignored, so this stays untracked.
+      - name: Render the preview page
+        run: pasco preview --out .pasco/preview
+      # actions/upload-artifact v7.0.2
+      - name: Upload the preview page
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: pasco-preview
+          path: .pasco/preview/index.html
+          if-no-files-found: error
+          retention-days: 7

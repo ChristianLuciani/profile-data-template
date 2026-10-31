@@ -5,14 +5,27 @@ Which files appear is decided by the engine **pinned** in this repo — its vers
 and the authoritative list of the surfaces that pin it live in
 `CONTRIBUTING.md` § Releases —, not by the engine's `main`.
 
-With that pin and the **example content**, `pasco build` produces:
+With that pin (`@profile-as-code/cli@0.3.7`) and the **example content**,
+`pasco build` produces exactly:
 
 ```
 profiles/
-└── github-readme/README.md    # pushed to the <user>/<user> repo (git/API)
+├── github-readme/README.md    # pushed to the <user>/<user> repo (git/API)
+├── linkedin.md                # manual surfaces that have a bio row:
+├── substack.md                #   one paste-ready file each
+├── upwork.md
+└── x.md
 ```
 
-And as soon as you add an artifact with `locator: { path: … }` (media versioned in
+One rule decides the second group: **a platform gets `profiles/<platform>.md`
+only when it has a bio row for that language**. The example declares rows for
+`linkedin`, `upwork`, `x` and `substack` (plus `github-readme`, which renders the
+directory tree above); `researchgate` has none, so it gets no file. `pasco build`
+**deletes empty renders** (§15.1 of the engine): a platform without a bio row
+leaves nothing behind, which is why the list is content-dependent and not a
+promise of one file per declared platform.
+
+As soon as you add an artifact with `locator: { path: … }` (media versioned in
 `media/`), the same build adds the bundle — one directory per platform:
 
 ```
@@ -20,18 +33,19 @@ profiles/github-readme/assets/manifest.json      # sha256 per asset
 profiles/github-readme/assets/<id>/<basename>
 ```
 
-- The **per-surface paste artifacts** — `profiles/<platform>.md`, to paste by hand
-  into LinkedIn, Upwork, X, … — arrive with the engine release that includes
-  profile-as-code **#239**. Today that code is on the engine's `main` but **not**
-  in any published version (`npm view @profile-as-code/cli versions`), so the
-  template does not promise them: this tree updates **with** the pin, in the same
-  PR that moves it.
-- `pasco build` **deletes empty renders** (§15.1 of the engine): a platform
-  without a bio row for that language leaves no file.
-- The variant chosen by `pasco refine` lives in **`content/active.yaml`**, not
-  here. The `profiles/<platform>/variants/<id>.md` store is from a later engine
-  (#238) and does not apply to the current pin either.
-- **Do not hand-edit** these files: `pasco build` regenerates them from `content/`.
+- **Variants.** `pasco refine <platform>` prints an agent task; `pasco refine
+  <platform> --choose <variantId>` records the pick in **`content/active.yaml`**,
+  not here. The chosen **body** is read from
+  `profiles/<platform>/variants/<variantId>.md` when that file exists, and
+  `pasco build` uses it instead of the deterministic text. The engine never
+  writes the body: you do, or your agent does. This template ships none, so the
+  deterministic renderer is what you see.
+- **Preview.** `pasco preview` renders ONE self-contained HTML page of the same
+  surfaces into `.pasco/preview/` (or the `--out` directory you name). It is
+  gitignored local state, never a deploy artifact — the `preview.yml` workflow
+  hands it over as a workflow artifact instead of committing it.
+- **Do not hand-edit** these files: `pasco build` regenerates them from
+  `content/` (and, for a chosen variant, from its `variants/` body).
 - In **your workspace** they are committed: they are the record of what is
   published and at which version. In this template they are not: the bot does not
   commit output here (an `is_template` repo).

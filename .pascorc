@@ -1,5 +1,6 @@
 {
   "workspace": ".",
   "defaults": { "lang": "en", "variants": 3 },
-  "diff": { "tagPattern": "v*" }
+  "diff": { "tagPattern": "v*" },
+  "engine": "0.3.7"
 }
