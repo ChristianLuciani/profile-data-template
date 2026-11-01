@@ -11,9 +11,9 @@ publication work merged after `v0.3.0` (see *Same release, merged 2026-10-21*).
   `AGENTS.md` (pin statement + the `npx` commands, plus `doctor`), this repo's
   `CONTRIBUTING.md` (local setup + the authoritative surface list, which now
   names all of them), `SECURITY.md` (supported-versions matrix),
-  `.github/ISSUE_TEMPLATE/bug.yml` (environment placeholder),
-  `.github/workflows/checks.yml`, `.github/workflows/build.yml` and
-  `.github/workflows/preview.yml`.
+  `.github/ISSUE_TEMPLATE/bug.yml` (environment placeholder), `ROADMAP.md` (the
+  engine line in *Where we are*), `.github/workflows/checks.yml`,
+  `.github/workflows/build.yml` and `.github/workflows/preview.yml`.
 - **`.pascorc` declares `"engine": "0.3.7"`** — the floor `pasco doctor`,
   `validate`, `build` and `preview` enforce from engine 0.3.7 on (#348); `doctor`
   reports `requires engine >= 0.3.7 (met)`. Declared limit: an older CLI does not

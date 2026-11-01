@@ -5,7 +5,7 @@ Which files appear is decided by the engine **pinned** in this repo — its vers
 and the authoritative list of the surfaces that pin it live in
 `CONTRIBUTING.md` § Releases —, not by the engine's `main`.
 
-With that pin (`@profile-as-code/cli@0.3.7`) and the **example content**,
+With that pin and the **example content**,
 `pasco build` produces exactly:
 
 ```

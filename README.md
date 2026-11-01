@@ -139,7 +139,7 @@ ask it to. No reading command rewrites your facts as a side effect:
 | `pasco status --verify` | certification in `content/deployments.yaml` (the one opt-in network path) |
 | `pasco status --write-checklist` | `CHECKLIST.md` — AUTO-GENERATED view of the ledger |
 | `pasco preview` | `.pasco/preview/` (gitignored), or the `--out` directory you name |
-| `pasco export … --out`, `pasco entity --jsonld --out` | only the directory or file you pass; without `--out` they print to stdout |
+| `pasco export … --out`, `pasco entity --jsonld --out` | only the path you pass to `--out`; `--check` and `export profile --json` write nothing (they print) |
 | `pasco post seed/task/choose/import` | `posts/<id>/…` — only if you use the MVP post flow |
 
 `profiles/` is generated output and **is** committed: it is the deploy artifact.

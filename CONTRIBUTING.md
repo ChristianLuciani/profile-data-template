@@ -74,9 +74,9 @@ This is a data workspace, not an app — it has no build of its own. The engine 
 pinned: **`@profile-as-code/cli@0.3.7`** (`pasco` is the bin). The pin is
 mirrored in every surface that must be bumped together: `README.md`,
 `README.es.md`, `AGENTS.md`, this file, `SECURITY.md`,
-`.github/ISSUE_TEMPLATE/bug.yml`, `.pascorc` (`engine`, the minimum the workspace
-accepts) and the three workflows that install the CLI (`checks.yml`,
-`build.yml`, `preview.yml`).
+`.github/ISSUE_TEMPLATE/bug.yml`, `ROADMAP.md` (the engine line in *Where we
+are*), `.pascorc` (`engine`, the minimum the workspace accepts) and the three
+workflows that install the CLI (`checks.yml`, `build.yml`, `preview.yml`).
 (A `CHANGELOG.md` entry names the pin as *history*, not as a surface to edit.)
 The *Releases* section below carries the authoritative list. Source:
 `registry.npmjs.org` `@profile-as-code/cli` dist-tag `latest`
@@ -115,7 +115,7 @@ it to. No reading command rewrites your facts behind your back:
 | `pasco status --verify` | certification in `content/deployments.yaml` (the one opt-in network path) |
 | `pasco status --write-checklist` | `CHECKLIST.md` — the AUTO-GENERATED view of that ledger |
 | `pasco preview` | `.pasco/preview/` (gitignored), or the `--out` directory you name |
-| `pasco export … --out`, `pasco entity --jsonld --out` | only the directory or file you pass; without `--out` they print to stdout |
+| `pasco export … --out`, `pasco entity --jsonld --out` | only the path you pass to `--out`; `--check` and `export profile --json` write nothing (they print) |
 | `pasco post seed/task/choose/import` | `posts/<id>/…` — only if you use the MVP post flow |
 
 ### Never edit `profiles/` by hand
@@ -204,8 +204,9 @@ Cutting a release:
 1. If the engine version changed, bump it in **all** of its surfaces:
    `README.md`, `README.es.md`, `AGENTS.md`, **this file**, `SECURITY.md` (the
    supported-versions matrix), `.github/ISSUE_TEMPLATE/bug.yml` (the environment
-   placeholder), `.pascorc` → `engine` (the minimum the workspace accepts) and
-   the three workflows that install the CLI (`.github/workflows/checks.yml`,
+   placeholder), `ROADMAP.md` (the engine line in *Where we are*),
+   `.pascorc` → `engine` (the minimum the workspace accepts) and the three
+   workflows that install the CLI (`.github/workflows/checks.yml`,
    `.github/workflows/build.yml`, `.github/workflows/preview.yml`). Leave
    `.pascorc` → `diff.tagPattern` alone
    unless the tag convention changes.

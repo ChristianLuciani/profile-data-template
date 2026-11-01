@@ -139,7 +139,7 @@ se lo pedís. Ningún comando de lectura reescribe tus hechos como efecto colate
 | `pasco status --verify` | la certificación en `content/deployments.yaml` (el único camino con red, opt-in) |
 | `pasco status --write-checklist` | `CHECKLIST.md` — vista AUTO-GENERADA del ledger |
 | `pasco preview` | `.pasco/preview/` (gitignored), o el directorio que pases en `--out` |
-| `pasco export … --out`, `pasco entity --jsonld --out` | solo el directorio o archivo que pasás; sin `--out` imprimen a stdout |
+| `pasco export … --out`, `pasco entity --jsonld --out` | solo la ruta que pasás a `--out`; `--check` y `export profile --json` no escriben (imprimen) |
 | `pasco post seed/task/choose/import` | `posts/<id>/…` — solo si usás el flujo MVP de posts |
 
 `profiles/` es output generado y **sí** se commitea: es el artefacto de deploy.
