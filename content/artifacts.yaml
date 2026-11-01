@@ -5,16 +5,18 @@
 # document, code. It is a pointer — the engine NEVER owns the binaries (D14).
 #
 # Required fields: id · kind · title · locator.
-#   id       stable slug, unique within the block (referenced by publications[]/press[]
-#            via artifactRefs, and it gives the bundle target assets/<id>/<basename>)
+#   id       stable slug, unique within the block (referenced by
+#            publications[]/press[]/projects[] via artifactRefs, and it gives the
+#            bundle target assets/<id>/<basename>)
 #   kind     portfolio | gallery | showreel | dataset | document | code
 #   title    proper name → invariant string (§11)
 #   locator  { url } OR { path } — exactly one (§18.3)
 #
-# CROSS-REFS: the reference lives on the OTHER side — `publications[].artifactRefs` and
-#   `press[].artifactRefs` point at `artifacts[].id`. An id that does not exist is a
-#   dangling ref and the load fails (core-check, §18.2). Artifacts do NOT carry
-#   `credentialId`: that belongs to `projects[].evidence[]` (claims).
+# CROSS-REFS: the reference lives on the OTHER side — `publications[].artifactRefs`,
+#   `press[].artifactRefs` and (v1.12, issue #333) `projects[].artifactRefs` point at
+#   `artifacts[].id`. An id that does not exist is a dangling ref and the load fails
+#   (core-check, §18.2). Artifacts do NOT carry `credentialId`: that belongs to
+#   `projects[].evidence[]` (claims).
 #
 # Valuable optionals:
 #   description  langMap — en required, es native (§11); feeds GEO
@@ -54,6 +56,20 @@
     locator: { url: "https://example.com/portfolio/socratic-tutor" }
     license: "CC-BY-4.0"
     tags: [education, ai]
+    visibility: public
+
+  # v1.12 (issue #333): `projects[].artifactRefs` targets this row — a `code`
+  # artifact with a `locator.url` and `visibility: public` is what makes the
+  # project's published-vs-in-development state DERIVE to "published".
+  - id: code-socratic-tutor
+    kind: code
+    title: "socratic-tutor (repository)"
+    description:
+      en: "Repository of the offline-first tutoring system, released as v1.0.0."
+      es: "Repositorio del sistema de tutoría offline-first, publicado como v1.0.0."
+    locator: { url: "https://github.com/alexrivera/socratic-tutor" }
+    license: "MIT"
+    tags: [education, ai, open-source]
     visibility: public
 
   - id: dataset-plasma-bench

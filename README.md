@@ -30,7 +30,10 @@ engine validates and renders the result.
   the key at all: it applies its own rules and renders a tree this scaffold does
   not document, so pin the install as the commands below do.
 - The example content is a **fictional persona** (Alex Rivera) that documents the
-  schema. Do not put real data in this repository; your data belongs in your fork.
+  schema — the answer surface (`identity.definition`, `faq[]`), the registry edges
+  (`nationality`, `publication.kind`, `projects[].artifactRefs`) and the release
+  event (`releases[]`), up to **v1.15**. Do not put real data in this repository;
+  your data belongs in your fork.
 - Maintained on a best-effort basis. Issues and PRs are triaged; see
   [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -93,10 +96,13 @@ the facts the source of truth:
    property — `bios.yaml` is the `bios[]` array directly, with no wrapper key
    ([schema](https://github.com/ChristianLuciani/profile-as-code/blob/main/schema/profile.schema.json)):
 
-   - `identity.yaml` — name, location, canonical links (the SSOT for your URLs)
+   - `identity.yaml` — name, location, canonical links (the SSOT for your URLs),
+     `definition` and `nationality` (v1.10 / v1.13)
    - `positioning.yaml` — positioning statement, audience angles, GEO anchors
    - `bios.yaml`, `headlines.yaml` — per platform, language and length
    - `skills.yaml`, `experience.yaml`, `projects.yaml`, `publications.yaml`, `keywords.yaml`
+   - `faq.yaml` — the citable answer pairs behind the `FAQPage` block (v1.10)
+   - `releases.yaml` — release events and the presence fan-out (v1.15)
 
 5. Validate and build:
 
@@ -142,9 +148,11 @@ ask it to. No reading command rewrites your facts as a side effect:
 | `pasco export … --out`, `pasco entity --jsonld --out` | only the path you pass to `--out`; `--check` and `export profile --json` write nothing (they print) |
 | `pasco post seed/task/choose/import` | `posts/<id>/…` — only if you use the MVP post flow |
 
-`profiles/` is generated output and **is** committed: it is the deploy artifact.
-Never hand-edit it — fix `content/` and rebuild. `.pasco/` is local state and is
-gitignored.
+`profiles/` is generated output and **is** committed in your workspace: it is the
+deploy artifact. Never hand-edit it — fix `content/` and rebuild. **This template
+is the exception**: its `build.yml` bot refuses to commit output there
+(`is_template` — see the build row below and `profiles/README.md`). `.pasco/` is
+local state and is gitignored.
 
 ## The three evidence concepts (do not mix them)
 
@@ -188,6 +196,8 @@ profile-data-<username>/
 ├── content/              # YOUR data (YAML)
 │   ├── credentials.yaml  # third-party attestations (optional, D17/§18)
 │   ├── artifacts.yaml    # works and media (optional, D17/§18)
+│   ├── faq.yaml          # citable Q&A pairs / FAQPage (optional, v1.10)
+│   ├── releases.yaml     # release events + presence fan-out (optional, v1.15)
 │   └── deployments.yaml  # deploy ledger (written only by pasco status --mark)
 ├── media/                # small versionable binaries (optional, §18.6)
 ├── docs/                 # evidence packs · symlink/stow tradeoffs · standards
