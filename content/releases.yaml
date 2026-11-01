@@ -40,8 +40,8 @@
     version: "1.1.0"
     date: "2025-11-10"
     summary:
-      en: "A plasma-benchmark preprint published; the publication row and the answer surface were updated with it."
-      es: "Se publicó un preprint de benchmark de plasmas; la fila de publicación y la superficie de respuestas se actualizaron."
+      en: "A plasma-benchmark preprint published; its publication row was added with it."
+      es: "Se publicó un preprint de benchmark de plasmas; su fila de publicación se agregó con él."
     changedUnits:
       - publications:pub-example-preprint
     surfaces: [github-readme, researchgate, substack]

@@ -1,12 +1,20 @@
-## v0.3.2 — 2026-10-31 — engine pin single-source: a CI gate and a clean tree
+## v0.3.2 — 2026-11-01 — engine pin single-source: a CI gate and a clean tree
+
+> **Correction (2026-11-01, operator decision).** The `v0.3.2` tag (`c4326cc`)
+> **does** ship a content change: PR #26 (#24) landed in the same tag and the
+> example now exercises schema v1.15 — `identity.definition`, `faq[]`,
+> `nationality`, `publication.kind`, `projects[].artifactRefs` and `releases[]`.
+> The sentence below describes the pin single-source change that this entry
+> documents; it is not a statement about the tag's full contents. The engine and
+> the schema do not change in this release; `content/` does. The tag is not moved.
 
 No schema, data or renderer change. This release closes the two declared debts of
 the 0.3.7 sync (issue #27): the engine pin was spread over four surfaces with
 nothing comparing them, and the maintenance window ledger dirtied the tree.
 
 - **`pins` job in `checks.yml`** (offline, ~seconds) — `.github/scripts/check-engine-pins.sh`
-  reads `.pascorc` → `engine` and enforces, per workflow file:
-  The rule is a **whitelist of strings, not a detector of install commands**:
+  reads `.pascorc` → `engine` and enforces, per workflow file. The rule is a
+  **whitelist of strings, not a detector of install commands**:
   every occurrence of `@profile-as-code/cli` in a workflow or a local action must
   be followed immediately by `@<the exact .pascorc engine>`. There is no command
   list to enumerate, so no form can slip through — `npm i`, `npm exec`, `npx`,
@@ -42,9 +50,10 @@ nothing comparing them, and the maintenance window ledger dirtied the tree.
   CONTRIBUTING.md (CI table, release checklist), `docs/STANDARDS.md` and
   `AGENTS.md` (scripts and workflow map).
 
-Verification (2026-10-31): `check-engine-pins.sh` green at the pin (0.3.7, three
-workflows) and red on a mutated copy · 4 workflows parse · `pasco validate` and
-`pasco check` still 0 findings (no `content/` change) · `.agos/` write leaves a
+Verification (2026-10-31, at the commit this entry documents): `check-engine-pins.sh`
+green at the pin (0.3.7, three workflows) and red on a mutated copy · 4 workflows
+parse · `pasco validate` and `pasco check` still 0 findings (that change touches no
+`content/` file — see the correction above, the tag does) · `.agos/` write leaves a
 clean `git status`.
 
 ## v0.3.1 — 2026-10-31 — engine 0.3.7 sync: pin, engine gate, manual preview, docs reconciliation

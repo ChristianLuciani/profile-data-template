@@ -23,17 +23,18 @@ valida y renderiza el resultado.
 
 ## Estado
 
-- Scaffold **v0.3.1**, alineado a `@profile-as-code/cli@0.3.7` — el `latest`
+- Scaffold **v0.3.2**, alineado a `@profile-as-code/cli@0.3.7` — el `latest`
   actual en npm, verificado 2026-10-31 ([OFICIAL] [WEB: registry.npmjs.org]).
   `.pascorc` declara `"engine": "0.3.7"` — el piso que `pasco doctor`, `validate`,
   `build` y `preview` hacen cumplir desde 0.3.7. Un CLI más viejo no lee la clave:
   aplica sus propias reglas y renderiza un árbol que este scaffold no documenta, así
   que pinneá la instalación como hacen los comandos de abajo.
 - El contenido de ejemplo es una **persona ficticia** (Alex Rivera) que documenta
-  el schema — la superficie de respuestas (`identity.definition`, `faq[]`), los
-  bordes del registro (`nationality`, `publication.kind`, `projects[].artifactRefs`)
-  y el evento de release (`releases[]`), hasta **v1.15**. No pongas datos reales en
-  este repositorio; tus datos van en tu fork.
+  el schema — la superficie de respuestas (`identity.definition`, `faq[]`), la
+  referencia al registro (`projects[].artifactRefs`) junto a los dos hechos que la
+  acompañan (`nationality` v1.13, `publication.kind` v1.14) y el evento de release
+  (`releases[]`), hasta **v1.15**. No pongas datos reales en este repositorio; tus
+  datos van en tu fork.
 - Mantenimiento best-effort. Issues y PRs se triajan; ver
   [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -222,7 +223,7 @@ SHA completo**; [Dependabot](.github/dependabot.yml) mantiene los pins al día.
 | `checks.yml` → `secrets` | idem | `gitleaks` (CLI pinneada + SHA-256) escanea la historia completa |
 | `checks.yml` → `evidence` | idem | `pasco validate` + `pasco check` (el gate §18.8) |
 | `workflow-lint.yml` | cambios en workflows | cada archivo de workflow parsea — separado para poder cubrir `checks.yml` mismo |
-| `build.yml` | push a main que toca `content/**`, `.pascorc`, el script de links o sí mismo | validate + check + build, después commitea `profiles/` |
+| `build.yml` | push a main que toca `content/**`, `.pascorc`, el script de links o sí mismo | validate + check + build; commitea `profiles/` en un workspace de usuario y se niega acá (`is_template`, fail-closed) |
 
 El job `example-data` corre **solo en este repositorio template** — un fork lleva
 legítimamente una identidad real, así que ahí se saltea (correrlo en un fork
@@ -260,7 +261,7 @@ grande; bugs y propuestas tienen plantillas.
 ## Releases
 
 Las versiones espejan el pin del engine: `MAJOR.MINOR` es la línea del engine,
-`PATCH` es la revisión de este scaffold. `v0.3.1` es el release actual (engine
+`PATCH` es la revisión de este scaffold. `v0.3.2` es el release actual (engine
 `0.3.7`); `v0.3.0` fue el primer release taggeado. El corte del tag, el re-sync
 de un fork y la lista de archivos que se bumpean juntos están en
 [CONTRIBUTING.md § Releases](CONTRIBUTING.md#releases).

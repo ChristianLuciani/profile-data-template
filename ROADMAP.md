@@ -6,9 +6,12 @@ file explains direction, so someone arriving cold knows where to contribute.
 
 ## Where we are
 
-- **v0.3.1** is the current release, cut for engine
+- **v0.3.2** is the current release (engine `@profile-as-code/cli@0.3.7`): the pin
+  became single-source — `check-engine-pins.sh` plus a `pins` job in `checks.yml`
+  — and the per-repo maintenance ledger stopped dirtying the tree.
+- **v0.3.1** moved the pin to engine
   `@profile-as-code/cli@0.3.7` (the `latest` on npm, verified 2026-10-31 —
-  [OFICIAL] [WEB: registry.npmjs.org]). It moved the pin, declared
+  [OFICIAL] [WEB: registry.npmjs.org]). It declared
   `"engine": "0.3.7"` in `.pascorc`, added the manual `preview` workflow and
   documented the tree the pin actually renders.
 - **v0.3.0** was the first tagged release (engine `0.3.0`).
@@ -22,7 +25,7 @@ The template version mirrors the engine line (`CONTRIBUTING.md` § Releases):
 the current engine line is `0.3.x` (no `0.4` release is announced), so the
 scaffold moves by engine `0.3.x` patches and its own revisions.
 
-The next scaffold tag is **`v0.3.2`**, for a docs-only or single-surface fix on
+The next scaffold tag is **`v0.3.3`**, for a docs-only or single-surface fix on
 this line. When a new engine patch lands, in this order:
 
 1. bump the pin in all of its surfaces — the authoritative list is in
