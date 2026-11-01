@@ -34,7 +34,7 @@ email: alex@example.com
 
 # CANONICAL links: the truth about your URLs lives here. Every platform derives from it.
 # v1 structure: array of { platform, label, url } — platform is free text.
-# v1.6 (issue #130): `role` declares what the URL IS — identity (the page that
+# v1.6 (issue #103): `role` declares what the URL IS — identity (the page that
 #   represents the entity, i.e. the JSON-LD `@id` source) | realization (a profile
 #   that indicates it) | aggregator. Absent = realization. The example marks the
 #   site as the identity link so the entity graph has a declared @id — the engine
