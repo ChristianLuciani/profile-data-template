@@ -13,8 +13,8 @@ the 0.3.7 sync (issue #27): the engine pin was spread over four surfaces with
 nothing comparing them, and the maintenance window ledger dirtied the tree.
 
 - **`pins` job in `checks.yml`** (offline, ~seconds) — `.github/scripts/check-engine-pins.sh`
-  reads `.pascorc` → `engine` and enforces, per workflow file:
-  The rule is a **whitelist of strings, not a detector of install commands**:
+  reads `.pascorc` → `engine` and enforces, per workflow file. The rule is a
+  **whitelist of strings, not a detector of install commands**:
   every occurrence of `@profile-as-code/cli` in a workflow or a local action must
   be followed immediately by `@<the exact .pascorc engine>`. There is no command
   list to enumerate, so no form can slip through — `npm i`, `npm exec`, `npx`,
