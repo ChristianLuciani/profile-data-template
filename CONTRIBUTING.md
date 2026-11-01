@@ -147,7 +147,7 @@ not "fix" a pin back to a tag.
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| `.github/workflows/checks.yml` | every push to `main` + every PR | `yaml` — `content/*.yaml` parse · `links` — relative markdown links resolve, plus a self-test that the gate still rejects a broken link · `example-data` — `content/` is still fictional, `media/` empty, no local state tracked · `secrets` — gitleaks scans the full history · `evidence` — `pasco validate` + `pasco check` |
+| `.github/workflows/checks.yml` | every push to `main` + every PR | `yaml` — `content/*.yaml` parse · `pins` — every mention of the engine package in a workflow or local action is exactly the `.pascorc` → `engine` version, plus a four-probe self-test that the gate still goes red · `links` — relative markdown links resolve, plus a self-test that the gate still rejects a broken link · `example-data` — `content/` is still fictional, `media/` empty, no local state tracked · `secrets` — gitleaks scans the full history · `evidence` — `pasco validate` + `pasco check` |
 | `.github/workflows/workflow-lint.yml` | every push to `main` + **every PR** | parses every file in `.github/workflows/` — the parse class that made each `checks.yml` run a `startup_failure` from 2026-08-12 |
 | `.github/workflows/build.yml` | push to `main` touching `content/**`, `.pascorc`, `.github/scripts/check-links.sh` or itself; manual dispatch | `pasco validate` + `check` + `build`, then commits `profiles/` |
 | `.github/workflows/preview.yml` | **manual dispatch only** | `pasco preview --out .pasco/preview` and uploads `index.html` as a downloadable artifact — never deploys, never commits |
@@ -213,7 +213,12 @@ Cutting a release:
 
    Verify before you open the PR: `pasco doctor`, `pasco validate`, `pasco check`
    and the offline guards (`bash .github/scripts/check-links.sh`,
-   `bash .github/scripts/check-example-data.sh`).
+   `bash .github/scripts/check-engine-pins.sh`,
+   `bash .github/scripts/check-example-data.sh`). CI runs the pin comparison as the
+   `pins` job, so a **workflow** that forgets the pin fails the PR instead of
+   drifting. The documentation surfaces in the list above (`README.md`,
+   `README.es.md`, `AGENTS.md`, `SECURITY.md`, the bug form, `ROADMAP.md`) are not
+   machine-checked: the list is their checklist.
 2. Add the entry at the top of `CHANGELOG.md`, headed
    `## vX.Y.Z — YYYY-MM-DD — <title>` (older entries predate the first tag and
    keep their dated headings).

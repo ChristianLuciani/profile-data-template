@@ -1,3 +1,52 @@
+## v0.3.2 — 2026-10-31 — engine pin single-source: a CI gate and a clean tree
+
+No schema, data or renderer change. This release closes the two declared debts of
+the 0.3.7 sync (issue #27): the engine pin was spread over four surfaces with
+nothing comparing them, and the maintenance window ledger dirtied the tree.
+
+- **`pins` job in `checks.yml`** (offline, ~seconds) — `.github/scripts/check-engine-pins.sh`
+  reads `.pascorc` → `engine` and enforces, per workflow file:
+  The rule is a **whitelist of strings, not a detector of install commands**:
+  every occurrence of `@profile-as-code/cli` in a workflow or a local action must
+  be followed immediately by `@<the exact .pascorc engine>`. There is no command
+  list to enumerate, so no form can slip through — `npm i`, `npm exec`, `npx`,
+  `pnpm`, `yarn`, a spec held in an `env:`/`matrix` variable, a quoted `#`
+  mid-line, a backslash continuation. An earlier command-allow-list version was
+  bypassed one new form per review round (three rounds, three forms); the string
+  rule closes the class by construction.
+  - a file that **runs `pasco` but never names the pinned package** fails, so
+    deleting an install cannot silently remove a surface from the comparison;
+  - full-line comments are ignored (a note is not code); inline text is not, so a
+    quoted `#` cannot hide a mention;
+  - at least one file must name the pin, or the job fails: nothing to compare;
+  - coverage: `.github/workflows/**` and `.github/actions/**`; a local action
+    outside `.github/actions/` (`uses: ./ci/setup`) is a declared residual, not
+    covered.
+  Failures are `::error file=…` annotations naming the file, the mention found
+  and the floor. The job carries a **self-test with four probes**, each of which
+  must go red: every file that names a pin is mutated (one probe per file, so a
+  gate narrowed to a subset cannot pass), the `.pascorc` floor is bumped (so a
+  hardcoded version fails), a fixture composite action carries another version
+  (covers the `.github/actions` branch, which no repo file exercises), and an
+  install is stripped from a workflow that runs `pasco`.
+  - Why: the drift is measured. In PR #25 the pin-surface list missed
+    `preview.yml` (round 1, F2) and the reconcile commit reintroduced two findings
+    of the same class (round 2, F2/F3). "Keep them in sync" was prose; now it is a
+    check.
+  - The mutation in the self-test travels in a shell variable and the wrong version
+    is never spelled literally — otherwise the gate would scan its own test.
+- **`.agos/` is gitignored**, next to `.pasco/`. The per-repo window ledger is
+  local state written after a window; tracked, it would leave `git status` dirty on
+  the next session's boot (`E_DIRTY_SESSION`).
+- **Docs kept in sync**: README.md / README.es.md (six checks + the new row),
+  CONTRIBUTING.md (CI table, release checklist), `docs/STANDARDS.md` and
+  `AGENTS.md` (scripts and workflow map).
+
+Verification (2026-10-31): `check-engine-pins.sh` green at the pin (0.3.7, three
+workflows) and red on a mutated copy · 4 workflows parse · `pasco validate` and
+`pasco check` still 0 findings (no `content/` change) · `.agos/` write leaves a
+clean `git status`.
+
 ## v0.3.1 — 2026-10-31 — engine 0.3.7 sync: pin, engine gate, manual preview, docs reconciliation
 
 No schema changes and no data migration: the example workspace validates

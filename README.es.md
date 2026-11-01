@@ -210,12 +210,13 @@ profile-data-<username>/
 
 ## CI y automatización
 
-Cinco checks más el job de build. Todas las actions están **pinneadas por commit
+Seis checks más el job de build. Todas las actions están **pinneadas por commit
 SHA completo**; [Dependabot](.github/dependabot.yml) mantiene los pins al día.
 
 | Workflow | Trigger | Qué hace |
 |---|---|---|
 | `checks.yml` → `yaml` | push a main + cada PR | `content/*.yaml` parsea |
+| `checks.yml` → `pins` | idem | cada mención de `@profile-as-code/cli` en un workflow o action local es exactamente la versión de `.pascorc` → `engine` (whitelist de strings, no detector de comandos), con self-test de cuatro sondas — el pin tiene una sola fuente |
 | `checks.yml` → `links` | idem | links markdown relativos resuelven, más un self-test de que el gate rechaza un link roto |
 | `checks.yml` → `example-data` | idem | `content/` sigue siendo ficticio, `media/` sigue vacío, no hay estado local trackeado |
 | `checks.yml` → `secrets` | idem | `gitleaks` (CLI pinneada + SHA-256) escanea la historia completa |

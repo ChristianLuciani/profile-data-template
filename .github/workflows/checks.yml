@@ -1,20 +1,27 @@
 # checks — profile-data-template
 #
-# Five jobs on every push/PR:
+# Six jobs on every push/PR:
 #
 # - yaml (offline, ~seconds): `content/*.yaml` parses.
+# - pins (offline, ~seconds): every mention of the CLI in a workflow or a local
+#   action carries exactly the `.pascorc` → `engine` version — a whitelist of
+#   strings, not a detector of install commands. One source for the pin; the gate
+#   exists because a comment saying "keep them in sync" is not a gate (PR #25,
+#   review rounds 1 and 2 both found drifted pin lists).
 # - links (offline, ~seconds): relative markdown links in tracked `.md` files
 #   resolve, plus a self-test that the gate still rejects a broken link.
 # - example-data (offline, ~seconds): the shipped `content/` is still a fictional
 #   example and `media/` is still empty — a forker must never inherit real data.
-# - secrets (offline, ~seconds): gitleaks scans the full history.
+# - secrets (downloads the gitleaks release, ~seconds): scans the full history.
 # - evidence (needs the engine, ~30s): `pasco validate` + `pasco check` — the
 #   §18.8 evidence/media gate CHECKLIST.md tells you to run before deploying.
 #   This is the ONLY place that gate runs automatically; build.yml has no
 #   `pull_request` trigger, so a check placed there could never gate a PR.
 #
-# The first four stay offline by design. The fifth installs the pinned engine from
-# npm (same pin as build.yml — keep them in sync).
+# `yaml`, `pins`, `links` and `example-data` are fully offline. `secrets`
+# downloads the gitleaks release (pinned version + SHA-256) and `evidence`
+# installs the pinned engine from npm — that install line is one of the ones
+# `pins` compares against `.pascorc`.
 #
 # The link check lives in `.github/scripts/check-links.sh`, not inline, because
 # build.yml needs the identical logic for the commit it makes with GITHUB_TOKEN —
@@ -53,6 +60,98 @@ jobs:
         run: |
           set -euo pipefail
           python3 -c "import yaml,glob; fs=glob.glob('content/*.yaml'); [yaml.safe_load(open(f)) for f in fs]; print(f'{len(fs)} yaml file(s) OK')"
+
+  pins:
+    name: engine pin single-source
+    runs-on: ubuntu-latest
+    steps:
+      # actions/checkout v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Compare every workflow install against the .pascorc floor
+        run: bash .github/scripts/check-engine-pins.sh
+      # A gate whose failure path is never exercised quietly becomes a no-op —
+      # the link gate carries the same self-test for the same reason. Four probes,
+      # each of which must go red, and each attacks a different part of the gate:
+      #   1. every file that names a pin is mutated, one probe per file — a gate
+      #      narrowed to a subset of files cannot pass by luck;
+      #   2. the floor in `.pascorc` is bumped — a gate with the version hardcoded
+      #      passes probe 1 and fails this one;
+      #   3. a local composite action installs another version — covers the
+      #      `.github/actions/**` branch, which no repo file exercises today;
+      #   4. an install is stripped from a workflow that runs `pasco`.
+      # The package name is assembled with `printf` and every version used here
+      # travels in a variable: this step must not contain a literal mention the
+      # gate would then scan, nor hardcode today's version (the drift being gated).
+      - name: Self-test the pin gate
+        run: |
+          set -euo pipefail
+          pkg="$(printf '@%s/%s' profile-as-code cli)"
+          bad="9.9.9"
+          gate=".github/scripts/check-engine-pins.sh"
+          mutated=0
+          for f in .github/workflows/*.yml .github/workflows/*.yaml; do
+            [ -f "$f" ] || continue
+            if ! grep -v '^[[:space:]]*#' "$f" | grep -qF "${pkg}@"; then continue; fi
+            probe="$(mktemp -d)"
+            cp -R .pascorc .github "$probe/"
+            name="$(basename "$f")"
+            # portable: no `sed -i` (BSD needs an extension argument, GNU does not)
+            sed -E "s#${pkg}@[0-9]+\\.[0-9]+\\.[0-9]+#${pkg}@${bad}#" \
+              "$probe/.github/workflows/${name}" > "$probe/mutated.tmp"
+            mv "$probe/mutated.tmp" "$probe/.github/workflows/${name}"
+            if bash "$probe/${gate}" -w "$probe" >/dev/null 2>&1; then
+              echo "::error file=$f::the pin gate accepted a mutated pin in ${name} — the gate is not working"
+              exit 1
+            fi
+            mutated=$((mutated + 1))
+          done
+          if [ "$mutated" -eq 0 ]; then
+            echo "::error::the pin gate self-test found no pinned file to mutate"
+            exit 1
+          fi
+
+          probe="$(mktemp -d)"
+          cp -R .pascorc .github "$probe/"
+          python3 - "$probe/.pascorc" <<'PY'
+          import json, sys
+          path = sys.argv[1]
+          data = json.load(open(path, encoding="utf-8"))
+          data["engine"] = "9.9.9"
+          with open(path, "w", encoding="utf-8") as fh:
+              json.dump(data, fh, indent=2)
+          PY
+          if bash "$probe/${gate}" -w "$probe" >/dev/null 2>&1; then
+            echo "::error::the pin gate ignored the .pascorc floor (hardcoded version?)"
+            exit 1
+          fi
+
+          probe="$(mktemp -d)"
+          cp -R .pascorc .github "$probe/"
+          mkdir -p "$probe/.github/actions/probe"
+          printf 'name: probe\nruns:\n  using: composite\n  steps:\n    - shell: bash\n      run: npm i -g %s@%s && pasco --version\n' \
+            "${pkg}" "${bad}" > "$probe/.github/actions/probe/action.yml"
+          if bash "$probe/${gate}" -w "$probe" >/dev/null 2>&1; then
+            echo "::error::the pin gate did not scan .github/actions (a drifted action install passed)"
+            exit 1
+          fi
+
+          probe="$(mktemp -d)"
+          cp -R .pascorc .github "$probe/"
+          target=""
+          for f in .github/workflows/*.yml; do
+            if grep -v '^[[:space:]]*#' "$f" | grep -qF "${pkg}@"; then
+              target="$(basename "$f")"
+              break
+            fi
+          done
+          [ -n "$target" ] || { echo "::error::the pin gate self-test found no workflow to strip"; exit 1; }
+          grep -vF "${pkg}" "$probe/.github/workflows/${target}" > "$probe/keep.tmp"
+          mv "$probe/keep.tmp" "$probe/.github/workflows/${target}"
+          if bash "$probe/${gate}" -w "$probe" >/dev/null 2>&1; then
+            echo "::error::the pin gate accepted a workflow that runs pasco with no pin"
+            exit 1
+          fi
+          echo "pin gate self-test OK: mutated ${mutated} file(s), bumped .pascorc, drifted a composite action, stripped ${target}"
 
   links:
     name: internal doc links
