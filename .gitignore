@@ -9,6 +9,11 @@ assets/private/
 # (see docs/power-user-symlinks.md). Per-machine, never shared.
 .pasco/
 
+# Maintenance window ledger (issue-advance/issue-sprint): per-repo local state,
+# written after a window. Never shared, and a tracked write would leave the tree
+# dirty on the next session's boot (E_DIRTY_SESSION).
+.agos/
+
 # Harness / tooling artifacts
 .pi/
 node_modules/

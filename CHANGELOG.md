@@ -1,3 +1,34 @@
+## v0.3.2 — 2026-10-31 — engine pin single-source: a CI gate and a clean tree
+
+No schema, data or renderer change. This release closes the two declared debts of
+the 0.3.7 sync (issue #27): the engine pin was spread over four surfaces with
+nothing comparing them, and the maintenance window ledger dirtied the tree.
+
+- **`pins` job in `checks.yml`** (offline, ~seconds) — `.github/scripts/check-engine-pins.sh`
+  requires every `@profile-as-code/cli@X.Y.Z` install in `.github/workflows/*.yml`
+  to equal `.pascorc` → `engine`. A mismatch fails with an `::error file=…`
+  annotation naming the file, the version found and the floor required; a workflow
+  that installs nothing is not silently skipped (the job also fails when no install
+  is found at all). The gate carries a **self-test**: one probe copy with a mutated
+  pin must go red, so its failure path cannot quietly rot.
+  - Why: the drift is measured. In PR #25 the pin-surface list missed
+    `preview.yml` (round 1, F2) and the reconcile commit reintroduced two findings
+    of the same class (round 2, F2/F3). "Keep them in sync" was prose; now it is a
+    check.
+  - The mutation in the self-test travels in a shell variable and the wrong version
+    is never spelled literally — otherwise the gate would scan its own test.
+- **`.agos/` is gitignored**, next to `.pasco/`. The per-repo window ledger is
+  local state written after a window; tracked, it would leave `git status` dirty on
+  the next session's boot (`E_DIRTY_SESSION`).
+- **Docs kept in sync**: README.md / README.es.md (six checks + the new row),
+  CONTRIBUTING.md (CI table, release checklist), `docs/STANDARDS.md` and
+  `AGENTS.md` (scripts and workflow map).
+
+Verification (2026-10-31): `check-engine-pins.sh` green at the pin (0.3.7, three
+workflows) and red on a mutated copy · 4 workflows parse · `pasco validate` and
+`pasco check` still 0 findings (no `content/` change) · `.agos/` write leaves a
+clean `git status`.
+
 ## v0.3.1 — 2026-10-31 — engine 0.3.7 sync: pin, engine gate, manual preview, docs reconciliation
 
 No schema changes and no data migration: the example workspace validates

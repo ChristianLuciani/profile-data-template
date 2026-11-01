@@ -200,7 +200,7 @@ profile-data-<username>/
 
 ## CI y automatización
 
-Cinco checks más el job de build. Todas las actions están **pinneadas por commit
+Seis checks más el job de build. Todas las actions están **pinneadas por commit
 SHA completo**; [Dependabot](.github/dependabot.yml) mantiene los pins al día.
 
 | Workflow | Trigger | Qué hace |
@@ -209,6 +209,7 @@ SHA completo**; [Dependabot](.github/dependabot.yml) mantiene los pins al día.
 | `checks.yml` → `links` | idem | links markdown relativos resuelven, más un self-test de que el gate rechaza un link roto |
 | `checks.yml` → `example-data` | idem | `content/` sigue siendo ficticio, `media/` sigue vacío, no hay estado local trackeado |
 | `checks.yml` → `secrets` | idem | `gitleaks` (CLI pinneada + SHA-256) escanea la historia completa |
+| `checks.yml` → `pins` | idem | la instalación de `@profile-as-code/cli` en cada workflow coincide con `.pascorc` → `engine` — el pin tiene una sola fuente |
 | `checks.yml` → `evidence` | idem | `pasco validate` + `pasco check` (el gate §18.8) |
 | `workflow-lint.yml` | cambios en workflows | cada archivo de workflow parsea — separado para poder cubrir `checks.yml` mismo |
 | `build.yml` | push a main que toca `content/**`, `.pascorc`, el script de links o sí mismo | validate + check + build, después commitea `profiles/` |

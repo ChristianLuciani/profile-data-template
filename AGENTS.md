@@ -26,8 +26,8 @@ accurate, and the user's responsibility.
 | `media/` | Versioned small binaries (`certificates/`, `photos/`, `press/`) — bundled to `profiles/<platform>/assets/` |
 | `docs/evidence-packs.md` · `docs/power-user-symlinks.md` | Per-domain proof checklists · stow/symlink tradeoffs |
 | `profiles/` | Rendered per-platform outputs (README, LinkedIn… + `assets/` when media is bundled) |
-| `.github/workflows/` | `checks.yml` (yaml · links · example-data · secrets · evidence) · `workflow-lint.yml` (offline) · `build.yml` (`pasco` from npm) · `preview.yml` (manual, HTML artifact) |
-| `.github/scripts/` | `check-links.sh` (shared by `checks.yml` and `build.yml`) · `check-example-data.sh` (template privacy guard) |
+| `.github/workflows/` | `checks.yml` (yaml · pins · links · example-data · secrets · evidence) · `workflow-lint.yml` (offline) · `build.yml` (`pasco` from npm) · `preview.yml` (manual, HTML artifact) |
+| `.github/scripts/` | `check-links.sh` (shared by `checks.yml` and `build.yml`) · `check-engine-pins.sh` (one source for the engine pin) · `check-example-data.sh` (template privacy guard) |
 | `.github/ISSUE_TEMPLATE/` · `PULL_REQUEST_TEMPLATE.md` | Issue forms (bug/feature) + PR privacy/checklist |
 | `.github/dependabot.yml` | Weekly SHA-pin updates for GitHub Actions |
 | `.pascorc` | Engine CLI config (`pasco`): `workspace`, `defaults` (lang, variants), `diff` (`tagPattern`), `engine` (minimum CLI the workspace requires) |
@@ -91,6 +91,7 @@ npx -y @profile-as-code/cli@0.3.7 doctor
 npx -y @profile-as-code/cli@0.3.7 build
 
 # offline guards CI runs — cheap, run them before asking for review
+bash .github/scripts/check-engine-pins.sh
 bash .github/scripts/check-links.sh
 bash .github/scripts/check-example-data.sh
 ```

@@ -1,8 +1,12 @@
 # checks — profile-data-template
 #
-# Five jobs on every push/PR:
+# Six jobs on every push/PR:
 #
 # - yaml (offline, ~seconds): `content/*.yaml` parses.
+# - pins (offline, ~seconds): every workflow's `@profile-as-code/cli@X.Y.Z`
+#   install agrees with `.pascorc` → `engine`. One source for the pin; the gate
+#   exists because a comment saying "keep them in sync" is not a gate (PR #25,
+#   review rounds 1 and 2 both found drifted pin lists).
 # - links (offline, ~seconds): relative markdown links in tracked `.md` files
 #   resolve, plus a self-test that the gate still rejects a broken link.
 # - example-data (offline, ~seconds): the shipped `content/` is still a fictional
@@ -13,8 +17,9 @@
 #   This is the ONLY place that gate runs automatically; build.yml has no
 #   `pull_request` trigger, so a check placed there could never gate a PR.
 #
-# The first four stay offline by design. The fifth installs the pinned engine from
-# npm (same pin as build.yml — keep them in sync).
+# Every job but `evidence` stays offline by design; `evidence` is the only one
+# that installs the pinned engine from npm — and that install line is one of the
+# four `pins` compares against `.pascorc`.
 #
 # The link check lives in `.github/scripts/check-links.sh`, not inline, because
 # build.yml needs the identical logic for the commit it makes with GITHUB_TOKEN —
@@ -53,6 +58,34 @@ jobs:
         run: |
           set -euo pipefail
           python3 -c "import yaml,glob; fs=glob.glob('content/*.yaml'); [yaml.safe_load(open(f)) for f in fs]; print(f'{len(fs)} yaml file(s) OK')"
+
+  pins:
+    name: engine pin single-source
+    runs-on: ubuntu-latest
+    steps:
+      # actions/checkout v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Compare every workflow install against the .pascorc floor
+        run: bash .github/scripts/check-engine-pins.sh
+      # A gate whose failure path is never exercised quietly becomes a no-op —
+      # the link gate carries the same self-test for the same reason. One probe,
+      # one mutated pin, must go red. The wrong version travels in a variable so
+      # this step never spells a literal pin (which the gate would scan) and the
+      # mutation never hardcodes today's version (which would recreate the drift).
+      - name: Self-test the pin gate
+        run: |
+          set -euo pipefail
+          probe="$(mktemp -d)"
+          cp -R .pascorc .github "$probe/"
+          bash "$probe/.github/scripts/check-engine-pins.sh" -w "$probe" >/dev/null
+          bad="9.9.9"
+          sed -i -E "s#@profile-as-code/cli@[0-9]+\\.[0-9]+\\.[0-9]+#@profile-as-code/cli@${bad}#" \
+            "$probe/.github/workflows/preview.yml"
+          if bash "$probe/.github/scripts/check-engine-pins.sh" -w "$probe" >/dev/null 2>&1; then
+            echo "::error::the pin gate accepted a mismatched install — the gate is not working"
+            exit 1
+          fi
+          echo "pin gate self-test OK: rejects an install that disagrees with .pascorc"
 
   links:
     name: internal doc links
