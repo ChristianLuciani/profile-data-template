@@ -50,9 +50,10 @@ nothing comparing them, and the maintenance window ledger dirtied the tree.
   CONTRIBUTING.md (CI table, release checklist), `docs/STANDARDS.md` and
   `AGENTS.md` (scripts and workflow map).
 
-Verification (2026-10-31): `check-engine-pins.sh` green at the pin (0.3.7, three
-workflows) and red on a mutated copy · 4 workflows parse · `pasco validate` and
-`pasco check` still 0 findings (no `content/` change) · `.agos/` write leaves a
+Verification (2026-10-31, at the commit this entry documents): `check-engine-pins.sh`
+green at the pin (0.3.7, three workflows) and red on a mutated copy · 4 workflows
+parse · `pasco validate` and `pasco check` still 0 findings (that change touches no
+`content/` file — see the correction above, the tag does) · `.agos/` write leaves a
 clean `git status`.
 
 ## v0.3.1 — 2026-10-31 — engine 0.3.7 sync: pin, engine gate, manual preview, docs reconciliation
