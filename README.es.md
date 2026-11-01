@@ -23,7 +23,7 @@ valida y renderiza el resultado.
 
 ## Estado
 
-- Scaffold **v0.3.1**, alineado a `@profile-as-code/cli@0.3.7` — el `latest`
+- Scaffold **v0.3.2**, alineado a `@profile-as-code/cli@0.3.7` — el `latest`
   actual en npm, verificado 2026-10-31 ([OFICIAL] [WEB: registry.npmjs.org]).
   `.pascorc` declara `"engine": "0.3.7"` — el piso que `pasco doctor`, `validate`,
   `build` y `preview` hacen cumplir desde 0.3.7. Un CLI más viejo no lee la clave:
@@ -261,7 +261,7 @@ grande; bugs y propuestas tienen plantillas.
 ## Releases
 
 Las versiones espejan el pin del engine: `MAJOR.MINOR` es la línea del engine,
-`PATCH` es la revisión de este scaffold. `v0.3.1` es el release actual (engine
+`PATCH` es la revisión de este scaffold. `v0.3.2` es el release actual (engine
 `0.3.7`); `v0.3.0` fue el primer release taggeado. El corte del tag, el re-sync
 de un fork y la lista de archivos que se bumpean juntos están en
 [CONTRIBUTING.md § Releases](CONTRIBUTING.md#releases).

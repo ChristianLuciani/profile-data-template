@@ -189,8 +189,9 @@ top of `CHANGELOG.md`.
 the `@profile-as-code/cli` version the scaffold expects; `PATCH` is the
 scaffold's own revision within that engine line. `v0.3.0` was the first scaffold
 release (engine `0.3.0`); `v0.3.1` moved the pin to engine `0.3.7` — still the
-`0.3` line, so the scaffold patch moved, not the minor. A docs-only fix on this
-line is `v0.3.2`. The point: a fork reads its engine compatibility straight off
+`0.3` line, so the scaffold patch moved, not the minor; `v0.3.2` made the pin
+single-source with the `pins` CI gate. A docs-only fix on this
+line is `v0.3.3`. The point: a fork reads its engine compatibility straight off
 the tag. The declared tradeoff is that the two cycles are coupled — a
 template-only change still has to name which engine line it belongs to.
 

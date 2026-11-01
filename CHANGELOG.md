@@ -1,4 +1,4 @@
-## v0.3.2 — 2026-10-31 — engine pin single-source: a CI gate and a clean tree
+## v0.3.2 — 2026-11-01 — engine pin single-source: a CI gate and a clean tree
 
 > **Correction (2026-11-01, operator decision).** The `v0.3.2` tag (`c4326cc`)
 > **does** ship a content change: PR #26 (#24) landed in the same tag and the
