@@ -1,0 +1,56 @@
+# faq.yaml — the citable answer surface (D17/v1.10, issue #288 of the engine).
+# EXAMPLE: fictional persona (Alex Rivera). Replace with your data.
+#
+# 3–20 fact pairs: the questions THIS entity answers, as the owner's assertions
+# (never generated copy, D11/D14). Below 3 there is no surface; above 20 it is a
+# page, not a profile. `pasco entity --jsonld` projects the block as a separate
+# `FAQPage` node — only when the block exists, never an empty one.
+#
+# Required fields: id · q · a — each `q`/`a` is a langMap (EN required, ES native).
+#   id      stable slug (entryId rules, §19.2) — what the block is reviewed by;
+#           it is NOT a ledger key (faq is root, not row-tracked)
+#   q       ≤90 chars per value and unique per workspace (uniqueness is a
+#           geoCheck rule — JSON Schema cannot express it)
+#   a       ≤320 chars per value — beyond that it is prose, not an answer
+#   source  optional http(s) pointer backing the answer (the URL scheme boundary,
+#           §5). An answer with no pointer is a claim (§8) and `geo/faq-coverage`
+#           warns about it. THE POINTERS BELOW ARE FICTIONAL: they point at the
+#           example.com surface of this example persona, because inventing a real
+#           citation would be worse than declaring the shape. In a real workspace
+#           they are the resolvable page that states the answer.
+
+  - id: faq-based-in
+    q:
+      en: "Where is Alex Rivera based?"
+      es: "¿Dónde está radicado Alex Rivera?"
+    a:
+      en: "Cuenca, Ecuador. The location is a canonical identity fact, so every platform profile carries the same city."
+      es: "Cuenca, Ecuador. La ubicación es un hecho canónico de identidad, así que todos los perfiles de plataforma llevan la misma ciudad."
+    source: "https://example.com/about"
+
+  - id: faq-works-on
+    q:
+      en: "What does Alex Rivera work on?"
+      es: "¿En qué trabaja Alex Rivera?"
+    a:
+      en: "Local-first AI infrastructure for education: the socratic-tutor project (36 virtual tutors field-tested in the Amazon) and the local-rag toolkit for consumer hardware."
+      es: "Infraestructura de IA local-first para educación: el proyecto socratic-tutor (36 tutores virtuales probados en la Amazonía) y el toolkit local-rag para hardware de consumo."
+    source: "https://example.com/projects"
+
+  - id: faq-socratic-tutor
+    q:
+      en: "What is the socratic-tutor project?"
+      es: "¿Qué es el proyecto socratic-tutor?"
+    a:
+      en: "An offline-first tutoring system for low-connectivity classrooms: 36 Socratic virtual tutors for the national curriculum, field-tested in the Amazon region in August 2024."
+      es: "Un sistema de tutoría offline-first para aulas de baja conectividad: 36 tutores virtuales socráticos para el currículo nacional, probados en la Amazonía en agosto de 2024."
+    source: "https://example.com/projects/socratic-tutor"
+
+  - id: faq-peer-reviewed
+    q:
+      en: "Has Alex Rivera published peer-reviewed research?"
+      es: "¿Alex Rivera publicó investigación revisada por pares?"
+    a:
+      en: "Yes — two journal articles: on sovereign AI tutoring in low-connectivity classrooms (2025) and on computational methods for dense plasmas (2022). Both are fictional in this example."
+      es: "Sí — dos artículos de revista: sobre tutoría de IA soberana en aulas de baja conectividad (2025) y sobre métodos computacionales para plasmas densos (2022). Ambos son ficticios en este ejemplo."
+    source: "https://example.com/publications"

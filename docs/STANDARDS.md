@@ -15,7 +15,9 @@ extends to example `content/` values that cite platform constraints.
 
 - **YAML is the source of truth.** `content/*.yaml` holds facts (deterministic,
   validated) and texts (per-platform variants). Structure follows the
-  profile-as-code schema v1 (contract owner).
+  profile-as-code schema v1 (contract owner) — the example content exercises it up
+  to **v1.15** (`definition`/`faq[]` v1.10, `projects[].artifactRefs` v1.12,
+  `nationality` v1.13, `publication.kind` v1.14, `releases[]` v1.15).
 - **GEO consistency.** Facts must be identical across platforms — an LLM that
   cross-references profiles must find the same facts (see `CHECKLIST.md`).
 - **i18n.** Data is bilingual by design (`en` essential, `es` native). Repo

@@ -18,8 +18,10 @@ accurate, and the user's responsibility.
 
 | Where | What |
 |---|---|
-| `content/identity.yaml` | Core identity facts (name, role, contact) |
-| `content/experience.yaml` · `projects.yaml` · `publications.yaml` | History, evidence-backed |
+| `content/identity.yaml` | Core identity facts (name, role, contact, `definition` v1.10, `nationality` v1.13) |
+| `content/experience.yaml` · `projects.yaml` · `publications.yaml` | History, evidence-backed (`publication.kind` v1.14, `projects[].artifactRefs` v1.12) |
+| `content/faq.yaml` | Citable Q&A pairs — the `FAQPage` answer surface (v1.10, optional) |
+| `content/releases.yaml` | Release events + presence fan-out (`pasco presence`, v1.15, optional) |
 | `content/credentials.yaml` · `artifacts.yaml` | Evidence registry — third-party attestations + works (D17/§18, optional) |
 | `content/bios.yaml` · `headlines.yaml` · `positioning.yaml` | Per-platform texts, variant-based |
 | `content/skills.yaml` · `keywords.yaml` | Skills + SEO-ish keywords |

@@ -8,6 +8,19 @@
 name: Alex Rivera
 location: Cuenca, Ecuador
 
+# v1.10 (issue #288): the one sentence an answer engine can quote verbatim
+# (schema.org `description` on Person). ≤160 chars per value, EN required + ES
+# native, and it MUST contain the entity name — the cap is schema-enforced, the
+# name check is a geoCheck rule. Declared here so the answer surface is exercised.
+definition:
+  en: "Alex Rivera is a software engineer and educator building local-first AI tools for low-connectivity classrooms."
+  es: "Alex Rivera es ingeniero de software y educador que construye herramientas de IA local-first para aulas de baja conectividad."
+
+# v1.13 (issue #334): ISO 3166-1 alpha-2 nationality (uppercase) — a citable fact
+# distinct from `location` (residence). Single-valued in v1.13; `EC` matches the
+# fictional Cuenca residence, so no second nationality is declared.
+nationality: EC
+
 # v1.5 (issue #71): renderers emit it as a mailto: href (output only) and as the
 # schema.org `email` property in JSON-LD; `sameAs` keeps page URLs only.
 email: alex@example.com
