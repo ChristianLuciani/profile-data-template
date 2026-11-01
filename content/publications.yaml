@@ -1,19 +1,43 @@
 # publications.yaml — papers. DOI/orcid = GEO anchor (resolvable, verifiable).
 # EXAMPLE: fictional persona (Alex Rivera).
 # Contract v1: array of { title, venue, year, doi (^10\.\d{4,9}/…), orcidId (NNNN-NNNN-NNNN-NNNX) }.
+#
+# v1.14 (issue #349): `kind` is the stored output classification —
+# journal-article | preprint | conference-abstract. `peerReviewed` is DERIVED from
+# `kind == journal-article` and is NEVER stored (same derive-never-store rule as
+# published-vs-in-development). The field is optional: a row without `kind` stays
+# valid and renders as before. Venue remains a free string — a new venue must
+# never fail a check, so consumers count by `kind`, never by venue prose.
+# The example exercises all three enum values below.
 
   - id: pub-example-tutoring
     origin: template
     title: "Sovereign AI tutoring in low-connectivity classrooms"
     venue: "Journal of Educational AI"
     year: 2025
+    kind: journal-article
     doi: "10.0000/example.2025.001"
   - id: pub-example-plasmas
     origin: template
     title: "Computational methods for dense plasmas"
     venue: "Physical Review C (fictional)"
     year: 2022
+    kind: journal-article
     doi: "10.0000/example.2022.042"
+  - id: pub-example-preprint
+    origin: template
+    title: "Dense plasma benchmarks for commodity GPUs (preprint)"
+    venue: "arXiv (preprint, fictional)"
+    year: 2025
+    kind: preprint
+    url: "https://example.com/preprints/dense-plasma-benchmarks"
+  - id: pub-example-abstract
+    origin: template
+    title: "Socratic tutoring at the edge: an extended abstract"
+    venue: "Proceedings of the Fictional Workshop on AI in Education"
+    year: 2025
+    kind: conference-abstract
+    url: "https://example.com/proceedings/socratic-tutoring-at-the-edge"
 
 # v1.1 proposal: authors [{ name }] — not part of the v1 contract.
 # v1.3 (D18, SPEC §19 of the engine): example rows carry `id` (ledger `<block>:<id>`) and

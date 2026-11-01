@@ -1,0 +1,47 @@
+# releases.yaml — release events and their presence fan-out (D23, v1.15, issue #262).
+# EXAMPLE: fictional persona (Alex Rivera). Replace with your data.
+#
+# A release is the EVENT that fans out across presence surfaces; the per-surface
+# state is DERIVED from the deploy ledger (`content/deployments.yaml`, §19) at
+# read time and stored nowhere. `pasco presence` is the daily board and
+# `pasco release plan <id>` is the launch view.
+#
+# Required fields: id · version · date · surfaces.
+#   id           stable slug (^[a-z0-9][a-z0-9-]*$); the CLI addresses a release by it
+#   version      semver of the published tag (the tag's version, not the schema version)
+#   date         YYYY-MM-DD
+#   surfaces     ≥1 presence surfaces, as platforms/registry.yaml slugs of any
+#                kind (profile · repo-meta · distribution). Order here is
+#                declaration order; the plan sorts repo-meta → profile → distribution
+#                and an unknown slug is a refusal, never a silent empty plan.
+# Valuable optionals:
+#   summary      langMap — the factual spine of the release (what shipped, not
+#                announcement copy; per-channel copy lives in skills/, D23 rule 7)
+#   changedUnits §19.2 ledger keys this release changed (`identity`,
+#                `projects:<id>`, `publications:<id>`, …) — the fan-out compares
+#                each surface against these units' ledger records.
+#
+# This block is OPTIONAL and additive. The example declares two small events to
+# show the shape; it is not a release history. Nothing is deployed here, so every
+# surface reads `never` on `pasco presence` — the derived state, never a claim.
+
+  - id: v1-0-0
+    version: "1.0.0"
+    date: "2025-09-15"
+    summary:
+      en: "socratic-tutor 1.0.0: the offline-first tutor released, with a code artifact and the field-test report behind it."
+      es: "socratic-tutor 1.0.0: el tutor offline-first publicado, con un artifact de código y el reporte de campo detrás."
+    changedUnits:
+      - identity
+      - projects:proj-example-socratic-tutor
+    surfaces: [github-repo-meta, github-readme, linkedin, release-notes, x]
+
+  - id: paper-2025-plasma-preprint
+    version: "1.1.0"
+    date: "2025-11-10"
+    summary:
+      en: "A plasma-benchmark preprint published; the publication row and the answer surface were updated with it."
+      es: "Se publicó un preprint de benchmark de plasmas; la fila de publicación y la superficie de respuestas se actualizaron."
+    changedUnits:
+      - publications:pub-example-preprint
+    surfaces: [github-readme, researchgate, substack]

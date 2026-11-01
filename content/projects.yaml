@@ -5,6 +5,11 @@
 # evidence: { claim (langMap), source (URL), verified (YYYY-MM-DD) } — resolvable claims.
 # v1.3 (D18, SPEC §19 of the engine): example rows carry `id` (ledger `<block>:<id>`) and
 #   `origin: template` — absent = user-authored.
+# v1.12 (issue #333): `artifactRefs[]` names the work behind the project — the third
+#   reference site after publications[] and press[]. Targets are existing
+#   `artifacts[].id`s; an unknown id fails the load (dangling ref). Published-vs-
+#   in-development is DERIVED from the targets (`visibility: public` AND
+#   `locator.url`), never stored here.
 
   - id: proj-example-socratic-tutor
     origin: template
@@ -16,6 +21,7 @@
     links:
       - https://github.com/alexrivera/socratic-tutor
     keywords: ["llm", "education", "local-first"]
+    artifactRefs: [code-socratic-tutor, portfolio-socratic-tutor]
     evidence:
       - claim:
           en: "Field test, Amazon region, Aug 2024"

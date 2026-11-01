@@ -18,8 +18,10 @@ accurate, and the user's responsibility.
 
 | Where | What |
 |---|---|
-| `content/identity.yaml` | Core identity facts (name, role, contact) |
-| `content/experience.yaml` · `projects.yaml` · `publications.yaml` | History, evidence-backed |
+| `content/identity.yaml` | Core identity facts (name, role, contact, `definition` v1.10, `nationality` v1.13) |
+| `content/experience.yaml` · `projects.yaml` · `publications.yaml` | History, evidence-backed (`publication.kind` v1.14, `projects[].artifactRefs` v1.12) |
+| `content/faq.yaml` | Citable Q&A pairs — the `FAQPage` answer surface (v1.10, optional) |
+| `content/releases.yaml` | Release events + presence fan-out (`pasco presence`, v1.15, optional) |
 | `content/credentials.yaml` · `artifacts.yaml` | Evidence registry — third-party attestations + works (D17/§18, optional) |
 | `content/bios.yaml` · `headlines.yaml` · `positioning.yaml` | Per-platform texts, variant-based |
 | `content/skills.yaml` · `keywords.yaml` | Skills + SEO-ish keywords |
@@ -44,7 +46,9 @@ accurate, and the user's responsibility.
 3. **Validate before commit.** `content/*.yaml` must parse and match the engine
    schema. The engine is pinned: `@profile-as-code/cli@0.3.7` (the authoritative
    list of the surfaces that carry the pin is `CONTRIBUTING.md` § Releases); run
-   `pasco validate` + `pasco check` + `pasco build`, and commit `profiles/`.
+   `pasco validate` + `pasco check` + `pasco build`, and commit `profiles/`
+   (this template is the exception: its bot does not commit output here — see
+   `profiles/README.md`).
 4. **i18n.** `en` essential, `es` native. Keep both in sync when editing texts.
 5. **Privacy.** This is personal data — private repo, no screenshots/URLs in
    public artifacts, no real data in the template itself.
