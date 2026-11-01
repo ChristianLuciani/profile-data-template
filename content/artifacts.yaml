@@ -33,7 +33,7 @@
 #                        gitignored .pasco/local.toml; missing ⇒ WARN (CI-degradable).
 #
 # This block is OPTIONAL. If you have no artifacts, leave the file empty or delete it:
-# the loader skips absent/empty files (verified against CLI 0.3.0).
+# the loader skips absent/empty files (verified against CLI 0.3.7, 2026-10-31).
 
   - id: reel-2025
     kind: showreel

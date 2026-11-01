@@ -12,7 +12,8 @@
 # reports, so GitHub leaves it "Expected — Waiting" forever. Running always keeps
 # it cheap (~7s) and lets the branch protection require it.
 #
-# Coverage: every file in .github/workflows/ (checks.yml, build.yml, this one).
+# Coverage: every file in .github/workflows/ (checks.yml, build.yml, preview.yml,
+# this one).
 # Residual, declared: an error in THIS file is still a startup_failure and is not
 # caught in-band — nothing can validate itself. Its only consequence is that this
 # lint does not run, so it is the one file whose breakage is not covered.

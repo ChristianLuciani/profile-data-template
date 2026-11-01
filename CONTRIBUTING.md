@@ -71,23 +71,29 @@ rejected — a polite ping on the thread is welcome.
 ## Local setup
 
 This is a data workspace, not an app — it has no build of its own. The engine is
-pinned: **`@profile-as-code/cli@0.3.0`** (`pasco` is the bin). The pin is mirrored
-in the files that must be bumped together — `README.md`, `README.es.md`,
-`AGENTS.md`, this one, and both workflows. (A `CHANGELOG.md` entry names the pin
-as *history*, not as a surface to edit.) The *Releases* section below carries the
-authoritative list. Source: `registry.npmjs.org` `@profile-as-code/cli` dist-tag
-`latest` ([OFICIAL] [WEB: registry.npmjs.org, verified 2026-10-21]).
+pinned: **`@profile-as-code/cli@0.3.7`** (`pasco` is the bin). The pin is
+mirrored in every surface that must be bumped together: `README.md`,
+`README.es.md`, `AGENTS.md`, this file, `SECURITY.md`,
+`.github/ISSUE_TEMPLATE/bug.yml`, `ROADMAP.md` (the engine line in *Where we
+are*), `.pascorc` (`engine`, the minimum the workspace accepts) and the three
+workflows that install the CLI (`checks.yml`, `build.yml`, `preview.yml`).
+(A `CHANGELOG.md` entry names the pin as *history*, not as a surface to edit.)
+The *Releases* section below carries the authoritative list. Source:
+`registry.npmjs.org` `@profile-as-code/cli` dist-tag `latest`
+([OFICIAL] [WEB: registry.npmjs.org, verified 2026-10-31]).
 
 ```bash
 # 1. YAML parse only — offline, no engine, ~seconds
 python3 -c "import yaml,glob; [yaml.safe_load(open(f)) for f in glob.glob('content/*.yaml')]; print('yaml OK')"
 
 # 2. the pinned engine (needs node 22+, the engine's minimum)
-npm i -g @profile-as-code/cli@0.3.0
+npm i -g @profile-as-code/cli@0.3.7
 
-# 3. schema + drift/geo, then the evidence/media gate (§18.8 of the engine SPEC)
+# 3. does the installed CLI satisfy .pascorc, then schema + drift/geo and the
+#    offline gate: registry (§18.8), media transport (§18.6), limits, fact-present
+pasco doctor           # engine · schema · workspace loads · .pascorc requirement (exit 1 if unmet)
 pasco validate         # schema violations FAIL (exit 1); drift/GEO WARN (exit 0)
-pasco check            # expiry, privacy, media transport — the pre-deploy gate
+pasco check            # expiry, privacy, media transport, limits — the pre-deploy gate
 
 # 4. regenerate the committed output
 pasco build
@@ -97,17 +103,20 @@ bash .github/scripts/check-links.sh
 bash .github/scripts/check-example-data.sh
 ```
 
-The engine is read-only over this workspace except for the **four** commands that
-write — and not one of them rewrites your facts behind your back:
+The engine writes only when writing is the command's job, and only where you ask
+it to. No reading command rewrites your facts behind your back:
 
 | Command | Writes |
 |---|---|
 | `pasco build` | `profiles/<platform>/` (+ bundled `assets/`) — derived, and committed |
-| `pasco refine` | `content/active.yaml` — the variant you picked |
+| `pasco refine --choose` | `content/active.yaml` — the variant you picked |
+| `pasco edit <contract-path> --set` | that one field in `content/*.yaml` (comment-preserving, validated, atomic) |
 | `pasco status --mark` | `content/deployments.yaml` — the deploy ledger (D18) |
+| `pasco status --verify` | certification in `content/deployments.yaml` (the one opt-in network path) |
 | `pasco status --write-checklist` | `CHECKLIST.md` — the AUTO-GENERATED view of that ledger |
-
-Everything else only reads.
+| `pasco preview` | `.pasco/preview/` (gitignored), or the `--out` directory you name |
+| `pasco export … --out`, `pasco entity --jsonld --out` | only the path you pass to `--out`; `--check` and `export profile --json` write nothing (they print) |
+| `pasco post seed/task/choose/import` | `posts/<id>/…` — only if you use the MVP post flow |
 
 ### Never edit `profiles/` by hand
 
@@ -125,11 +134,11 @@ the same rule as ground rule 2 in `AGENTS.md`.
 
 ## CI
 
-Three workflows. Two install the pinned engine from npm; `workflow-lint.yml` is
-offline and validates the workflow files themselves — deliberately **not** from
-inside `checks.yml`, because a YAML error there is a `startup_failure` and a job
-in that file can never run to report it (the incident the file's own NOTE
-records).
+Four workflows. Three install the pinned engine from npm (`checks.yml`,
+`build.yml` and the manual `preview.yml`); `workflow-lint.yml` is offline and
+validates the workflow files themselves — deliberately **not** from inside `checks.yml`, because a YAML error
+there is a `startup_failure` and a job in that file can never run to report it
+(the incident the file's own NOTE records).
 
 Every action is pinned by full commit SHA (with a version comment), in every
 workflow — a retagged action is arbitrary code holding the job's token, and the
@@ -141,6 +150,7 @@ not "fix" a pin back to a tag.
 | `.github/workflows/checks.yml` | every push to `main` + every PR | `yaml` — `content/*.yaml` parse · `links` — relative markdown links resolve, plus a self-test that the gate still rejects a broken link · `example-data` — `content/` is still fictional, `media/` empty, no local state tracked · `secrets` — gitleaks scans the full history · `evidence` — `pasco validate` + `pasco check` |
 | `.github/workflows/workflow-lint.yml` | every push to `main` + **every PR** | parses every file in `.github/workflows/` — the parse class that made each `checks.yml` run a `startup_failure` from 2026-08-12 |
 | `.github/workflows/build.yml` | push to `main` touching `content/**`, `.pascorc`, `.github/scripts/check-links.sh` or itself; manual dispatch | `pasco validate` + `check` + `build`, then commits `profiles/` |
+| `.github/workflows/preview.yml` | **manual dispatch only** | `pasco preview --out .pasco/preview` and uploads `index.html` as a downloadable artifact — never deploys, never commits |
 
 The `secrets` job downloads the OSS gitleaks CLI (MIT) with a pinned version and
 SHA-256, deliberately not the proprietary `gitleaks-action`: a template forked by
@@ -177,23 +187,33 @@ top of `CHANGELOG.md`.
 
 **Version scheme — the template mirrors the engine pin.** `MAJOR.MINOR` follows
 the `@profile-as-code/cli` version the scaffold expects; `PATCH` is the
-scaffold's own revision within that engine line. So `v0.3.0` is the first
-scaffold release for engine `0.3.0`, and a docs-only fix that keeps engine
-`0.3.0` is `v0.3.1`. The point: a fork reads its engine compatibility straight
-off the tag. The declared tradeoff is that the two cycles are coupled — a
+scaffold's own revision within that engine line. `v0.3.0` was the first scaffold
+release (engine `0.3.0`); `v0.3.1` moved the pin to engine `0.3.7` — still the
+`0.3` line, so the scaffold patch moved, not the minor. A docs-only fix on this
+line is `v0.3.2`. The point: a fork reads its engine compatibility straight off
+the tag. The declared tradeoff is that the two cycles are coupled — a
 template-only change still has to name which engine line it belongs to.
 
 `.pascorc → diff.tagPattern` is **`v*`** so that `pasco diff` finds these tags.
 The engine's default is `release-*`; with a `v*` tag and the default pattern,
 `pasco diff` silently matches nothing and diffs against the first commit
-instead (verified against engine 0.3.0).
+instead (verified against engine 0.3.7).
 
 Cutting a release:
 
-1. Bump the pin in all of its surfaces (`README.md`, `README.es.md`, `AGENTS.md`,
-   **this file**, `.github/workflows/checks.yml`, `.github/workflows/build.yml`)
-   if the engine version changed, and bump `.pascorc` only if the tag convention
-   changed.
+1. If the engine version changed, bump it in **all** of its surfaces:
+   `README.md`, `README.es.md`, `AGENTS.md`, **this file**, `SECURITY.md` (the
+   supported-versions matrix), `.github/ISSUE_TEMPLATE/bug.yml` (the environment
+   placeholder), `ROADMAP.md` (the engine line in *Where we are*),
+   `.pascorc` → `engine` (the minimum the workspace accepts) and the three
+   workflows that install the CLI (`.github/workflows/checks.yml`,
+   `.github/workflows/build.yml`, `.github/workflows/preview.yml`). Leave
+   `.pascorc` → `diff.tagPattern` alone
+   unless the tag convention changes.
+
+   Verify before you open the PR: `pasco doctor`, `pasco validate`, `pasco check`
+   and the offline guards (`bash .github/scripts/check-links.sh`,
+   `bash .github/scripts/check-example-data.sh`).
 2. Add the entry at the top of `CHANGELOG.md`, headed
    `## vX.Y.Z — YYYY-MM-DD — <title>` (older entries predate the first tag and
    keep their dated headings).

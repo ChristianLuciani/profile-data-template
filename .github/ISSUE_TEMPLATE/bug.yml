@@ -54,7 +54,7 @@ body:
     attributes:
       label: Environment
       description: Node version, engine version (`pasco --help`), template tag or commit.
-      placeholder: "node 22.14 · @profile-as-code/cli@0.3.0 · v0.3.0"
+      placeholder: "node 22.14 · @profile-as-code/cli@0.3.7 · v0.3.1"
   - type: checkboxes
     id: confirmations
     attributes:

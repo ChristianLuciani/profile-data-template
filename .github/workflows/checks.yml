@@ -137,9 +137,9 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: 22
-      # Kept in sync with build.yml's pin — both must name the same version.
+      # Kept in sync with build.yml and preview.yml — all three must name the same version.
       - name: Install the pinned engine from npm
-        run: npm i -g --ignore-scripts @profile-as-code/cli@0.3.0
+        run: npm i -g --ignore-scripts @profile-as-code/cli@0.3.7
       # `pasco check` is the §18.8 gate CHECKLIST.md tells you to run before any
       # deploy. It runs here (PR-triggered) rather than only in build.yml, which
       # has no `pull_request` trigger and so could never gate a PR.

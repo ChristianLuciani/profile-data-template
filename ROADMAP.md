@@ -6,25 +6,30 @@ file explains direction, so someone arriving cold knows where to contribute.
 
 ## Where we are
 
-- **v0.3.0** is the first tagged release, cut for engine
-  `@profile-as-code/cli@0.3.0`.
-- `main` already carries work merged after that tag (the generated-artifact tree
-  fix, OSS readiness, CI hardening and Dependabot pins). The next tag picks it
-  up — see *Next release*.
+- **v0.3.1** is the current release, cut for engine
+  `@profile-as-code/cli@0.3.7` (the `latest` on npm, verified 2026-10-31 —
+  [OFICIAL] [WEB: registry.npmjs.org]). It moved the pin, declared
+  `"engine": "0.3.7"` in `.pascorc`, added the manual `preview` workflow and
+  documented the tree the pin actually renders.
+- **v0.3.0** was the first tagged release (engine `0.3.0`).
+- The per-surface paste artifacts and the variant body store are **shipped**:
+  profile-as-code #239 landed in engine `0.3.5` and #238 in `0.3.6`, so both
+  apply to the current pin — `profiles/README.md` documents them.
 
 ## Next release
 
-The template version mirrors the engine line (`CONTRIBUTING.md` § Releases).
+The template version mirrors the engine line (`CONTRIBUTING.md` § Releases):
+the current engine line is `0.3.x` (no `0.4` release is announced), so the
+scaffold moves by engine `0.3.x` patches and its own revisions.
 
-The next release tracks **engine 0.4**, which consolidates the per-surface paste
-artifacts (profile-as-code #239) and the variant store (#238). When that engine
-release exists, in this order:
+The next scaffold tag is **`v0.3.2`**, for a docs-only or single-surface fix on
+this line. When a new engine patch lands, in this order:
 
-1. bump the pin in its five surfaces — the authoritative list is in
-   `CONTRIBUTING.md` § Releases;
-2. update the generated tree in `profiles/README.md`: the
-   `profiles/<platform>.md` files appear for manual surfaces that have a bio row.
-   The tree moves **with** the pin, in the same PR;
+1. bump the pin in all of its surfaces — the authoritative list is in
+   `CONTRIBUTING.md` § Releases (`.pascorc` → `engine` included);
+2. update the generated tree in `profiles/README.md`: `profiles/<platform>.md`
+   appears only for a manual surface that has a bio row, and the tree moves
+   **with** the pin, in the same PR;
 3. cut the tag on the merge commit and publish the release.
 
 ## Deliberate non-goals

@@ -42,7 +42,7 @@ Esto no es post-pega: es el gate de privacidad del **workspace**. En el template
 ## Evidencia (D17, SPEC §18) — antes de cualquier deploy
 
 Esto **no** es post-pega: es el gate previo. Las reglas las ejecuta `pasco check`
-(M7/§18.8 y M8/§18.6 están implementadas; requiere CLI ≥ 0.3.0). Los nombres entre
+(M7/§18.8 y M8/§18.6 están implementadas; requiere CLI ≥ 0.3.7). Los nombres entre
 paréntesis son el código que el CLI emite en el finding.
 
 `validate` + `check` también corren automáticamente en cada PR

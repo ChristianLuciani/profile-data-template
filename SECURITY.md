@@ -10,7 +10,7 @@ separate repository with its own policy.
 
 | Version | Supported | Notes |
 |---|---|---|
-| `v0.3.x` (engine `@profile-as-code/cli@0.3.0`) | ✅ | Current scaffold line |
+| `v0.3.x` (engine `@profile-as-code/cli@0.3.7`) | ✅ | Current scaffold line |
 | Pre-release history (no tag) | ❌ | Use the latest tag |
 
 ## Reporting a vulnerability

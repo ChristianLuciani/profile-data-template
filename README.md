@@ -7,7 +7,7 @@
 
 [![checks](https://github.com/ChristianLuciani/profile-data-template/actions/workflows/checks.yml/badge.svg)](https://github.com/ChristianLuciani/profile-data-template/actions/workflows/checks.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![engine: 0.3.0](https://img.shields.io/badge/engine-%40profile--as--code%2Fcli%400.3.0-blue)](https://www.npmjs.com/package/@profile-as-code/cli)
+[![engine: 0.3.7](https://img.shields.io/badge/engine-%40profile--as--code%2Fcli%400.3.7-blue)](https://www.npmjs.com/package/@profile-as-code/cli)
 
 **This repository is a template, not the engine.** It contains no application
 code. You copy it, replace the fictional example with your own facts, and the
@@ -23,8 +23,12 @@ engine validates and renders the result.
 
 ## Status
 
-- Scaffold **v0.3.0**, tracking `@profile-as-code/cli@0.3.0` — the current
-  `latest` on npm, verified 2026-10-21 ([OFICIAL] [WEB: registry.npmjs.org]).
+- Scaffold **v0.3.1**, tracking `@profile-as-code/cli@0.3.7` — the current
+  `latest` on npm, verified 2026-10-31 ([OFICIAL] [WEB: registry.npmjs.org]).
+  `.pascorc` declares `"engine": "0.3.7"` — the floor `pasco doctor`, `validate`,
+  `build` and `preview` enforce from 0.3.7 on. A CLI older than that does not read
+  the key at all: it applies its own rules and renders a tree this scaffold does
+  not document, so pin the install as the commands below do.
 - The example content is a **fictional persona** (Alex Rivera) that documents the
   schema. Do not put real data in this repository; your data belongs in your fork.
 - Maintained on a best-effort basis. Issues and PRs are triaged; see
@@ -82,7 +86,7 @@ the facts the source of truth:
    For local runs, Node **22+** is required (engine `engines`):
 
    ```bash
-   npm i -g @profile-as-code/cli@0.3.0
+   npm i -g @profile-as-code/cli@0.3.7
    ```
 
 4. Replace the example in `content/` with your facts. Each file **is** its root
@@ -97,9 +101,12 @@ the facts the source of truth:
 5. Validate and build:
 
    ```bash
+   pasco doctor           # engine · schema · workspace valid · .pascorc requirement met
    pasco validate         # schema FAILS (exit 1); drift/GEO WARN (exit 0)
-   pasco check            # evidence registry + media transport gate
+   pasco check            # offline gate: registry (M7/§18.8), media transport (M8/§18.6),
+                          # limits and fact-present over the built surfaces
    pasco build            # deterministic per-platform output (no arg = all)
+   pasco preview          # one self-contained HTML page in .pasco/preview (not a publication)
    pasco diff             # changes since the last release tag → CHANGELOG
    pasco refine linkedin  # PARTIAL: emits an agent task; --choose records the pick
    pasco status           # per-entry: origin · surfaces · in-sync/stale/never
@@ -120,18 +127,24 @@ the facts the source of truth:
 
 ## What the engine writes
 
-The engine is read-only over your workspace except for **four** commands — and
-none of them rewrites your facts:
+The engine writes only when writing is the command's job, and only where you
+ask it to. No reading command rewrites your facts as a side effect:
 
 | Command | Writes |
 |---|---|
 | `pasco build` | `profiles/<platform>/` (+ bundled `assets/`) — derived, committed |
-| `pasco refine` | `content/active.yaml` — the variant you picked |
+| `pasco refine --choose` | `content/active.yaml` — the variant you picked |
+| `pasco edit <contract-path> --set` | that one field in `content/*.yaml` (comment-preserving, validated, atomic) |
 | `pasco status --mark` | `content/deployments.yaml` — the deploy ledger (D18) |
+| `pasco status --verify` | certification in `content/deployments.yaml` (the one opt-in network path) |
 | `pasco status --write-checklist` | `CHECKLIST.md` — AUTO-GENERATED view of the ledger |
+| `pasco preview` | `.pasco/preview/` (gitignored), or the `--out` directory you name |
+| `pasco export … --out`, `pasco entity --jsonld --out` | only the path you pass to `--out`; `--check` and `export profile --json` write nothing (they print) |
+| `pasco post seed/task/choose/import` | `posts/<id>/…` — only if you use the MVP post flow |
 
-Everything else only reads. `profiles/` is generated output and **is** committed:
-it is the deploy artifact. Never hand-edit it — fix `content/` and rebuild.
+`profiles/` is generated output and **is** committed: it is the deploy artifact.
+Never hand-edit it — fix `content/` and rebuild. `.pasco/` is local state and is
+gitignored.
 
 ## The three evidence concepts (do not mix them)
 
@@ -180,7 +193,7 @@ profile-data-<username>/
 ├── docs/                 # evidence packs · symlink/stow tradeoffs · standards
 ├── profiles/             # generated deploy artifacts (committed, never hand-edited)
 ├── .github/              # CI, link/secret/example-data gates, issue templates
-├── .pascorc              # CLI config: workspace, defaults, diff.tagPattern
+├── .pascorc              # CLI config: workspace, defaults, diff.tagPattern, engine
 ├── CHECKLIST.md          # per-platform post-deploy verification (EN · .es)
 └── CHANGELOG.md          # every change: date + what to re-paste
 ```
@@ -234,15 +247,17 @@ feature; bugs and proposals have issue templates.
 ## Releases
 
 Versions mirror the engine pin: `MAJOR.MINOR` is the engine line, `PATCH` is this
-scaffold's revision. `v0.3.0` is the first tagged release. Tagging, the re-sync
-of a fork, and the list of files that must be bumped together are in
+scaffold's revision. `v0.3.1` is the current release (engine `0.3.7`);
+`v0.3.0` was the first tagged release. Tagging, the re-sync of a fork, and the
+list of files that must be bumped together are in
 [CONTRIBUTING.md § Releases](CONTRIBUTING.md#releases).
 
 ## Troubleshooting
 
 | Symptom | Cause / fix |
 |---|---|
-| `pasco: command not found` | Install it (`npm i -g @profile-as-code/cli@0.3.0`) or run `npx -y @profile-as-code/cli@0.3.0 <cmd>` |
+| `pasco: command not found` | Install it (`npm i -g @profile-as-code/cli@0.3.7`) or run `npx -y @profile-as-code/cli@0.3.7 <cmd>` |
+| `doctor` exits 1, or `validate`/`build` refuse with an engine requirement | The installed `pasco` is below the `engine` floor in `.pascorc` — install at least that version (an older CLI ignores the floor) |
 | `validate` fails on `dangling cross-ref` | A `credentialId` / `artifactId` / `artifactRefs` points to an `id` that does not exist |
 | `check` fails on private-in-public-output | A public claim references an `unlisted`/`private` entry — make it `public` or drop the reference |
 | The build bot commits nothing | Confirm this is a user workspace (not the template), Actions is enabled, and the push touched one of the watched paths |

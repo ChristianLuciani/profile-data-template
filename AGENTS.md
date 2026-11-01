@@ -26,11 +26,11 @@ accurate, and the user's responsibility.
 | `media/` | Versioned small binaries (`certificates/`, `photos/`, `press/`) — bundled to `profiles/<platform>/assets/` |
 | `docs/evidence-packs.md` · `docs/power-user-symlinks.md` | Per-domain proof checklists · stow/symlink tradeoffs |
 | `profiles/` | Rendered per-platform outputs (README, LinkedIn… + `assets/` when media is bundled) |
-| `.github/workflows/` | `checks.yml` (yaml · links · example-data · secrets · evidence) · `workflow-lint.yml` (offline) · `build.yml` (`pasco` from npm) |
+| `.github/workflows/` | `checks.yml` (yaml · links · example-data · secrets · evidence) · `workflow-lint.yml` (offline) · `build.yml` (`pasco` from npm) · `preview.yml` (manual, HTML artifact) |
 | `.github/scripts/` | `check-links.sh` (shared by `checks.yml` and `build.yml`) · `check-example-data.sh` (template privacy guard) |
 | `.github/ISSUE_TEMPLATE/` · `PULL_REQUEST_TEMPLATE.md` | Issue forms (bug/feature) + PR privacy/checklist |
 | `.github/dependabot.yml` | Weekly SHA-pin updates for GitHub Actions |
-| `.pascorc` | Engine CLI config (`pasco`): `workspace`, `defaults` (lang, variants), `diff` (`tagPattern`) |
+| `.pascorc` | Engine CLI config (`pasco`): `workspace`, `defaults` (lang, variants), `diff` (`tagPattern`), `engine` (minimum CLI the workspace requires) |
 | `CHECKLIST.md` | Post-deploy verification per platform (EN) · `CHECKLIST.es.md` (ES, hand-maintained) |
 | `SECURITY.md` | Private disclosure policy — never a public issue |
 
@@ -42,7 +42,7 @@ accurate, and the user's responsibility.
 2. **Source at the source.** A drift between `content/` and `profiles/` is fixed
    by regenerating the output, not by editing the output by hand.
 3. **Validate before commit.** `content/*.yaml` must parse and match the engine
-   schema. The engine is pinned: `@profile-as-code/cli@0.3.0` (the authoritative
+   schema. The engine is pinned: `@profile-as-code/cli@0.3.7` (the authoritative
    list of the surfaces that carry the pin is `CONTRIBUTING.md` § Releases); run
    `pasco validate` + `pasco check` + `pasco build`, and commit `profiles/`.
 4. **i18n.** `en` essential, `es` native. Keep both in sync when editing texts.
@@ -85,9 +85,10 @@ accurate, and the user's responsibility.
 python3 -c "import yaml,glob; [yaml.safe_load(open(f)) for f in glob.glob('content/*.yaml')]; print('yaml OK')"
 
 # pinned engine: schema + drift/geo, the §18.8 evidence gate, generated views
-npx -y @profile-as-code/cli@0.3.0 validate
-npx -y @profile-as-code/cli@0.3.0 check
-npx -y @profile-as-code/cli@0.3.0 build
+npx -y @profile-as-code/cli@0.3.7 validate
+npx -y @profile-as-code/cli@0.3.7 check
+npx -y @profile-as-code/cli@0.3.7 doctor
+npx -y @profile-as-code/cli@0.3.7 build
 
 # offline guards CI runs — cheap, run them before asking for review
 bash .github/scripts/check-links.sh

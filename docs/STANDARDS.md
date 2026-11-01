@@ -70,5 +70,7 @@ extends to example `content/` values that cite platform constraints.
   self-test of that gate · template example-data guard · gitleaks secret scan ·
   `pasco validate` + `check`) · `workflow-lint.yml` (the workflow files parse —
   kept as a separate workflow so it can cover `checks.yml` itself) · `build.yml`
-  (`pasco validate` + `check` + `build`, then commits `profiles/`).
+  (`pasco validate` + `check` + `build`, then commits `profiles/`) · `preview.yml`
+  (manual dispatch only: `pasco preview` rendered to a downloadable artifact,
+  never deployed or committed).
 - Claims change → update source + date, never silently.
