@@ -30,9 +30,10 @@ engine validates and renders the result.
   the key at all: it applies its own rules and renders a tree this scaffold does
   not document, so pin the install as the commands below do.
 - The example content is a **fictional persona** (Alex Rivera) that documents the
-  schema — the answer surface (`identity.definition`, `faq[]`), the registry edges
-  (`nationality`, `publication.kind`, `projects[].artifactRefs`) and the release
-  event (`releases[]`), up to **v1.15**. Do not put real data in this repository;
+  schema — the answer surface (`identity.definition`, `faq[]`), the registry
+  reference (`projects[].artifactRefs`) with the two facts it sits next to
+  (`nationality` v1.13, `publication.kind` v1.14) and the release event
+  (`releases[]`), up to **v1.15**. Do not put real data in this repository;
   your data belongs in your fork.
 - Maintained on a best-effort basis. Issues and PRs are triaged; see
   [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -222,7 +223,7 @@ Six checks plus the build job. All actions are **pinned by full commit SHA**;
 | `checks.yml` → `secrets` | same | `gitleaks` (pinned CLI + SHA-256) scans the full history |
 | `checks.yml` → `evidence` | same | `pasco validate` + `pasco check` (the §18.8 gate) |
 | `workflow-lint.yml` | workflows change | every workflow file parses — kept separate so it can cover `checks.yml` itself |
-| `build.yml` | push to main touching `content/**`, `.pascorc`, the link script or itself | validate + check + build, then commits `profiles/` |
+| `build.yml` | push to main touching `content/**`, `.pascorc`, the link script or itself | validate + check + build; commits `profiles/` in a user workspace and refuses here (`is_template`, fail-closed) |
 
 The `example-data` job runs **only in this template repository** — a fork
 legitimately carries a real identity, so the guard skips there (running it in a

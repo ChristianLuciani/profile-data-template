@@ -30,10 +30,11 @@ valida y renderiza el resultado.
   aplica sus propias reglas y renderiza un árbol que este scaffold no documenta, así
   que pinneá la instalación como hacen los comandos de abajo.
 - El contenido de ejemplo es una **persona ficticia** (Alex Rivera) que documenta
-  el schema — la superficie de respuestas (`identity.definition`, `faq[]`), los
-  bordes del registro (`nationality`, `publication.kind`, `projects[].artifactRefs`)
-  y el evento de release (`releases[]`), hasta **v1.15**. No pongas datos reales en
-  este repositorio; tus datos van en tu fork.
+  el schema — la superficie de respuestas (`identity.definition`, `faq[]`), la
+  referencia al registro (`projects[].artifactRefs`) junto a los dos hechos que la
+  acompañan (`nationality` v1.13, `publication.kind` v1.14) y el evento de release
+  (`releases[]`), hasta **v1.15**. No pongas datos reales en este repositorio; tus
+  datos van en tu fork.
 - Mantenimiento best-effort. Issues y PRs se triajan; ver
   [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -222,7 +223,7 @@ SHA completo**; [Dependabot](.github/dependabot.yml) mantiene los pins al día.
 | `checks.yml` → `secrets` | idem | `gitleaks` (CLI pinneada + SHA-256) escanea la historia completa |
 | `checks.yml` → `evidence` | idem | `pasco validate` + `pasco check` (el gate §18.8) |
 | `workflow-lint.yml` | cambios en workflows | cada archivo de workflow parsea — separado para poder cubrir `checks.yml` mismo |
-| `build.yml` | push a main que toca `content/**`, `.pascorc`, el script de links o sí mismo | validate + check + build, después commitea `profiles/` |
+| `build.yml` | push a main que toca `content/**`, `.pascorc`, el script de links o sí mismo | validate + check + build; commitea `profiles/` en un workspace de usuario y se niega acá (`is_template`, fail-closed) |
 
 El job `example-data` corre **solo en este repositorio template** — un fork lleva
 legítimamente una identidad real, así que ahí se saltea (correrlo en un fork
