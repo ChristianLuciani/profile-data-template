@@ -148,9 +148,11 @@ se lo pedís. Ningún comando de lectura reescribe tus hechos como efecto colate
 | `pasco export … --out`, `pasco entity --jsonld --out` | solo la ruta que pasás a `--out`; `--check` y `export profile --json` no escriben (imprimen) |
 | `pasco post seed/task/choose/import` | `posts/<id>/…` — solo si usás el flujo MVP de posts |
 
-`profiles/` es output generado y **sí** se commitea: es el artefacto de deploy.
-Nunca lo edites a mano — corregí `content/` y reconstruí. `.pasco/` es estado
-local y está gitignored.
+`profiles/` es output generado y **sí** se commitea en tu workspace: es el
+artefacto de deploy. Nunca lo edites a mano — corregí `content/` y reconstruí.
+**Este template es la excepción**: su bot de `build.yml` se niega a commitear el
+output (`is_template` — ver la fila de build abajo y `profiles/README.md`).
+`.pasco/` es estado local y está gitignored.
 
 ## Los tres conceptos de evidencia (no los mezcles)
 

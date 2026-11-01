@@ -46,7 +46,9 @@ accurate, and the user's responsibility.
 3. **Validate before commit.** `content/*.yaml` must parse and match the engine
    schema. The engine is pinned: `@profile-as-code/cli@0.3.7` (the authoritative
    list of the surfaces that carry the pin is `CONTRIBUTING.md` § Releases); run
-   `pasco validate` + `pasco check` + `pasco build`, and commit `profiles/`.
+   `pasco validate` + `pasco check` + `pasco build`, and commit `profiles/`
+   (this template is the exception: its bot does not commit output here — see
+   `profiles/README.md`).
 4. **i18n.** `en` essential, `es` native. Keep both in sync when editing texts.
 5. **Privacy.** This is personal data — private repo, no screenshots/URLs in
    public artifacts, no real data in the template itself.

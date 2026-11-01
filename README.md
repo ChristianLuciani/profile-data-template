@@ -148,9 +148,11 @@ ask it to. No reading command rewrites your facts as a side effect:
 | `pasco export … --out`, `pasco entity --jsonld --out` | only the path you pass to `--out`; `--check` and `export profile --json` write nothing (they print) |
 | `pasco post seed/task/choose/import` | `posts/<id>/…` — only if you use the MVP post flow |
 
-`profiles/` is generated output and **is** committed: it is the deploy artifact.
-Never hand-edit it — fix `content/` and rebuild. `.pasco/` is local state and is
-gitignored.
+`profiles/` is generated output and **is** committed in your workspace: it is the
+deploy artifact. Never hand-edit it — fix `content/` and rebuild. **This template
+is the exception**: its `build.yml` bot refuses to commit output there
+(`is_template` — see the build row below and `profiles/README.md`). `.pasco/` is
+local state and is gitignored.
 
 ## The three evidence concepts (do not mix them)
 
