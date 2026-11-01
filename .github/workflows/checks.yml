@@ -17,9 +17,10 @@
 #   This is the ONLY place that gate runs automatically; build.yml has no
 #   `pull_request` trigger, so a check placed there could never gate a PR.
 #
-# Every job but `evidence` stays offline by design; `evidence` is the only one
-# that installs the pinned engine from npm — and that install line is one of the
-# four `pins` compares against `.pascorc`.
+# `yaml`, `pins`, `links` and `example-data` are fully offline. `secrets`
+# downloads the gitleaks release (pinned version + SHA-256) and `evidence`
+# installs the pinned engine from npm — that install line is one of the ones
+# `pins` compares against `.pascorc`.
 #
 # The link check lives in `.github/scripts/check-links.sh`, not inline, because
 # build.yml needs the identical logic for the commit it makes with GITHUB_TOKEN —
@@ -68,24 +69,40 @@ jobs:
       - name: Compare every workflow install against the .pascorc floor
         run: bash .github/scripts/check-engine-pins.sh
       # A gate whose failure path is never exercised quietly becomes a no-op —
-      # the link gate carries the same self-test for the same reason. One probe,
-      # one mutated pin, must go red. The wrong version travels in a variable so
-      # this step never spells a literal pin (which the gate would scan) and the
-      # mutation never hardcodes today's version (which would recreate the drift).
+      # the link gate carries the same self-test for the same reason. Two probes,
+      # both of which must go red, and each mutates a DIFFERENT workflow so a gate
+      # narrowed to one file cannot pass by luck:
+      #   1. a literal mismatch (preview.yml);
+      #   2. a lost install in a workflow that runs `pasco` (build.yml) — that one
+      #      only runs on push to main, so the hole would otherwise land post-merge.
+      # The wrong version travels in a variable: this step never spells a literal
+      # pin and never hardcodes today's version (which would recreate the drift).
       - name: Self-test the pin gate
         run: |
           set -euo pipefail
-          probe="$(mktemp -d)"
-          cp -R .pascorc .github "$probe/"
-          bash "$probe/.github/scripts/check-engine-pins.sh" -w "$probe" >/dev/null
+          probe_a="$(mktemp -d)"
+          probe_b="$(mktemp -d)"
+          cp -R .pascorc .github "$probe_a/"
+          cp -R .pascorc .github "$probe_b/"
+          gate_a="$probe_a/.github/scripts/check-engine-pins.sh"
+          gate_b="$probe_b/.github/scripts/check-engine-pins.sh"
+          bash "$gate_a" -w "$probe_a" >/dev/null
+          bash "$gate_b" -w "$probe_b" >/dev/null
           bad="9.9.9"
           sed -i -E "s#@profile-as-code/cli@[0-9]+\\.[0-9]+\\.[0-9]+#@profile-as-code/cli@${bad}#" \
-            "$probe/.github/workflows/preview.yml"
-          if bash "$probe/.github/scripts/check-engine-pins.sh" -w "$probe" >/dev/null 2>&1; then
+            "$probe_a/.github/workflows/preview.yml"
+          if bash "$gate_a" -w "$probe_a" >/dev/null 2>&1; then
             echo "::error::the pin gate accepted a mismatched install — the gate is not working"
             exit 1
           fi
-          echo "pin gate self-test OK: rejects an install that disagrees with .pascorc"
+          grep -v '@profile-as-code/cli' "$probe_b/.github/workflows/build.yml" \
+            > "$probe_b/build.yml.tmp"
+          mv "$probe_b/build.yml.tmp" "$probe_b/.github/workflows/build.yml"
+          if bash "$gate_b" -w "$probe_b" >/dev/null 2>&1; then
+            echo "::error::the pin gate accepted a workflow that runs pasco with no pinned install"
+            exit 1
+          fi
+          echo "pin gate self-test OK: rejects a mismatched pin and a missing install"
 
   links:
     name: internal doc links

@@ -215,7 +215,10 @@ Cutting a release:
    and the offline guards (`bash .github/scripts/check-links.sh`,
    `bash .github/scripts/check-engine-pins.sh`,
    `bash .github/scripts/check-example-data.sh`). CI runs the pin comparison as the
-   `pins` job, so a surface you forget fails the PR instead of drifting.
+   `pins` job, so a **workflow** that forgets the pin fails the PR instead of
+   drifting. The documentation surfaces in the list above (`README.md`,
+   `README.es.md`, `AGENTS.md`, `SECURITY.md`, the bug form, `ROADMAP.md`) are not
+   machine-checked: the list is their checklist.
 2. Add the entry at the top of `CHANGELOG.md`, headed
    `## vX.Y.Z — YYYY-MM-DD — <title>` (older entries predate the first tag and
    keep their dated headings).

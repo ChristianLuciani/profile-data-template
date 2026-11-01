@@ -206,8 +206,8 @@ Six checks plus the build job. All actions are **pinned by full commit SHA**;
 | Workflow | Trigger | What it does |
 |---|---|---|
 | `checks.yml` → `yaml` | push to main + every PR | `content/*.yaml` parses |
+| `checks.yml` → `pins` | same | every workflow that runs `pasco` installs a full `@profile-as-code/cli@X.Y.Z` equal to `.pascorc` → `engine`, with a self-test for both failure modes — the pin has one source |
 | `checks.yml` → `links` | same | relative markdown links resolve, plus a self-test that the gate rejects a broken link |
-| `checks.yml` → `pins` | same | every workflow's `@profile-as-code/cli` install agrees with `.pascorc` → `engine` — the pin has one source |
 | `checks.yml` → `example-data` | same | `content/` is still fictional, `media/` still empty, no local state tracked |
 | `checks.yml` → `secrets` | same | `gitleaks` (pinned CLI + SHA-256) scans the full history |
 | `checks.yml` → `evidence` | same | `pasco validate` + `pasco check` (the §18.8 gate) |
