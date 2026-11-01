@@ -6,17 +6,22 @@ nothing comparing them, and the maintenance window ledger dirtied the tree.
 
 - **`pins` job in `checks.yml`** (offline, ~seconds) — `.github/scripts/check-engine-pins.sh`
   reads `.pascorc` → `engine` and enforces, per workflow file:
-  - every install of `@profile-as-code/cli` names a **full** `MAJOR.MINOR.PATCH`
-    pin equal to the floor — a range, dist-tag, `v` prefix, suffix (`-beta.1`) or
-    a bare package name fails;
-  - a workflow that **runs `pasco` but installs no pinned CLI** fails, so deleting
-    an install step cannot silently remove a surface from the comparison;
+  - **every occurrence** of `@profile-as-code/cli` on an install line must be
+    followed by `@<exact floor>` — a range, dist-tag, `v` prefix, suffix
+    (`-beta.1`) or a bare package name fails, and one good pin cannot immunize a
+    second, drifting install in the same file;
+  - backslash line continuations are joined first, so a pin on the next line of
+    an install command is still seen;
+  - local composite actions (`.github/actions/**`) are scanned with the same rules;
+  - a file that **runs `pasco` but installs no pinned CLI** fails, so deleting an
+    install step cannot silently remove a surface from the comparison;
   - comment lines and trailing comments are ignored (a note is not an install);
-  - at least one workflow must carry a pin, or the job fails: nothing to compare.
+  - at least one pin must exist overall, or the job fails: nothing to compare.
   Failures are `::error file=…` annotations naming the file, the version found and
-  the floor. The job carries a **self-test with two probes** (a mutated pin in
-  `preview.yml`, a deleted install in `build.yml`) so both failure modes stay
-  exercised — a gate narrowed to one file cannot pass by luck.
+  the floor. The job carries a **self-test that mutates every pinned file** (one
+  probe each, so a gate narrowed to a subset cannot pass by luck) plus a probe
+  that strips an install from a workflow that runs `pasco` — both classes must go
+  red.
   - Why: the drift is measured. In PR #25 the pin-surface list missed
     `preview.yml` (round 1, F2) and the reconcile commit reintroduced two findings
     of the same class (round 2, F2/F3). "Keep them in sync" was prose; now it is a

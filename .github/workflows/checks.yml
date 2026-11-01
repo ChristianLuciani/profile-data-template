@@ -11,7 +11,7 @@
 #   resolve, plus a self-test that the gate still rejects a broken link.
 # - example-data (offline, ~seconds): the shipped `content/` is still a fictional
 #   example and `media/` is still empty — a forker must never inherit real data.
-# - secrets (offline, ~seconds): gitleaks scans the full history.
+# - secrets (downloads the gitleaks release, ~seconds): scans the full history.
 # - evidence (needs the engine, ~30s): `pasco validate` + `pasco check` — the
 #   §18.8 evidence/media gate CHECKLIST.md tells you to run before deploying.
 #   This is the ONLY place that gate runs automatically; build.yml has no
@@ -69,40 +69,58 @@ jobs:
       - name: Compare every workflow install against the .pascorc floor
         run: bash .github/scripts/check-engine-pins.sh
       # A gate whose failure path is never exercised quietly becomes a no-op —
-      # the link gate carries the same self-test for the same reason. Two probes,
-      # both of which must go red, and each mutates a DIFFERENT workflow so a gate
-      # narrowed to one file cannot pass by luck:
-      #   1. a literal mismatch (preview.yml);
-      #   2. a lost install in a workflow that runs `pasco` (build.yml) — that one
-      #      only runs on push to main, so the hole would otherwise land post-merge.
-      # The wrong version travels in a variable: this step never spells a literal
-      # pin and never hardcodes today's version (which would recreate the drift).
+      # the link gate carries the same self-test for the same reason. This one
+      # mutates EVERY file that carries a pin, one probe each, so a gate narrowed
+      # to a subset of files cannot pass by luck; then it removes an install from
+      # a workflow that runs `pasco` (a hole there would land post-merge, since
+      # build.yml only runs on push to main). Both classes must go red.
+      # The package name travels in a variable and the wrong version too: this
+      # step never spells a literal pin the gate would then scan, and never
+      # hardcodes today's version (which would recreate the drift).
       - name: Self-test the pin gate
         run: |
           set -euo pipefail
-          probe_a="$(mktemp -d)"
-          probe_b="$(mktemp -d)"
-          cp -R .pascorc .github "$probe_a/"
-          cp -R .pascorc .github "$probe_b/"
-          gate_a="$probe_a/.github/scripts/check-engine-pins.sh"
-          gate_b="$probe_b/.github/scripts/check-engine-pins.sh"
-          bash "$gate_a" -w "$probe_a" >/dev/null
-          bash "$gate_b" -w "$probe_b" >/dev/null
+          pkg='@profile-as-code/cli'
           bad="9.9.9"
-          sed -i -E "s#@profile-as-code/cli@[0-9]+\\.[0-9]+\\.[0-9]+#@profile-as-code/cli@${bad}#" \
-            "$probe_a/.github/workflows/preview.yml"
-          if bash "$gate_a" -w "$probe_a" >/dev/null 2>&1; then
-            echo "::error::the pin gate accepted a mismatched install — the gate is not working"
+          mutated=0
+          for f in .github/workflows/*.yml .github/workflows/*.yaml; do
+            [ -f "$f" ] || continue
+            # comment lines are not installs: a prose mention must not count
+            if ! grep -v '^[[:space:]]*#' "$f" | grep -q "${pkg}@"; then continue; fi
+            probe="$(mktemp -d)"
+            cp -R .pascorc .github "$probe/"
+            name="$(basename "$f")"
+            # portable: no `sed -i` (BSD needs an extension argument, GNU does not)
+            sed -E "s#${pkg}@[0-9]+\\.[0-9]+\\.[0-9]+#${pkg}@${bad}#" \
+              "$probe/.github/workflows/${name}" > "$probe/mutated.tmp"
+            mv "$probe/mutated.tmp" "$probe/.github/workflows/${name}"
+            if bash "$probe/.github/scripts/check-engine-pins.sh" -w "$probe" >/dev/null 2>&1; then
+              echo "::error file=$f::the pin gate accepted a mutated pin in ${name} — the gate is not working"
+              exit 1
+            fi
+            mutated=$((mutated + 1))
+          done
+          if [ "$mutated" -eq 0 ]; then
+            echo "::error::the pin gate self-test found no pinned workflow to mutate"
             exit 1
           fi
-          grep -v '@profile-as-code/cli' "$probe_b/.github/workflows/build.yml" \
-            > "$probe_b/build.yml.tmp"
-          mv "$probe_b/build.yml.tmp" "$probe_b/.github/workflows/build.yml"
-          if bash "$gate_b" -w "$probe_b" >/dev/null 2>&1; then
+          probe="$(mktemp -d)"
+          cp -R .pascorc .github "$probe/"
+          target=""
+          for f in .github/workflows/*.yml; do
+            if grep -v '^[[:space:]]*#' "$f" | grep -q "${pkg}@"; then
+              target="$(basename "$f")"
+              break
+            fi
+          done
+          [ -n "$target" ] || { echo "::error::the pin gate self-test found no workflow to strip"; exit 1; }
+          grep -v "${pkg}" "$probe/.github/workflows/${target}" > "$probe/keep.tmp"
+          mv "$probe/keep.tmp" "$probe/.github/workflows/${target}"
+          if bash "$probe/.github/scripts/check-engine-pins.sh" -w "$probe" >/dev/null 2>&1; then
             echo "::error::the pin gate accepted a workflow that runs pasco with no pinned install"
             exit 1
           fi
-          echo "pin gate self-test OK: rejects a mismatched pin and a missing install"
+          echo "pin gate self-test OK: rejects a mutated pin in ${mutated} file(s) and a lost install in ${target}"
 
   links:
     name: internal doc links
