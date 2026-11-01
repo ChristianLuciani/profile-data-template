@@ -66,10 +66,11 @@ extends to example `content/` values that cite platform constraints.
   blind (`CONTRIBUTING.md` § CI).
 - Docs in English (D8); `README.es.md` mirrors `README.md`, and
   `CHECKLIST.es.md` mirrors the manual checklist. Comments when present.
-- CI: `checks.yml` (content YAML parse · every workflow's engine install agrees
-  with `.pascorc` → `engine`, with a self-test of that gate · relative markdown
-  links, plus a self-test of that gate · template example-data guard · gitleaks
-  secret scan · `pasco validate` + `check`) · `workflow-lint.yml` (the workflow files parse —
+- CI: `checks.yml` (content YAML parse · every mention of the engine package in
+  a workflow or local action carries exactly the `.pascorc` → `engine` version,
+  with a four-probe self-test of that gate · relative markdown links, plus a
+  self-test of that gate · template example-data guard · gitleaks secret scan ·
+  `pasco validate` + `check`) · `workflow-lint.yml` (the workflow files parse —
   kept as a separate workflow so it can cover `checks.yml` itself) · `build.yml`
   (`pasco validate` + `check` + `build`, then commits `profiles/`) · `preview.yml`
   (manual dispatch only: `pasco preview` rendered to a downloadable artifact,

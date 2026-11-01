@@ -6,22 +6,29 @@ nothing comparing them, and the maintenance window ledger dirtied the tree.
 
 - **`pins` job in `checks.yml`** (offline, ~seconds) — `.github/scripts/check-engine-pins.sh`
   reads `.pascorc` → `engine` and enforces, per workflow file:
-  - **every occurrence** of `@profile-as-code/cli` on an install line must be
-    followed by `@<exact floor>` — a range, dist-tag, `v` prefix, suffix
-    (`-beta.1`) or a bare package name fails, and one good pin cannot immunize a
-    second, drifting install in the same file;
-  - backslash line continuations are joined first, so a pin on the next line of
-    an install command is still seen;
-  - local composite actions (`.github/actions/**`) are scanned with the same rules;
-  - a file that **runs `pasco` but installs no pinned CLI** fails, so deleting an
-    install step cannot silently remove a surface from the comparison;
-  - comment lines and trailing comments are ignored (a note is not an install);
-  - at least one pin must exist overall, or the job fails: nothing to compare.
-  Failures are `::error file=…` annotations naming the file, the version found and
-  the floor. The job carries a **self-test that mutates every pinned file** (one
-  probe each, so a gate narrowed to a subset cannot pass by luck) plus a probe
-  that strips an install from a workflow that runs `pasco` — both classes must go
-  red.
+  The rule is a **whitelist of strings, not a detector of install commands**:
+  every occurrence of `@profile-as-code/cli` in a workflow or a local action must
+  be followed immediately by `@<the exact .pascorc engine>`. There is no command
+  list to enumerate, so no form can slip through — `npm i`, `npm exec`, `npx`,
+  `pnpm`, `yarn`, a spec held in an `env:`/`matrix` variable, a quoted `#`
+  mid-line, a backslash continuation. An earlier command-allow-list version was
+  bypassed one new form per review round (three rounds, three forms); the string
+  rule closes the class by construction.
+  - a file that **runs `pasco` but never names the pinned package** fails, so
+    deleting an install cannot silently remove a surface from the comparison;
+  - full-line comments are ignored (a note is not code); inline text is not, so a
+    quoted `#` cannot hide a mention;
+  - at least one file must name the pin, or the job fails: nothing to compare;
+  - coverage: `.github/workflows/**` and `.github/actions/**`; a local action
+    outside `.github/actions/` (`uses: ./ci/setup`) is a declared residual, not
+    covered.
+  Failures are `::error file=…` annotations naming the file, the mention found
+  and the floor. The job carries a **self-test with four probes**, each of which
+  must go red: every file that names a pin is mutated (one probe per file, so a
+  gate narrowed to a subset cannot pass), the `.pascorc` floor is bumped (so a
+  hardcoded version fails), a fixture composite action carries another version
+  (covers the `.github/actions` branch, which no repo file exercises), and an
+  install is stripped from a workflow that runs `pasco`.
   - Why: the drift is measured. In PR #25 the pin-surface list missed
     `preview.yml` (round 1, F2) and the reconcile commit reintroduced two findings
     of the same class (round 2, F2/F3). "Keep them in sync" was prose; now it is a
