@@ -100,6 +100,9 @@ engine sabe verificar. Los ítems manuales de abajo siguen siendo tuyos.
 - [ ] Hechos (rol, fechas, papers) idénticos al resto de las redes
 - [ ] Proyectos pinned = los 3-6 que querés mostrar
 - [ ] Links a todos los perfiles (sameAs)
+- [ ] **Skin (variant body):** H1 y footer generado intactos, el chrome fuera del
+      límite, ningún hecho reescrito adentro, renderiza en modo oscuro, todo link
+      resuelve y `pasco check` no agrega hallazgos (ver `docs/skins.md`)
 
 ## LinkedIn
 - [ ] Headline ≤ límite oficial (ver skill) y coherente con positioning.statement

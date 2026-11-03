@@ -27,6 +27,7 @@ accurate, and the user's responsibility.
 | `content/skills.yaml` · `keywords.yaml` | Skills + SEO-ish keywords |
 | `media/` | Versioned small binaries (`certificates/`, `photos/`, `press/`) — bundled to `profiles/<platform>/assets/` |
 | `docs/evidence-packs.md` · `docs/power-user-symlinks.md` | Per-domain proof checklists · stow/symlink tradeoffs |
+| `docs/skins.md` | The skin contract: engine-owned bound, exact footer, do/don't, refresh ritual, declared limits — plus `docs/exemplars/github-readme/` (three complete variant bodies) |
 | `profiles/` | Rendered per-platform outputs (README, LinkedIn… + `assets/` when media is bundled) |
 | `.github/workflows/` | `checks.yml` (yaml · pins · links · example-data · secrets · evidence) · `workflow-lint.yml` (offline) · `build.yml` (`pasco` from npm) · `preview.yml` (manual, HTML artifact) |
 | `.github/scripts/` | `check-links.sh` (shared by `checks.yml` and `build.yml`) · `check-engine-pins.sh` (one source for the engine pin) · `check-example-data.sh` (template privacy guard) |

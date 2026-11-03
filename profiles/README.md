@@ -46,6 +46,12 @@ profiles/github-readme/assets/<id>/<basename>
   hands it over as a workflow artifact instead of committing it.
 - **Do not hand-edit** these files: `pasco build` regenerates them from
   `content/` (and, for a chosen variant, from its `variants/` body).
+- **Want a distinctive README without breaking regeneration?** Do not hand-edit
+  the artifact. Write a complete variant body under
+  `profiles/github-readme/variants/<id>.md` and select it with
+  `pasco refine github-readme --choose <id>` — the contract is
+  [`docs/skins.md`](../docs/skins.md), and `docs/exemplars/github-readme/` ships
+  three complete bodies to start from.
 - In **your workspace** they are committed: they are the record of what is
   published and at which version. In this template they are not: the bot does not
   commit output here (an `is_template` repo).
