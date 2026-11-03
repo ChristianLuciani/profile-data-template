@@ -100,6 +100,10 @@ engine knows how to verify. The manual items below are still yours.
 - [ ] Facts (role, dates, papers) identical to the rest of the platforms
 - [ ] Pinned projects = the 3-6 you want to show
 - [ ] Links to every profile (sameAs)
+- [ ] **Skin (variant body):** H1 and generated footer intact, chrome outside the
+      bound, no fact retyped inside it, renders in dark mode, every link resolves,
+      and `pasco check` still passes — remembering that with an active variant it
+      is a self-comparison, not a fact check (see `docs/skins.md`)
 
 ## LinkedIn
 - [ ] Headline ≤ official limit (see the skill) and coherent with positioning.statement
