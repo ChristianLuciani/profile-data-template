@@ -47,6 +47,7 @@ Three facts read from the engine source, not from its documentation (engine
    reads `profiles/github-readme/variants/<id>.md` and writes it verbatim to
    `profiles/github-readme/README.md` when `content/active.yaml` selects it for
    that lang (`packages/cli/src/variant-store.ts` · `artifact-render.ts`;
+   the write site is `packages/cli/src/commands/build.ts` via `artifactPath`;
    SPEC §7/§15). The body is a *complete README*, not a fragment.
 2. **The artifact is bounded, not whole.** The projection
    (`packages/artifact`, SPEC §19.5) opens the engine-owned region at the last H1
@@ -103,7 +104,8 @@ changed rows, recompose the body, then rebuild.
   body is active the artifact axis compares the body against *itself* (declared
   limit below), so `matches-SSOT` is not a fact check on the skin.
 
-The artifact axis is a byte comparison, not the projection: hand-editing
+The artifact axis is a fact-identity comparison (it ignores the derived
+`Profile completeness: …` line), not the projection: hand-editing
 `profiles/github-readme/README.md` (chrome or facts) makes it `diverges` even if
 the region still agrees with `content/`. Always edit the variant body and
 rebuild; never patch the artifact.
@@ -157,7 +159,9 @@ or they become a stale illustration.
 1. Run `pasco build github-readme` in **your** workspace and take the region it
    emits (H1 through the generated footer) from
    `profiles/github-readme/README.md`.
-2. Wrap that region with the chrome of the exemplar closest to your taste.
+2. Wrap that region with chrome in the spirit of the exemplar closest to your
+   taste, replacing every persona-specific value (name, links, email, releases,
+   signature) with your own. Chrome is a composition guide, not content.
 3. Save the result as `profiles/github-readme/variants/<id>.md`.
 4. `pasco refine github-readme --choose <id>`.
 5. `pasco build github-readme`.
