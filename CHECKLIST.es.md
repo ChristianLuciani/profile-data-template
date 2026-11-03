@@ -102,7 +102,8 @@ engine sabe verificar. Los ítems manuales de abajo siguen siendo tuyos.
 - [ ] Links a todos los perfiles (sameAs)
 - [ ] **Skin (variant body):** H1 y footer generado intactos, el chrome fuera del
       límite, ningún hecho reescrito adentro, renderiza en modo oscuro, todo link
-      resuelve y `pasco check` no agrega hallazgos (ver `docs/skins.md`)
+      resuelve y `pasco check` sigue pasando — recordando que con una variante
+      activa es una autocomparación, no un chequeo de hechos (ver `docs/skins.md`)
 
 ## LinkedIn
 - [ ] Headline ≤ límite oficial (ver skill) y coherente con positioning.statement
