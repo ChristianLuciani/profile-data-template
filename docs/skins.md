@@ -11,8 +11,8 @@ renderer itself, other platforms, or auto-updating widgets · as_of: 2026-11-03.
 
 ## The bound: what the engine judges
 
-`pasco build` writes the artifact, but the consistency checks do not read the
-whole file. They project it to the **engine-owned region**
+`pasco build` writes the artifact, but the fact-consistency check does not read
+the whole file. It projects the artifact to the **engine-owned region**
 (`packages/artifact`, SPEC §19.5): from the **last H1 above the terminus** to the
 **last generated footer**.
 
@@ -44,16 +44,16 @@ Three facts read from the engine source, not from its documentation (engine
 0.3.7, the pin in `.pascorc`):
 
 1. **The active variant body is written verbatim.** `pasco build github-readme`
-   writes `profiles/github-readme/variants/<id>.md` as the whole artifact when
-   `content/active.yaml` selects it for that lang
-   (`packages/cli/src/variant-store.ts` · `artifact-render.ts`; SPEC §7/§15).
-   The body is a *complete README*, not a fragment.
+   reads `profiles/github-readme/variants/<id>.md` and writes it verbatim to
+   `profiles/github-readme/README.md` when `content/active.yaml` selects it for
+   that lang (`packages/cli/src/variant-store.ts` · `artifact-render.ts`;
+   SPEC §7/§15). The body is a *complete README*, not a fragment.
 2. **The artifact is bounded, not whole.** The projection
    (`packages/artifact`, SPEC §19.5) opens the engine-owned region at the last H1
    above the terminus and closes it at the last generated footer.
 3. **That bound is what makes chrome legal.** `fact-present` — the symmetric
    surface-vs-SSOT comparison — runs over the projection only. Chrome outside it
-   survives every check; content inside it is drift if it disagrees with the
+   survives the fact check; content inside it is drift if it disagrees with the
    SSOT. With an active variant body the comparison is against that same body,
    so read the declared limit below before trusting it as a fact check.
 
@@ -103,6 +103,11 @@ changed rows, recompose the body, then rebuild.
   body is active the artifact axis compares the body against *itself* (declared
   limit below), so `matches-SSOT` is not a fact check on the skin.
 
+The artifact axis is a byte comparison, not the projection: hand-editing
+`profiles/github-readme/README.md` (chrome or facts) makes it `diverges` even if
+the region still agrees with `content/`. Always edit the variant body and
+rebuild; never patch the artifact.
+
 ## Declared limits (discover them here, not in production)
 
 - **Self-comparison.** While a variant body is active, `fact-present` compares
@@ -116,6 +121,11 @@ changed rows, recompose the body, then rebuild.
   appendix chrome into the bound; `pasco build`, `pasco check` and `pasco status`
   still pass. The marker is a contract, not a gate: keep the footer or the bound
   collapses.
+- **A variant body carries no media bundle.** For a variant artifact `pasco
+  build` writes no `profiles/<platform>/assets/` and removes a previously
+  generated bundle, so `locator.path` media and any `assets/…` link are
+  unavailable. Keep media references out of the skin (or host them outside the
+  workspace) until the engine bundles variant assets.
 - **`link-in-identity` is declared, not executed.** The rule is declared in the
   engine's `skills/github-readme/checks.yaml`, but `pasco check` does not execute
   it in this release (the remaining catalog lands with M3/M4). Extra image URLs
@@ -124,8 +134,9 @@ changed rows, recompose the body, then rebuild.
 ## Exemplars
 
 Three complete bodies over this workspace's fictional example data, one per
-composition axis. Copy one, replace the chrome with your own, keep the H1 and
-the generated footer, and rebuild.
+composition axis. Use one as a composition reference — **not** as content to
+publish: its region is the render of the template's fictional persona (see
+Adopt one).
 
 | File | Composition | Chrome |
 |---|---|---|
@@ -137,13 +148,24 @@ Each file opens with a one-line HTML comment naming the composition, the chrome
 sources and the date. The comment is invisible in GitHub's rendered view and sits
 outside the bound.
 
+The bodies are a snapshot of the example render: no CI compares them with
+`content/`, so after a content change regenerate them (build in a throwaway copy)
+or they become a stale illustration.
+
 ## Adopt one
 
-1. Copy the exemplar body to `profiles/github-readme/variants/<id>.md`.
-2. Replace the chrome with your own (keep the H1 and the footer).
-3. `pasco refine github-readme --choose <id>`.
-4. `pasco build github-readme`.
-5. Deploy, then run the GitHub line in `CHECKLIST.md`.
+1. Run `pasco build github-readme` in **your** workspace and take the region it
+   emits (H1 through the generated footer) from
+   `profiles/github-readme/README.md`.
+2. Wrap that region with the chrome of the exemplar closest to your taste.
+3. Save the result as `profiles/github-readme/variants/<id>.md`.
+4. `pasco refine github-readme --choose <id>`.
+5. `pasco build github-readme`.
+6. Deploy, then run the GitHub line in `CHECKLIST.md`.
+
+Do not copy an exemplar body wholesale into a fork: its region carries Alex
+Rivera's fictional facts, and the self-comparison limit means `pasco check`
+will not catch them. The region must be re-rendered from your own `content/`.
 
 No engine change, no fork, no new schema field. Do not vendor someone else's
 README: imported prose, links and license are a provenance problem, and they
